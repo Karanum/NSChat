@@ -1,2 +1,0 @@
-# NSChat
-Network Systems project
