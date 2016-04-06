@@ -2,6 +2,7 @@ package nschat.multicasting;
 
 import java.util.HashMap;
 import java.util.Map;
+import nschat.tcp.SequenceNumberSet;
 
 /**
  * Buffer for sending packets that is thread safe.
@@ -10,25 +11,30 @@ import java.util.Map;
  */
 public class SendingBuffer {
 	
-	private Map<Short, byte[]> buffer = new HashMap<Short, byte[]>();
+	private Map<SequenceNumberSet, Map<Short, byte[]>> buffer = new HashMap<SequenceNumberSet, Map<Short, byte[]>>();
 	
 	/**
 	 * Add a packet to the buffer.
 	 * @param seq
 	 * @param packet
 	 */
-	public void add(short seq, byte[] packet) {
+	public void add(SequenceNumberSet set, short seq, byte[] packet) {
 		synchronized(this) {
-		buffer.put(seq, packet);
+			if (!buffer.containsKey(set)) {
+				buffer.put(set, new HashMap<Short, byte[]>());
+			}
+			buffer.get(set).put(seq, packet);
 		}
 	}
 
 	/**
 	 * Remove a packet from the buffer.
 	 */
-	public void remove(short seq) {
+	public void remove(SequenceNumberSet set, short seq) {
 		synchronized(this) {
-			buffer.remove(seq);
+			if (buffer.containsKey(set)) {
+				buffer.get(set).remove(seq);
+			}
 		}
 	}
 	
@@ -37,9 +43,12 @@ public class SendingBuffer {
 	 * @param seq
 	 * @return
 	 */
-	public byte[] get(short seq) {
+	public byte[] get(SequenceNumberSet set, short seq) {
 		synchronized(this) {
-			return buffer.get(seq);
+			if (!buffer.containsKey(set)) {
+				return null;
+			}
+			return buffer.get(set).get(seq);
 		}
 	}
 }
