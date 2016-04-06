@@ -6,8 +6,8 @@ public class SequenceNumber {
 
 	private short SequenceNumber;
 	
-	public void SequenceNumber() {
-		SequenceNumber = (short) (new Random()).nextInt(Short.MAX_VALUE + 1);
+	public SequenceNumber() {
+		SequenceNumber = (short) (new Random()).nextInt(Short.MAX_VALUE - Short.MIN_VALUE + 1);
 	}
 	
 	public short getSeq() {
@@ -15,9 +15,6 @@ public class SequenceNumber {
 	}
 	
 	public void increaseSeq() {
-		SequenceNumber += 1;
+		SequenceNumber ++;
 	}
-	
-	
-	
 }
