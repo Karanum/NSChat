@@ -4,9 +4,4 @@ public class basicGUI {
 	
 	
 	
-	
-	
-	
-	
-	
 }
