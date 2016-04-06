@@ -2,10 +2,10 @@ package nschat.multicasting;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 
 public class Multicast {
@@ -42,7 +42,6 @@ public class Multicast {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public DatagramPacket makeDgramPacket(byte[] bytes) {
@@ -64,33 +63,50 @@ public class Multicast {
 	}
 	
 	public void receiveDatagram() {
-		byte[] bytes = new byte[BUFFER_LENGTH];
-		DatagramPacket received = new DatagramPacket(bytes, bytes.length);
-		try {
-			mcsocket.receive(received);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while (true) {
+			byte[] bytes = new byte[BUFFER_LENGTH];
+			DatagramPacket received = new DatagramPacket(bytes, bytes.length);
+			try {
+				mcsocket.receive(received);
+				byteToString(received);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
+	public void byteToString(DatagramPacket received) {
+		byte[] data = received.getData();
+		System.out.println("Received "+ received.getLength() + " Bytes");
+		byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
+		System.out.println(new String (actualData));
+	}
+	
+// TEST CODE FOR RECEIVING
 	
 	public static void main(String[] args) {
 		try {
-			Multicast mc = new Multicast();
-			
-			mc.joinGroup();
-			
-			DatagramPacket packet = mc.makeDgramPacket("hello world 1 2 3".getBytes());
-			mc.sendDatagram(packet);
-			
-			
-			
-			
+			Multicast multicast = new Multicast();
+			multicast.joinGroup();
+			multicast.receiveDatagram();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
+// TEST CODE FOR SENDING
+	/*
+	public static void main(String[] args) {
+		try {
+			Multicast mc = new Multicast();
+			mc.joinGroup();
+			DatagramPacket packet = mc.makeDgramPacket("boom boom boom now let me hear you say wayoo".getBytes());
+			mc.sendDatagram(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}*/
+
 }
