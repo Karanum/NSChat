@@ -32,6 +32,11 @@ public class SendingBuffer {
 		}
 	}
 	
+	/**
+	 * Returns the value that belongs to the key.
+	 * @param seq
+	 * @return
+	 */
 	public byte[] get(short seq) {
 		synchronized(this) {
 			return buffer.get(seq);

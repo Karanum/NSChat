@@ -23,10 +23,4 @@ public class Connection implements Runnable {
 	public void run() {
 		cast.receiveDatagram();
 	}
-	
-	
-	
-	
-	
-	
 }
