@@ -46,25 +46,20 @@ public class Multicast {
 	
 	public DatagramPacket makeDgramPacket(byte[] bytes) {
 		DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
-				group, GROUP_PORT);
-		
+				group, GROUP_PORT);	
 		return packet;
 	}
 	
 	public void sendDatagram(DatagramPacket dgram) {
-		System.err.println("Sending " + dgram.getData().length + " bytes to " + 
+		System.out.println("Sending " + dgram.getData().length + " bytes to " + 
 			dgram.getAddress() + ":" + dgram.getPort());
-		
-		while (true) {
-			System.out.print(".");
-			try {
-				mcsocket.send(dgram);
-				Thread.sleep(1000);
-			} catch (InterruptedException | IOException e) {
-				// TODO Which exception first?
-				e.printStackTrace();
-			}
+		try {
+			mcsocket.send(dgram);
+			Thread.sleep(1000);
+		} catch (InterruptedException | IOException e) {
+			e.printStackTrace();
 		}
+		
 	}
 	
 	public void receiveDatagram() {
@@ -90,7 +85,7 @@ public class Multicast {
 	}
 	
 // TEST CODE FOR RECEIVING
-	/*
+	
 	public static void main(String[] args) {
 		try {
 			Multicast multicast = new Multicast();
@@ -100,18 +95,18 @@ public class Multicast {
 			e.printStackTrace();
 		}
 	}
-	*/
+
 // TEST CODE FOR SENDING
 	/*
 	public static void main(String[] args) {
 		try {
 			Multicast mc = new Multicast();
 			mc.joinGroup();
-			DatagramPacket packet = mc.makeDgramPacket("hello world 1 2 3".getBytes());
+			DatagramPacket packet = mc.makeDgramPacket("boom boom boom now let me hear you say wayoo".getBytes());
 			mc.sendDatagram(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-*/
+	}*/
+
 }
