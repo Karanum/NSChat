@@ -3,6 +3,10 @@ package nschat.routing;
 import java.util.ArrayList;
 import java.util.List;
 
+import nschat.multicasting.SendingBuffer;
+import nschat.tcp.SequenceNumberSet;
+import nschat.tcp.TCP;
+
 /**
  * Distance vector routing protocol
  * @author Pieter Jan
@@ -10,21 +14,25 @@ import java.util.List;
  */
 public class BasicRoutingProtocol {
 
-	private List<byte[]> sendBuffer;
-	private double RTT;
-	
-	
+	private SequenceNumberSet set = new SequenceNumberSet();
+	private SendingBuffer sendingBuffer = new SendingBuffer();
 	
 	public BasicRoutingProtocol() {
-		packetbuffer = new ArrayList<byte[]>();
+		
 	}
 	
 	
 	public void receivePacket(byte[] packet) {
-		byte[] old = sendBuffer.get(TCP.getAck(packet));
-		double sendTime = TCP.getTimestamp(old);
-		RTT = System.currentTimeMillis() - sendTime;
+		byte[] old = sendingBuffer.get(set, TCP.getAckNumber(packet));
+		long sendTime = TCP.getTimestamp(old);
+		long RTT = System.currentTimeMillis() - sendTime;
+		
 	}
+	
+	
+	
+	
+	
 	
 	
 	
