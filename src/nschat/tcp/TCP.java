@@ -1,5 +1,7 @@
 package nschat.tcp;
 
+import java.util.Arrays;
+
 /**
  * Used to create packets that can be send over the network
  * @author Bart Meyers
@@ -34,9 +36,9 @@ public class TCP {
 		seq = new SequenceNumber();
 	}
 	
-	public byte[] nextHeader(byte type, short ack) {
+	private byte[] nextHeader(PacketType type, byte flags, short ack) {
 		byte[] header = new byte[HEADERSIZE];
-		header[0] = type;
+		header[0] = (byte) (type.getByte() | flags);
 		header[1] = (byte) (seq.getSeq() >> 8);
 		header[2] = (byte) seq.getSeq();
 		header[3] = (byte) (ack >> 8);
@@ -44,14 +46,20 @@ public class TCP {
 		return header;
 	}
 	
-	public byte[] nextPacket(String data, PacketType type, byte flags) {
+	/**
+	 * creates a packet.
+	 * @param data Data that will be send
+	 * @param type The type of packet
+	 * @param flags the flags that need to be set
+	 * @param ack the acknowledgment number
+	 * @return the packet
+	 */
+	public byte[] nextPacket(String data, PacketType type, byte flags, short ack) {
 		byte[] dataBytes = data.getBytes();
 		byte[] packet = new byte[dataBytes.length + HEADERSIZE];
-		byte firstByte = (byte) (type.getByte() | flags);
-		
-		
-		
-		
+		byte[] header = nextHeader(type, flags, ack);
+		System.arraycopy(dataBytes, 0, packet, HEADERSIZE, dataBytes.length);
+		System.arraycopy(header, 0, packet, 0, HEADERSIZE);
 		return packet;
 	}
 		
