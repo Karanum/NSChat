@@ -12,13 +12,15 @@ public class Multicast {
 
 	private final int BUFFER_LENGTH = 1028;
 	private final String GROUP_ADDRESS = "227.21.137.0";
-	private final int GROUP_PORT = 8637;
+	private final int GROUP_PORT = 8637; //TODO ask user for port number
+	private ReceivingBuffer receivingBuffer; 
 
 	MulticastSocket mcsocket;
 	InetAddress group;
 	
-	public Multicast() throws IOException {
+	public Multicast(ReceivingBuffer receivingBuffer) throws IOException {
 		mcsocket = new MulticastSocket(GROUP_PORT);
+		this.receivingBuffer = receivingBuffer; 
 	}
 	
 	public void joinGroup() {
@@ -62,13 +64,16 @@ public class Multicast {
 		
 	}
 	
-	public void receiveDatagram() {
+	public byte[] receiveDatagram() {
 		while (true) {
 			byte[] bytes = new byte[BUFFER_LENGTH];
 			DatagramPacket received = new DatagramPacket(bytes, bytes.length);
 			try {
 				mcsocket.receive(received);
-				byteToString(received);
+				byte[] data = received.getData();
+				byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
+				receivingBuffer.add(actualData);
+				//byteToString(received);
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -76,16 +81,16 @@ public class Multicast {
 			}
 		}
 	}
-	
+	/*
 	public void byteToString(DatagramPacket received) {
 		byte[] data = received.getData();
 		System.out.println("Received "+ received.getLength() + " Bytes");
 		byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
 		System.out.println(new String (actualData));
-	}
+	}*/
 	
 // TEST CODE FOR RECEIVING
-	
+	/*
 	public static void main(String[] args) {
 		try {
 			Multicast multicast = new Multicast();
@@ -95,7 +100,7 @@ public class Multicast {
 			e.printStackTrace();
 		}
 	}
-
+*/
 // TEST CODE FOR SENDING
 	/*
 	public static void main(String[] args) {
