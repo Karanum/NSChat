@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class TCP {
 	
 	public static final byte ACK_FLAG = 1;
-	private final int HEADERSIZE = 13;
+	private static final int HEADERSIZE = 13;
 	
 	/**
 	 * Enum with 3 bit values on the three most significant bits for the packet type.
@@ -32,7 +32,7 @@ public class TCP {
 		}
 	};
 	
-	private byte[] nextHeader(PacketType type, SequenceNumberSet seq, byte flags, short ack) {
+	private static byte[] nextHeader(PacketType type, SequenceNumberSet seq, byte flags, short ack) {
 		byte[] header = new byte[HEADERSIZE];
 		header[0] = (byte) (type.getByte() | flags);
 		long time = System.currentTimeMillis();
@@ -55,7 +55,7 @@ public class TCP {
 	 * @param ack The acknowledgment number
 	 * @return the packet
 	 */
-	public byte[] nextPacket(String data, PacketType type, SequenceNumberSet seq, byte flags, short ack) {
+	public static byte[] nextPacket(String data, PacketType type, SequenceNumberSet seq, byte flags, short ack) {
 		byte[] dataBytes = data.getBytes();
 		byte[] packet = new byte[dataBytes.length + HEADERSIZE];
 		byte[] header = nextHeader(type, seq, flags, ack);
@@ -70,7 +70,7 @@ public class TCP {
 	 * @param packet The packet to verify
 	 * @return Whether the packet is valid
 	 */
-	public boolean isValidPacket(byte[] packet) {
+	public static boolean isValidPacket(byte[] packet) {
 		return packet.length >= HEADERSIZE;
 	}
 	
@@ -79,7 +79,7 @@ public class TCP {
 	 * @param packet The packet to extract from
 	 * @return The PacketType of the packet
 	 */
-	public PacketType getPacketType(byte[] packet) {
+	public static PacketType getPacketType(byte[] packet) {
 		if (packet.length >= HEADERSIZE) {
 			byte type = (byte) (packet[0] >> 5);
 			for (PacketType value : PacketType.values()) {
@@ -96,7 +96,7 @@ public class TCP {
 	 * @param packet The packet to extract from
 	 * @return Whether the packet is an ACK
 	 */
-	public boolean isAck(byte[] packet) {
+	public static boolean isAck(byte[] packet) {
 		if (packet.length < HEADERSIZE) {
 			return false;
 		}
@@ -108,7 +108,7 @@ public class TCP {
 	 * @param packet The packet to extract from
 	 * @return The timestamp of the packet
 	 */
-	public long getTimestamp(byte[] packet) {
+	public static long getTimestamp(byte[] packet) {
 		if (packet.length < HEADERSIZE) {
 			return 0L;
 		}
@@ -125,7 +125,7 @@ public class TCP {
 	 * @param packet The packet to extract from
 	 * @return The SEQ of the packet
 	 */
-	public short getSeqNumber(byte[] packet) {
+	public static short getSeqNumber(byte[] packet) {
 		if (packet.length < HEADERSIZE) {
 			return 0;
 		}
@@ -137,7 +137,7 @@ public class TCP {
 	 * @param packet The packet to extract from
 	 * @return The ACK of the packet
 	 */
-	public short getAckNumber(byte[] packet) {
+	public static short getAckNumber(byte[] packet) {
 		if (packet.length < HEADERSIZE) {
 			return 0;
 		}
@@ -149,7 +149,7 @@ public class TCP {
 	 * @param packet The packet to extract from
 	 * @return The data of the packet as a String
 	 */
-	public String getDataAsString(byte[] packet) {
+	public static String getDataAsString(byte[] packet) {
 		if (packet.length < HEADERSIZE) {
 			return "";
 		}
