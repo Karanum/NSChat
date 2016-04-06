@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class TCP {
 	
 	public static final byte ACK_FLAG = 1;
-	private static final int HEADERSIZE = 13;
+	private static final int HEADERSIZE = 15;
 	
 	/**
 	 * Enum with 3 bit values on the three most significant bits for the packet type.
@@ -44,6 +44,8 @@ public class TCP {
 		header[10] = (byte) seq.getSeq();
 		header[11] = (byte) (ack >> 8);
 		header[12] = (byte) ack;
+		header[13] = 0;		//Source and destination needs to be added
+		header[14] = 0;
 		return header;
 	}
 	
@@ -142,6 +144,30 @@ public class TCP {
 			return 0;
 		}
 		return (short) ((packet[11] << 8) + packet[12]);
+	}
+	
+	/**
+	 * Returns the sender of the packet
+	 * @param packet The packet to extract from
+	 * @return The source ID of the packet
+	 */
+	public static byte getSender(byte[] packet) {
+		if (packet.length < HEADERSIZE) {
+			return 0;
+		}
+		return packet[13];
+	}
+	
+	/**
+	 * Returns the recipient of the packet
+	 * @param packet The packet to extract from
+	 * @return The destination ID of the packet
+	 */
+	public static byte getRecipient(byte[] packet) {
+		if (packet.length < HEADERSIZE) {
+			return 0;
+		}
+		return packet[14];
 	}
 	
 	/**
