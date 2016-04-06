@@ -23,7 +23,7 @@ public class GUITest {
 	private void prepareGUI() {
 		mainFrame = new JFrame("Java SWING Examples");
 		mainFrame.setSize(400, 400);
-		mainFrame.setLayout(new GridLayout(2, 1));
+		mainFrame.setLayout(new GridLayout(3, 1));
 
 		headerLabel = new JLabel("", JLabel.CENTER);
 		statusLabel = new JLabel("", JLabel.CENTER);
