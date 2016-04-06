@@ -7,25 +7,25 @@ import java.util.Random;
  * @author Bart Meyers
  *
  */
-public class SequenceNumber {
+public class SequenceNumberSet {
 
-	private short SequenceNumber;
+	private short seq;
 	
-	public SequenceNumber() {
-		SequenceNumber = (short) (new Random()).nextInt(Short.MAX_VALUE - Short.MIN_VALUE + 1);
+	public SequenceNumberSet() {
+		seq = (short) (new Random()).nextInt(Short.MAX_VALUE - Short.MIN_VALUE + 1);
 	}
 
 	/**
 	 * @return The sequence number
 	 */
 	public short getSeq() {
-		return SequenceNumber;
+		return seq;
 	}
 	
 	/**
 	 * increases the sequence number by 1.
 	 */
 	public void increaseSeq() {
-		SequenceNumber ++;
+		seq++;
 	}
 }
