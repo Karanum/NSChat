@@ -1,16 +1,15 @@
 package nschat.tcp;
 
-import java.util.Arrays;
-
 /**
  * Used to create packets that can be send over the network
+ * Use one tcp per connection for correct sequence numbers.
  * @author Bart Meyers
  *
  */
 public class TCP {
 	
 	public static final byte ACK_FLAG = 1;
-	private final int HEADERSIZE = 5;
+	private final int HEADERSIZE = 13;
 	private SequenceNumber seq;
 	
 	/**
@@ -29,7 +28,6 @@ public class TCP {
 		public byte getByte() {
 			return code;
 		}
-		
 	};
 	
 	public TCP() {
@@ -39,10 +37,15 @@ public class TCP {
 	private byte[] nextHeader(PacketType type, byte flags, short ack) {
 		byte[] header = new byte[HEADERSIZE];
 		header[0] = (byte) (type.getByte() | flags);
-		header[1] = (byte) (seq.getSeq() >> 8);
-		header[2] = (byte) seq.getSeq();
-		header[3] = (byte) (ack >> 8);
-		header[4] = (byte) ack;
+		long time = System.currentTimeMillis();
+		for (int i = 8; i > 0; i--) {
+			header[i] = (byte) time;
+			time = time >> 8;
+		}
+		header[9] = (byte) (seq.getSeq() >> 8);
+		header[10] = (byte) seq.getSeq();
+		header[11] = (byte) (ack >> 8);
+		header[12] = (byte) ack;
 		return header;
 	}
 	
@@ -60,7 +63,7 @@ public class TCP {
 		byte[] header = nextHeader(type, flags, ack);
 		System.arraycopy(dataBytes, 0, packet, HEADERSIZE, dataBytes.length);
 		System.arraycopy(header, 0, packet, 0, HEADERSIZE);
+		seq.increaseSeq();
 		return packet;
-	}
-		
+	}	
 }
