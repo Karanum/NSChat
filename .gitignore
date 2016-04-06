@@ -1,5 +1,6 @@
 .classpath
 .checkstyle
 .project
+.checkstyle
 .settings/*
 bin/*
