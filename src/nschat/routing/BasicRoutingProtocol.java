@@ -26,6 +26,12 @@ public class BasicRoutingProtocol {
 		long sendTime = TCP.getTimestamp(old);
 		long RTT = System.currentTimeMillis() - sendTime;
 		
+		int destination = (int) TCP.getSender(packet);
+		int cost = (int) RTT;
+		
+	
 	}
+	
+	
 	
 }

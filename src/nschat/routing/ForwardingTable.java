@@ -10,7 +10,6 @@ public class ForwardingTable {
 	
 	public ForwardingTable() {
 		forwardingTable = new HashMap<Integer, BasicRoute>();		//TODO extend forwarding-table
-		
 	}
 	
 	public void addRoute(Integer destination, BasicRoute route) {
