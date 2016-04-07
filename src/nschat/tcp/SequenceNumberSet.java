@@ -3,7 +3,7 @@ package nschat.tcp;
 import java.util.Random;
 
 /**
- * Keeps track of the sequence numbers.
+ * Keeps track of and dispenses sequence numbers.
  * Use one SequenceNumberSet object per packet type for correct numbering.
  * @author Bart Meyers
  *
@@ -17,16 +17,10 @@ public class SequenceNumberSet {
 	}
 
 	/**
+	 * Get the next sequence number.
 	 * @return The sequence number
 	 */
-	public short getSeq() {
-		return seq;
-	}
-	
-	/**
-	 * increases the sequence number by 1.
-	 */
-	public void increaseSeq() {
-		seq++;
+	public short get() {
+		return seq++;
 	}
 }
