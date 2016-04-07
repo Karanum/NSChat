@@ -17,6 +17,7 @@ public abstract class Program {
 			conn = new Connection();
 		} catch (IOException e) {
 			System.err.println("Could not set up connection: The port number might be in use");
+			//UI.error("Port already in use, please restart your system!");
 			return;
 		}
 		

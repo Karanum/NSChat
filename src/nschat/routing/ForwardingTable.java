@@ -6,27 +6,28 @@ import java.util.Map;
 public class ForwardingTable {
 	
 	// FORWARDING TABLE CONTAINS: DESTINATION, COST, VIA NEIGHBOUR!!!
-	private HashMap<Byte, Long> forwardingTable;
-	private HashMap<Byte, Map<Long, Byte>> fowardingTable2;
+	private Map<Integer, BasicRoute> forwardingTable;
 	
 	public ForwardingTable() {
-		forwardingTable = new HashMap<Byte, Long>();		//TODO extend forwarding-table
+		forwardingTable = new HashMap<Integer, BasicRoute>();		//TODO extend forwarding-table
 		
 	}
 	
-	public void addRoute(byte sender, long cost) {
+	public void addRoute(Integer destination, BasicRoute route) {
 		// Check if the route already exists in the forwarding table add if not, else compare cost.
 		
-		if (!forwardingTable.containsKey(sender)) {
-			forwardingTable.put(sender, cost);
+		if (!forwardingTable.containsKey(destination)) {
+			forwardingTable.put(destination, route);
 		} else {
-			if (cost < forwardingTable.get(sender)) {
-				forwardingTable.put(sender, cost);
+			if (route.getCost() < forwardingTable.get(destination).getCost()) {
+				forwardingTable.put(destination, route);
 			}
 		}
 	}
 	
-	
-	
-	
+	public void removeRoute(Integer destination) {
+		if (forwardingTable.containsKey(destination)) {
+			forwardingTable.remove(destination);
+		}
+	}
 }
