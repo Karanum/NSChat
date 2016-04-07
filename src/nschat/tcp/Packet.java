@@ -34,7 +34,7 @@ public class Packet {
 		}
 	};
 	
-	private static final byte ACK_FLAG = 1;
+	public static final byte ACK_FLAG = 1;
 	private static final int HEADER_SIZE = 21;
 	
 	private PacketType type;
