@@ -29,8 +29,10 @@ public class BasicGUI extends JFrame {
 	private class Listener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			printText(textField.getText());
-			textField.setText("");
+			if (!textField.getText().isEmpty()) {
+				printText(textField.getText());
+				textField.setText("");
+			}
 		}
 	}
 	
