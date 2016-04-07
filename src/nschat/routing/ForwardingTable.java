@@ -1,5 +1,6 @@
 package nschat.routing;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,5 +29,9 @@ public class ForwardingTable {
 		if (forwardingTable.containsKey(destination)) {
 			forwardingTable.remove(destination);
 		}
+	}
+	
+	public Collection<BasicRoute> getRoutes() {
+		return forwardingTable.values();
 	}
 }
