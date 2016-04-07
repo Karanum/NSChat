@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 /**
  * Used to create packets that can be send over the network
- * Use one tcp per connection for correct sequence numbers.
  * @author Bart Meyers
  *
  */
@@ -53,6 +52,7 @@ public class TCP {
 	 * creates a packet.
 	 * @param data Data that will be send
 	 * @param type The type of packet
+	 * @param seq The SequenceNumberSet to generate SEQ numbers with
 	 * @param flags The flags that need to be set
 	 * @param ack The acknowledgment number
 	 * @return the packet
@@ -65,7 +65,7 @@ public class TCP {
 		System.arraycopy(header, 0, packet, 0, HEADERSIZE);
 		seq.increaseSeq();
 		return packet;
-	}	
+	}
 	
 	/**
 	 * Returns whether the packet is valid (i.e. the header is complete)

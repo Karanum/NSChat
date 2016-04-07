@@ -4,6 +4,7 @@ import java.util.Random;
 
 /**
  * Keeps track of the sequence numbers.
+ * Use one SequenceNumberSet object per packet type for correct numbering.
  * @author Bart Meyers
  *
  */
