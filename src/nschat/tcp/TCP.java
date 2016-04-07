@@ -4,14 +4,15 @@ import java.util.Arrays;
 
 /**
  * Used to create packets that can be send over the network
- * Use one tcp per connection for correct sequence numbers.
  * @author Bart Meyers
  *
  */
-public class TCP {
+public abstract class TCP {
 	
 	public static final byte ACK_FLAG = 1;
 	private static final int HEADERSIZE = 15;
+	
+	private static byte ID = 0;
 	
 	/**
 	 * Enum with 3 bit values on the three most significant bits for the packet type.
@@ -32,7 +33,7 @@ public class TCP {
 		}
 	};
 	
-	private static byte[] nextHeader(PacketType type, SequenceNumberSet seq, byte flags, short ack) {
+	private static byte[] nextHeader(PacketType type, SequenceNumberSet seq, byte flags, short ack, byte dest) {
 		byte[] header = new byte[HEADERSIZE];
 		header[0] = (byte) (type.getByte() | flags);
 		long time = System.currentTimeMillis();
@@ -44,8 +45,8 @@ public class TCP {
 		header[10] = (byte) seq.getSeq();
 		header[11] = (byte) (ack >> 8);
 		header[12] = (byte) ack;
-		header[13] = 0;		//Source and destination needs to be added
-		header[14] = 0;
+		header[13] = ID;
+		header[14] = dest;
 		return header;
 	}
 	
@@ -53,19 +54,29 @@ public class TCP {
 	 * creates a packet.
 	 * @param data Data that will be send
 	 * @param type The type of packet
+	 * @param seq The SequenceNumberSet to generate SEQ numbers with
 	 * @param flags The flags that need to be set
 	 * @param ack The acknowledgment number
+	 * @param dest The ID of the recipient (leave 0 to broadcast)
 	 * @return the packet
 	 */
-	public static byte[] nextPacket(String data, PacketType type, SequenceNumberSet seq, byte flags, short ack) {
+	public static byte[] nextPacket(String data, PacketType type, SequenceNumberSet seq, byte flags, short ack, byte dest) {
 		byte[] dataBytes = data.getBytes();
 		byte[] packet = new byte[dataBytes.length + HEADERSIZE];
-		byte[] header = nextHeader(type, seq, flags, ack);
+		byte[] header = nextHeader(type, seq, flags, ack, dest);
 		System.arraycopy(dataBytes, 0, packet, HEADERSIZE, dataBytes.length);
 		System.arraycopy(header, 0, packet, 0, HEADERSIZE);
 		seq.increaseSeq();
 		return packet;
-	}	
+	}
+	
+	/**
+	 * Sets the ID of the client.
+	 * @param id The new ID
+	 */
+	public static void setID(byte id) {
+		ID = id;
+	}
 	
 	/**
 	 * Returns whether the packet is valid (i.e. the header is complete)
