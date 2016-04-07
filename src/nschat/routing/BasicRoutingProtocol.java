@@ -1,6 +1,7 @@
 package nschat.routing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -71,11 +72,35 @@ public class BasicRoutingProtocol {
 		sendingBuffer.add(set, seq, packet.pack());
 	}
 	
-	//TODO Finish function
-	public List<BasicRoute> getForwardingTable(byte[] bytes) {
+	/*
+	 * Returns a list of the received forwarding tables.
+	 */
+	private List<BasicRoute> getForwardingTable(byte[] bytes) {
+		List<BasicRoute> basicRoutes = new ArrayList<BasicRoute>();
 		
-		return null;
+		for (byte[] chunk : getBytesChunk(bytes, 12)) {
+			int dest = (chunk[0] << 24) + (chunk[1] << 16) + (chunk[2] << 8) + chunk[3];
+			int cost = (chunk[4] << 24) + (chunk[5] << 16) + (chunk[6] << 8) + chunk[7];
+			int hop = (chunk[8] << 24) + (chunk[9] << 16) + (chunk[10] << 8) + chunk[11];
+			basicRoutes.add(new BasicRoute(dest, cost, hop));
+		}
+		return basicRoutes;
 	}
-
+	
+	/*
+	 * Divide the given byte array into chunks of the given chunk-size.
+	 */
+	private List<byte[]> getBytesChunk(byte[] bytes, int chunksize) {
+		List<byte[]> bytesList = new ArrayList<byte[]>();
+		
+		int begin = 0;
+		while (begin < bytes.length) {
+			int end = Math.min(chunksize, begin + chunksize);
+			bytesList.add(Arrays.copyOfRange(bytes, begin, end));
+			begin += chunksize;
+		}
+		return bytesList;
+	}
+	
 
 }
