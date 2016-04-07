@@ -28,6 +28,25 @@ public class BasicRoute {
 		this.cost = cost;
 	}
 	
+
+	
+	
+	/*
+	public byte[] getBytes() {
+		byte[] bytes = new byte[12];
+		
+		for (int i = 0; i < 4; i++) {
+			bytes[i] = (byte) (dest >> (32 - (i+1)*8));
+		}
+		for (int i = 4; i < 8; i++) {
+			bytes[i] = (byte) (cost >> (32 - (i-3)*8));
+		}
+		for (int i = 8; i < 12; i++) {
+			bytes[i] = (byte) (next >> (32 - (i-7)*8));
+		}
+		return bytes;
+	}*/
+
 	public byte[] getBytes() {
 		byte[] bytes = new byte[12];
 		bytes[0] = (byte) (dest >> 24);
@@ -45,5 +64,6 @@ public class BasicRoute {
 		return bytes;
 	}
 	
+
 }
 
