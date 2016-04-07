@@ -7,6 +7,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import net.miginfocom.swing.MigLayout;
+import nschat.Program;
+import nschat.tcp.Packet;
+import nschat.tcp.Packet.PacketType;
+import nschat.tcp.SequenceNumberSet;
+
 import javax.swing.JScrollPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -25,37 +30,33 @@ public class BasicGUI extends JFrame {
 	private JTextArea textArea;
 	private JMenuItem menuExit;
 	private JButton sendButton;
+	
+	private SequenceNumberSet seqSet;
+	private Program program;
 
 	private class Listener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			if (!textField.getText().isEmpty()) {
-				printText(textField.getText());
+				String text = textField.getText();
+				printText(text);
 				textField.setText("");
+				
+				short seq = seqSet.get();
+				Packet p = new Packet(PacketType.DATA, (byte) 0, seq, (short) 0, null);
+				p.setData(text);
+				program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
 			}
 		}
-	}
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					BasicGUI frame = new BasicGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public BasicGUI() {
+	public BasicGUI(Program program) {
+		this.program = program;
+		seqSet = new SequenceNumberSet();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Chat21");
 		
@@ -111,6 +112,6 @@ public class BasicGUI extends JFrame {
 	 * @param name
 	 */
 	public void printText(String text, String name) {
-		textArea.append(text + " -" + name + "\n");
+		textArea.append("<" + name + "> " + text);
 	}
 }

@@ -22,4 +22,8 @@ public class Connection implements Runnable {
 	public void run() {
 		cast.receiveDatagram();
 	}
+	
+	public SendingBuffer getSendingBuffer() {
+		return sendingBuffer;
+	}
 }
