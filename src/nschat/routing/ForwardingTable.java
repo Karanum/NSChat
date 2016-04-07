@@ -36,6 +36,7 @@ public class ForwardingTable {
 		return forwardingTable.values();
 	}
 	
+
 	public void updateTable(List<BasicRoute> routes, int nextHop) {
 		for (BasicRoute route : routes) {
 			int linkCost = brp.getSenderRTT().get(nextHop);
@@ -43,4 +44,5 @@ public class ForwardingTable {
 			addRoute(route.getDestination(), newRoute);
 		}
 	}
+
 }
