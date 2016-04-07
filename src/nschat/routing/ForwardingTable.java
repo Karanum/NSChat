@@ -12,10 +12,10 @@ public class ForwardingTable {
 	private BasicRoutingProtocol brp;
 	
 	public ForwardingTable(BasicRoutingProtocol brp) {
-		forwardingTable = new HashMap<Integer, BasicRoute>();		//TODO extend forwarding-table
+		forwardingTable = new HashMap<Integer, BasicRoute>();
 		this.brp = brp;
 	}
-	
+	//TODO
 	public void addRoute(int destination, BasicRoute route) {
 		// Check if the route already exists in the forwarding table add if not, else compare cost.
 		
