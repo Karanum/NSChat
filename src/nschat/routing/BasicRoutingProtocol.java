@@ -3,7 +3,9 @@ package nschat.routing;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nschat.exception.PacketFormatException;
 import nschat.multicasting.SendingBuffer;
@@ -22,20 +24,24 @@ public class BasicRoutingProtocol {
 	private SendingBuffer sendingBuffer;
 	private ForwardingTable forwardingTable;
 	
+	//map person id -> rtt
+	private Map<Integer, Integer> senderRTT;
+	
 	
 	public BasicRoutingProtocol() {
 		set = new SequenceNumberSet();
 		sendingBuffer = new SendingBuffer();
-		forwardingTable = new ForwardingTable();
+		forwardingTable = new ForwardingTable(this);
+		senderRTT = new HashMap<Integer, Integer>();
 	}
 
-	//TODO Finish function
 	public void receivePacket(Packet packet) {
 		int rtt = getRTT(packet);
+		setSenderRTT(rtt, packet.getSender());
+		
 		byte[] bytes = packet.getData();
 		List<BasicRoute> routes = getForwardingTable(bytes);
-		
-	
+		forwardingTable.updateTable(routes, packet.getSender());
 	}
 	//TODO Finish function
 	public void makeRoute(int dest, int rtt, int nextHop) {
@@ -102,5 +108,17 @@ public class BasicRoutingProtocol {
 		return bytesList;
 	}
 	
-
+	private void setSenderRTT(int rtt, int sender) {
+		if (senderRTT.containsKey(sender)) {
+			int currentRTT = senderRTT.get(sender);
+			senderRTT.put(sender, (rtt + currentRTT) / 2);
+		} else {
+			senderRTT.put(sender, rtt);
+		}
+	}
+	
+	public Map<Integer, Integer> getSenderRTT() {
+		return senderRTT;
+	}
+	
 }
