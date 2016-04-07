@@ -283,4 +283,20 @@ public class Packet {
 		return packet;
 	}
 	
+	/**
+	 * Returns the source address of the packet as an InteAddress.
+	 * @return
+	 */
+	public InetAddress getSenderAddress() {
+		return src;
+	}
+	
+	/**
+	 * Returns the destination address of the packet as an InetAddres.
+	 * @return
+	 */
+	public InetAddress getRecipientAddress() {
+		return dest;
+	}
+	
 }

@@ -33,6 +33,7 @@ public class Symetric {
 			c.init(Cipher.ENCRYPT_MODE, key);
 			byte[] data = c.doFinal(IV);
 			ivAuth.setData(data);
+			//TODO send the packet
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,9 +62,10 @@ public class Symetric {
 				//TODO make ack packet.
 				Packet ackPacket = new Packet();
 				ackPacket.setFlags(Packet.ACK_FLAG);
+				ackPacket.setRecipient(packet.getSenderAddress());
+				//TODO send the ack packet
 			}
 		}
-		
 	}
 	
 	/**
