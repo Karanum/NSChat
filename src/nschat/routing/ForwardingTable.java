@@ -9,12 +9,14 @@ public class ForwardingTable {
 	
 	// FORWARDING TABLE CONTAINS: DESTINATION, COST, VIA NEIGHBOUR!!!
 	private Map<Integer, BasicRoute> forwardingTable;
+	private BasicRoutingProtocol brp;
 	
-	public ForwardingTable() {
+	public ForwardingTable(BasicRoutingProtocol brp) {
 		forwardingTable = new HashMap<Integer, BasicRoute>();		//TODO extend forwarding-table
+		this.brp = brp;
 	}
 	
-	public void addRoute(Integer destination, BasicRoute route) {
+	public void addRoute(int destination, BasicRoute route) {
 		// Check if the route already exists in the forwarding table add if not, else compare cost.
 		
 		if (!forwardingTable.containsKey(destination)) {
@@ -27,28 +29,20 @@ public class ForwardingTable {
 	}
 	
 	public void removeRoute(Integer destination) {
-		if (forwardingTable.containsKey(destination)) {
-			forwardingTable.remove(destination);
-		}
+		forwardingTable.remove(destination);
 	}
 	
 	public Collection<BasicRoute> getRoutes() {
 		return forwardingTable.values();
 	}
 	
-	
-	public void updateTable(List<BasicRoute> routes) {
+
+	public void updateTable(List<BasicRoute> routes, int nextHop) {
 		for (BasicRoute route : routes) {
-			updateTable(route);
+			int linkCost = brp.getSenderRTT().get(nextHop);
+			BasicRoute newRoute = new BasicRoute(route.getDestination(), route.getCost() + linkCost, nextHop);
+			addRoute(route.getDestination(), newRoute);
 		}
 	}
-	
-	private void updateTable(BasicRoute route) {
-		
-	}
-	
-	
-	
-	
-	
+
 }

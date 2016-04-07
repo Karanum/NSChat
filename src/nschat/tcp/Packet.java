@@ -19,7 +19,8 @@ public class Packet {
 	public enum PacketType {
 		UNDEFINED ((byte) 0),
 		DATA ((byte) (1 << 5)),
-		ROUTING ((byte) (2 << 5));
+		ROUTING ((byte) (2 << 5)),
+		SECURITY ((byte) (3 << 5));
 		
 		private byte code;
 		private PacketType(byte b) {
