@@ -24,14 +24,24 @@ public class BasicRoutingProtocol {
 	public void receivePacket(byte[] packet) {
 		byte[] old = sendingBuffer.get(set, TCP.getAckNumber(packet));
 		long sendTime = TCP.getTimestamp(old);
-		long RTT = System.currentTimeMillis() - sendTime;
-		
-		int destination = (int) TCP.getSender(packet);
-		int cost = (int) RTT;
-		
-	
+
+		int rtt = (int) (System.currentTimeMillis() - sendTime);
 	}
 	
+	public void makeRoute(int dest, int rtt, int nextHop) {
+		BasicRoute route = new BasicRoute(dest, rtt, nextHop);
+	}
 	
+	public int getRTT(byte[] packet) {
+		byte[] old = sendingBuffer.get(set, TCP.getAckNumber(packet));
+		long sendTime = TCP.getTimestamp(old);
+		int rtt = (int) (System.currentTimeMillis() - sendTime);
+		return rtt;
+	}
 	
+	public void sendPacket() {
+		
+	}
+
+
 }
