@@ -21,21 +21,11 @@ public class BasicRoutingProtocol {
 		
 	}
 	
-	
 	public void receivePacket(byte[] packet) {
 		byte[] old = sendingBuffer.get(set, TCP.getAckNumber(packet));
 		long sendTime = TCP.getTimestamp(old);
 		long RTT = System.currentTimeMillis() - sendTime;
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
