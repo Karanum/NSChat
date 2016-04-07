@@ -2,6 +2,7 @@ package nschat.routing;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ForwardingTable {
@@ -34,4 +35,20 @@ public class ForwardingTable {
 	public Collection<BasicRoute> getRoutes() {
 		return forwardingTable.values();
 	}
+	
+	
+	public void updateTable(List<BasicRoute> routes) {
+		for (BasicRoute route : routes) {
+			updateTable(route);
+		}
+	}
+	
+	private void updateTable(BasicRoute route) {
+		
+	}
+	
+	
+	
+	
+	
 }
