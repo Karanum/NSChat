@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author Bart Meyers
  *
  */
-public class TCP {
+public abstract class TCP {
 	
 	public static final byte ACK_FLAG = 1;
 	private static final int HEADERSIZE = 15;

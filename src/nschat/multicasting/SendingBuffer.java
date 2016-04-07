@@ -12,7 +12,11 @@ import nschat.tcp.TCP;
  */
 public class SendingBuffer {
 	
-	private Map<SequenceNumberSet, Map<Short, byte[]>> buffer = new HashMap<SequenceNumberSet, Map<Short, byte[]>>();
+	private Map<SequenceNumberSet, Map<Short, byte[]>> buffer;
+	
+	public SendingBuffer() {
+		buffer = new HashMap<SequenceNumberSet, Map<Short, byte[]>>();
+	}
 	
 	/**
 	 * Adds a packet to the buffer belonging to the specified SEQ set.

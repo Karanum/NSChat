@@ -8,11 +8,11 @@ public class Connection implements Runnable {
 	SendingBuffer sendingBuffer;
 	Multicast cast;
 	
-	public Connection() {
+	public Connection() throws IOException {
 		try {
 			cast = new Multicast(receivingBuffer);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			throw e;
 			//UI.error("Port already in use restart your system!");
 		}
 		receivingBuffer = new ReceivingBuffer();
