@@ -1,3 +1,5 @@
+nschat
+nschat.exception
 nschat.multicasting
 nschat.tcp
 nschat.test

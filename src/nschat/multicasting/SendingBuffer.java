@@ -3,7 +3,6 @@ package nschat.multicasting;
 import java.util.HashMap;
 import java.util.Map;
 import nschat.tcp.SequenceNumberSet;
-import nschat.tcp.TCP;
 
 /**
  * Buffer for sending packets that is thread safe.
@@ -21,10 +20,10 @@ public class SendingBuffer {
 	/**
 	 * Adds a packet to the buffer belonging to the specified SEQ set.
 	 * @param set The SequenceNumberSet that the packet belongs to
+	 * @param seq The SEQ number of the packet
 	 * @param packet The packet that needs to be added
 	 */
-	public void add(SequenceNumberSet set, byte[] packet) {
-		short seq = TCP.getSeqNumber(packet);
+	public void add(SequenceNumberSet set, short seq, byte[] packet) {
 		synchronized(this) {
 			if (!buffer.containsKey(set)) {
 				buffer.put(set, new HashMap<Short, byte[]>());
