@@ -16,7 +16,7 @@ public class BasicRoute {
 		return cost;
 	}
 	
-	public int getDest() {
+	public int getDestination() {
 		return dest;
 	}
 	
