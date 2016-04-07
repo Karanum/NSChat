@@ -30,6 +30,7 @@ public class SendingBuffer {
 			}
 			buffer.get(set).put(seq, packet);
 		}
+		System.out.println("Added into the buffer: " + new String(packet));
 	}
 
 	/**

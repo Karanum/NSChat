@@ -18,9 +18,10 @@ public class Packet {
 	 */
 	public enum PacketType {
 		UNDEFINED ((byte) 0),
-		DATA ((byte) (1 << 5)),
-		ROUTING ((byte) (2 << 5)),
-		SECURITY ((byte) (3 << 5));
+		TEXT ((byte) (1 << 5)),
+		FILE ((byte) (2 << 5)),
+		ROUTING ((byte) (3 << 5)),
+		SECURITY ((byte) (4 << 5));
 		
 		private byte code;
 		private PacketType(byte b) {
@@ -270,8 +271,16 @@ public class Packet {
 		
 		byte[] srcIp = src.getAddress();
 		System.arraycopy(srcIp, 0, packet, 13, 4);
-		byte[] destIp = dest.getAddress();
-		System.arraycopy(destIp, 0, packet, 17, 4);
+		
+		if (dest != null) {
+			byte[] destIp = dest.getAddress();
+			System.arraycopy(destIp, 0, packet, 17, 4);
+		} else {
+			packet[17] = 0;
+			packet[18] = 0;
+			packet[19] = 0;
+			packet[20] = 0;
+		}
 		
 		long time = timestamp;
 		for (int i = 8; i > 0; --i) {
