@@ -10,7 +10,11 @@ import java.util.List;
  */
 public class ReceivingBuffer {
 
-	private List<byte[]> buffer = new ArrayList<byte[]>();
+	private List<byte[]> buffer;
+	
+	public ReceivingBuffer() {
+		buffer = new ArrayList<byte[]>();
+	}
 
 	/**
 	 * Gets and removes the next packet from the buffer.
