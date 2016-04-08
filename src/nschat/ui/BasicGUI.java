@@ -110,7 +110,8 @@ public class BasicGUI extends JFrame {
 		menuExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);									//TODO change to proper exit mechanism	
+				//System.exit(0);									//TODO change to proper exit mechanism
+				program.stop();
 			}
 		});
 		

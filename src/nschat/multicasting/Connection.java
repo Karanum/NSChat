@@ -64,6 +64,7 @@ public class Connection implements Runnable {
 			
 			PacketType type = p.getPacketType();
 			if (type != PacketType.ROUTING) {
+				acknowledgePacket(p);
 				forwardPacket(p);
 			}
 			
@@ -100,6 +101,11 @@ public class Connection implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	//TODO Finish implementing acknowledgements
+	private void acknowledgePacket(Packet packet) {
+		short ack = packet.getSeqNumber();
 	}
 	
 	public ReceivingBuffer getReceivingBuffer() {
