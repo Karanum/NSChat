@@ -9,11 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import net.miginfocom.swing.MigLayout;
 
 public class UserNameGUI extends JFrame {
-
-	private JPanel contentPane;
-	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -37,18 +35,8 @@ public class UserNameGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public UserNameGUI() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BorderLayout(0, 0));
-		
-		textField = new JTextField();
-		contentPane.add(textField, BorderLayout.CENTER);
-		textField.setColumns(10);
-		
-		JButton btnNewButton = new JButton("Enter");
-		contentPane.add(btnNewButton, BorderLayout.SOUTH);
+		getContentPane().setLayout(new MigLayout("", "[]", "[]"));
+		getContentPane().setLayout(new MigLayout("", "[]", "[]"));
 	}
 
 }

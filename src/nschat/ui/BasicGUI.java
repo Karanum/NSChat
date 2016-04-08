@@ -37,8 +37,8 @@ public class BasicGUI extends JFrame {
 	
 	/**
 	 * Launch the application for testing purposes.
-	 *//*
-	public static void main(String[] args) {
+	 */
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -60,10 +60,13 @@ public class BasicGUI extends JFrame {
 				String text = textField.getText();
 				textField.setText("");
 				
+				//printText(text);
+				
 				short seq = seqSet.get();
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text);
 				program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
+				
 			}
 		}
 	}
