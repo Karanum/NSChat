@@ -1,6 +1,8 @@
 package nschat.multicasting;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import nschat.tcp.SequenceNumberSet;
 
@@ -11,10 +13,12 @@ import nschat.tcp.SequenceNumberSet;
  */
 public class SendingBuffer {
 	
-	private Map<SequenceNumberSet, Map<Short, byte[]>> buffer;
+	private List<byte[]> buffer;
+	private Map<SequenceNumberSet, Map<Short, byte[]>> archive;
 	
 	public SendingBuffer() {
-		buffer = new HashMap<SequenceNumberSet, Map<Short, byte[]>>();
+		buffer = new ArrayList<byte[]>();
+		archive = new HashMap<SequenceNumberSet, Map<Short, byte[]>>();
 	}
 	
 	/**
@@ -25,11 +29,13 @@ public class SendingBuffer {
 	 */
 	public void add(SequenceNumberSet set, short seq, byte[] packet) {
 		synchronized(this) {
-			if (!buffer.containsKey(set)) {
-				buffer.put(set, new HashMap<Short, byte[]>());
+			buffer.add(packet);
+			if (!archive.containsKey(set)) {
+				archive.put(set, new HashMap<Short, byte[]>());
 			}
-			buffer.get(set).put(seq, packet);
+			archive.get(set).put(seq, packet);
 		}
+		System.out.println("Added into the buffer: " + new String(packet));
 	}
 
 	/**
@@ -39,8 +45,8 @@ public class SendingBuffer {
 	 */
 	public void remove(SequenceNumberSet set, short seq) {
 		synchronized(this) {
-			if (buffer.containsKey(set)) {
-				buffer.get(set).remove(seq);
+			if (archive.containsKey(set)) {
+				archive.get(set).remove(seq);
 			}
 		}
 	}
@@ -52,10 +58,21 @@ public class SendingBuffer {
 	 */
 	public byte[] get(SequenceNumberSet set, short seq) {
 		synchronized(this) {
-			if (!buffer.containsKey(set)) {
+			if (!archive.containsKey(set)) {
 				return null;
 			}
-			return buffer.get(set).get(seq);
+			return archive.get(set).get(seq);
 		}
+	}
+	
+	public List<byte[]> getAllFromBuffer() {
+		List<byte[]> packets = new ArrayList<byte[]>();
+		synchronized(this) {
+			for (byte[] packet : buffer) {
+				packets.add(packet);
+			}
+			buffer.clear();
+		}
+		return packets;
 	}
 }

@@ -43,7 +43,7 @@ public class BasicGUI extends JFrame {
 				textField.setText("");
 				
 				short seq = seqSet.get();
-				Packet p = new Packet(PacketType.DATA, (byte) 0, seq, (short) 0, null);
+				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text);
 				program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
 			}
@@ -88,7 +88,6 @@ public class BasicGUI extends JFrame {
 		textField.addActionListener(new Listener());
 
 		menuExit.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);									//TODO change to proper exit mechanism	

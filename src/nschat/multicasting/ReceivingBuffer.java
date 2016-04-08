@@ -22,7 +22,10 @@ public class ReceivingBuffer {
 	 */
 	public byte[] getNext() {
 		synchronized(this) {
-		return buffer.remove(0);
+			if (buffer.size() == 0) {
+				return null;
+			}
+			return buffer.remove(0);
 		}
 	}
 	
@@ -32,7 +35,7 @@ public class ReceivingBuffer {
 	 */
 	public void add(byte[] packet) {
 		synchronized(this) {
-		buffer.add(packet);
+			buffer.add(packet);
 		}
 	}	
 }
