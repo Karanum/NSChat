@@ -61,18 +61,28 @@ public class Program {
 		 */
 		running = true;
 		while (running) {
-			conn.send();		//Check for outgoing messages
+			long time = System.currentTimeMillis();
 			conn.receive();		//Check for incoming messages
+			conn.send();		//Check for outgoing messages
+			long diff = System.currentTimeMillis() - time;
+			if (diff < 100) {
+				try {
+					Thread.sleep(100 - diff);
+				} catch (InterruptedException e) { }
+			}
 		}
 		
 		/*
 		 * Thread cleanup
 		 */
+		ui.setVisible(false);
 		try {
 			t.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("Shutdown");
 	}
 	
 	/**

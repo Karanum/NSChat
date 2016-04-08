@@ -33,11 +33,7 @@ public class Multicast {
 			group = InetAddress.getByName(GROUP_ADDRESS);
 			System.out.println("Connected with Interface: " + mcsocket.getNetworkInterface().getDisplayName());
 			mcsocket.joinGroup(group);
-		} catch (UnknownHostException e) { 
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) { 
 			e.printStackTrace();
 		}
 	}
@@ -47,7 +43,6 @@ public class Multicast {
 		try {
 			mcsocket.leaveGroup(group);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -77,10 +72,7 @@ public class Multicast {
 				byte[] data = received.getData();
 				byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
 				receivingBuffer.add(actualData);
-				//byteToString(received);
-				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -89,37 +81,4 @@ public class Multicast {
 	public int getPort() {
 		return GROUP_PORT;
 	}
-	/*
-	public void byteToString(DatagramPacket received) {
-		byte[] data = received.getData();
-		System.out.println("Received "+ received.getLength() + " Bytes");
-		byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
-		System.out.println(new String (actualData));
-	}*/
-	
-// TEST CODE FOR RECEIVING
-	/*
-	public static void main(String[] args) {
-		try {
-			Multicast multicast = new Multicast();
-			multicast.joinGroup();
-			multicast.receiveDatagram();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-*/
-// TEST CODE FOR SENDING
-	/*
-	public static void main(String[] args) {
-		try {
-			Multicast mc = new Multicast();
-			mc.joinGroup();
-			DatagramPacket packet = mc.makeDgramPacket("boom boom boom now let me hear you say wayoo".getBytes());
-			mc.sendDatagram(packet);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
-
 }
