@@ -53,9 +53,8 @@ public class Program {
 					ipu.addWindowListener(new WindowListener() {
 						public void windowActivated(WindowEvent arg0) {}
 						public void windowClosed(WindowEvent arg0) {
-							//getProgram().continueSetup();
+							getProgram().continueSetup();
 							//System.out.println("window closed");
-							getProgram().notifyAll();
 						}
 						public void windowClosing(WindowEvent arg0) {
 							//System.out.println("Window closing");
@@ -72,13 +71,9 @@ public class Program {
 				}
 			}
 		});
-		try {
-			this.wait();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	}
+	
+	private void continueSetup() {
 		Thread t = new Thread(conn);
 		t.start();
 		System.out.println("Connection established!");
@@ -130,10 +125,6 @@ public class Program {
 		}
 		
 		System.out.println("Shutdown");
-	}
-	
-	private void continueSetup() {
-		
 	}
 	
 	/**
