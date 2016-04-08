@@ -70,8 +70,12 @@ public class Connection implements Runnable {
 			} catch (PacketFormatException e) { 
 				continue;
 			}
-			
 			PacketType type = p.getPacketType();
+			
+			if (seenPackets.containsKey(type) && seenPackets.get(type).contains(p.getSeqNumber())) {
+				continue;
+			}
+			
 			if (type != PacketType.ROUTING) {
 				forwardPacket(p);
 			}
