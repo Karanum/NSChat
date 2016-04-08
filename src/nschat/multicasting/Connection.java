@@ -71,16 +71,6 @@ public class Connection implements Runnable {
 				continue;
 			}
 			
-			System.out.print("Received: ");
-			for (byte b : packet) {
-				System.out.print(b + ", ");
-			}
-			System.out.print("\nPacked: ");
-			for (byte b : p.pack()) {
-				System.out.print(b + ", ");
-			}
-			System.out.println("");
-			
 			PacketType type = p.getPacketType();
 			if (seenPackets.containsKey(type) && seenPackets.get(type).contains((int) (p.getSeqNumber()))) {
 				continue;
@@ -91,8 +81,6 @@ public class Connection implements Runnable {
 			
 			switch (type) {
 				case TEXT:
-					System.out.println(seenPackets.toString());
-					System.out.println("Received text, SEQ: " + p.getSeqNumber() + ", Src: " + p.getSenderAddress() + "Data: " + p.getDataAsString());
 					program.getUI().printText(p.getDataAsString());
 					if (p.isAck()) {
 						checkTextAck(p);
