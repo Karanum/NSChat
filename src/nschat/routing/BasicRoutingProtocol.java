@@ -43,10 +43,6 @@ public class BasicRoutingProtocol {
 		List<BasicRoute> routes = getForwardingTable(bytes);
 		forwardingTable.updateTable(routes, packet.getSender());
 	}
-	//TODO Finish function
-	public void makeRoute(int dest, int rtt, int nextHop) {
-		BasicRoute route = new BasicRoute(dest, rtt, nextHop);
-	}
 	
 	public int getRTT(Packet packet) {
 		byte[] old = sendingBuffer.get(set, packet.getAckNumber());
