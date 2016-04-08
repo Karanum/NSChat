@@ -124,6 +124,8 @@ public class Packet {
 		
 		if (packet.length > HEADER_SIZE) {
 			data = Arrays.copyOfRange(packet, HEADER_SIZE, packet.length);
+		} else {
+			data = new byte[0];
 		}
 	}
 	
