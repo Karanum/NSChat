@@ -25,6 +25,7 @@ public class InterfacePopUp extends JFrame {
 	private JPanel contentPane;
 	private Program program;
 	private Choice choice;
+	private boolean finished = false;
 	
 	/**
 	 * Create a pop-up frame that can not be closed.
@@ -68,6 +69,7 @@ public class InterfacePopUp extends JFrame {
 				try {
 					getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
 					Thread.sleep(500);
+					finished = true;
 					dispose();
 				} catch (SocketException e1) {
 					// TODO Auto-generated catch block
@@ -82,5 +84,9 @@ public class InterfacePopUp extends JFrame {
 
 	public Program getProgram() {
 		return program;
+	}
+	
+	public boolean finished() {
+		return finished;
 	}
 }

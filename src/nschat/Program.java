@@ -27,6 +27,7 @@ public class Program {
 	private BasicGUI ui;
 	private static boolean running = false;
 	private String userName;
+	private InterfacePopUp ipu;
 	
 	/**
 	 * Starts a new instance of the program, can only be called once.
@@ -43,17 +44,17 @@ public class Program {
 			return;
 		}
 		//Let user pick from Network Interfaces
+		ipu = new InterfacePopUp(getProgram());
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					InterfacePopUp ipu = new InterfacePopUp(getProgram());
 					ipu.pack();
 					ipu.setLocationRelativeTo(null);
 					ipu.setVisible(true);
 					ipu.addWindowListener(new WindowListener() {
 						public void windowActivated(WindowEvent arg0) {}
 						public void windowClosed(WindowEvent arg0) {
-							getProgram().continueSetup();
+							//getProgram().continueSetup();
 							//System.out.println("window closed");
 						}
 						public void windowClosing(WindowEvent arg0) {
@@ -71,9 +72,17 @@ public class Program {
 				}
 			}
 		});
-	}
-	
-	private void continueSetup() {
+		
+		while (!ipu.finished()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
 		Thread t = new Thread(conn);
 		t.start();
 		System.out.println("Connection established!");
@@ -85,7 +94,6 @@ public class Program {
 			public void run() {
 				try {
 					ui = new BasicGUI(getProgram());
-					System.out.println("kom ik hier?");
 					ui.pack();
 					ui.setLocationRelativeTo(null);
 					ui.setVisible(true);
