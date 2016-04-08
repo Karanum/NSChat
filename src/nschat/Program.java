@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.io.IOException;
 
 import nschat.multicasting.Connection;
+import nschat.tcp.Packet;
 import nschat.ui.BasicGUI;
 
 /**

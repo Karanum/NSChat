@@ -37,7 +37,6 @@ public class SendingBuffer {
 			}
 			archive.get(type).put(seq, packet);
 		}
-		System.out.println("Added into the buffer: " + new String(packet));
 	}
 	
 	public void forward(byte[] packet) {
