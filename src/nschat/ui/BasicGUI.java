@@ -111,7 +111,7 @@ public class BasicGUI extends JFrame {
 		textField.setColumns(10);
 		
 		sendButton = new JButton("Send");
-		getContentPane().add(sendButton, "cell 14 9,grow");
+		getContentPane().add(sendButton, "cell 14 9 1 1,grow");
 		
 		sendButton.addActionListener(new Listener());
 		textField.addActionListener(new Listener());
