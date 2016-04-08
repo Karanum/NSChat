@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nschat.tcp.Packet.PacketType;
-import nschat.tcp.SequenceNumberSet;
+import nschat.tcp.SequenceNumbers;
 
 /**
  * Buffer for sending packets that is thread safe.
@@ -48,13 +48,13 @@ public class SendingBuffer {
 
 	/**
 	 * Removes a packet from the buffer belonging to the specified SEQ set.
-	 * @param set The SequenceNumberSet that the packet belongs to
+	 * @param type The PacketType of the packet
 	 * @param seq The SEQ number of the packet
 	 */
-	public void remove(SequenceNumberSet set, short seq) {
+	public void remove(PacketType type, short seq) {
 		synchronized(this) {
-			if (archive.containsKey(set)) {
-				archive.get(set).remove(seq);
+			if (archive.containsKey(type)) {
+				archive.get(type).remove(seq);
 			}
 		}
 	}
@@ -64,12 +64,12 @@ public class SendingBuffer {
 	 * @param seq
 	 * @return
 	 */
-	public byte[] get(SequenceNumberSet set, short seq) {
+	public byte[] get(PacketType type, short seq) {
 		synchronized(this) {
-			if (!archive.containsKey(set)) {
+			if (!archive.containsKey(type)) {
 				return null;
 			}
-			return archive.get(set).get(seq);
+			return archive.get(type).get(seq);
 		}
 	}
 	

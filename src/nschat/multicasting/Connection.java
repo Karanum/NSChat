@@ -13,6 +13,7 @@ import nschat.Program;
 import nschat.exception.PacketFormatException;
 import nschat.routing.BasicRoutingProtocol;
 import nschat.tcp.Packet;
+import nschat.tcp.SequenceNumbers;
 import nschat.tcp.Packet.PacketType;
 
 public class Connection implements Runnable {
@@ -22,6 +23,10 @@ public class Connection implements Runnable {
 	private BasicRoutingProtocol routing;
 	private Multicast cast;
 	private Program program;
+	
+	private short lastAckReceived;
+	private short lastSeqReceived;
+	private boolean seqReceived;
 	
 	private Map<PacketType, List<Integer>> seenPackets;
 	
@@ -38,6 +43,10 @@ public class Connection implements Runnable {
 		this.program = program;
 		routing = new BasicRoutingProtocol();
 		seenPackets = new HashMap<PacketType, List<Integer>>();
+		
+		lastAckReceived = 0;
+		lastSeqReceived = 0;
+		seqReceived = false;
 	}
 
 	@Override
@@ -64,21 +73,29 @@ public class Connection implements Runnable {
 			
 			PacketType type = p.getPacketType();
 			if (type != PacketType.ROUTING) {
-				acknowledgePacket(p);
 				forwardPacket(p);
 			}
 			
 			switch (type) {
 				case TEXT:
 					program.getUI().printText(p.getDataAsString());
+					if (p.isAck()) {
+						checkTextAck(p);
+					} else {
+						acknowledgeTextPacket(p);
+					}
 					break;
+					
 				case FILE:
 					break;
+					
 				case ROUTING:
 					routing.receivePacket(p);
 					break;
+					
 				case SECURITY:
 					break;
+					
 				default:
 			}
 		}
@@ -103,9 +120,29 @@ public class Connection implements Runnable {
 		}
 	}
 	
-	//TODO Finish implementing acknowledgements
-	private void acknowledgePacket(Packet packet) {
+	private void acknowledgeTextPacket(Packet packet) {
 		short ack = packet.getSeqNumber();
+		if (seqReceived) {
+			if (lastSeqReceived + 1 == ack || (lastSeqReceived == Short.MAX_VALUE && ack == Short.MIN_VALUE)) {
+				lastSeqReceived = ack;
+			} else {
+				ack = lastSeqReceived;
+			}
+		} else {
+			seqReceived = true;
+			lastSeqReceived = ack;
+		}
+		
+		InetAddress dest = packet.getSenderAddress();
+		PacketType type = packet.getPacketType();
+		short seq = SequenceNumbers.get(type);
+		
+		Packet p = new Packet(type, Packet.ACK_FLAG, seq, ack, dest);
+		sendingBuffer.add(type, seq, p.pack());
+	}
+	
+	private void checkTextAck(Packet packet) {
+		//TODO Implement
 	}
 	
 	public ReceivingBuffer getReceivingBuffer() {
@@ -114,5 +151,9 @@ public class Connection implements Runnable {
 	
 	public SendingBuffer getSendingBuffer() {
 		return sendingBuffer;
+	}
+	
+	public Multicast getMulticast() {
+		return cast;
 	}
 }

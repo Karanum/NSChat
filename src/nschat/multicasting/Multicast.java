@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 
 
@@ -28,7 +27,11 @@ public class Multicast {
 		try {
 			//mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement());
 			System.out.println(mcsocket.getNetworkInterface().getDisplayName());
+			if (System.getProperty("os.name").contains("Linux")) {
+				mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement()); //TODO change such that it can be chosen in GUI
+			}
 			group = InetAddress.getByName(GROUP_ADDRESS);
+			System.out.println("Connected with Interface: " + mcsocket.getNetworkInterface().getDisplayName());
 			mcsocket.joinGroup(group);
 		} catch (IOException e) { 
 			e.printStackTrace();
@@ -74,5 +77,8 @@ public class Multicast {
 			}
 		}
 	}
-
+	
+	public int getPort() {
+		return GROUP_PORT;
+	}
 }

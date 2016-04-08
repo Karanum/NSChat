@@ -1,7 +1,6 @@
 package nschat.ui;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -11,7 +10,7 @@ import net.miginfocom.swing.MigLayout;
 import nschat.Program;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
-import nschat.tcp.SequenceNumberSet;
+import nschat.tcp.SequenceNumbers;
 
 import javax.swing.JScrollPane;
 import javax.swing.JMenuBar;
@@ -19,6 +18,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -31,14 +32,14 @@ public class BasicGUI extends JFrame {
 	private JTextArea textArea;
 	private JMenuItem menuExit;
 	private JButton sendButton;
+	private JMenuItem menuSettings;
 	
-	private SequenceNumberSet seqSet;
 	private Program program;
 	
 	/**
 	 * Launch the application for testing purposes.
-	 *//*
-	public static void main(String[] args) {
+	 */
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -60,9 +61,13 @@ public class BasicGUI extends JFrame {
 				String text = textField.getText();
 				textField.setText("");
 				
-				short seq = seqSet.get();
+				//printText(text);
+				
+				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text);
+				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
+
 				program.getConnection().getSendingBuffer().add(PacketType.TEXT, seq, p.pack());
 			}
 		}
@@ -73,7 +78,6 @@ public class BasicGUI extends JFrame {
 	 */
 	public BasicGUI(Program program) {
 		this.program = program;
-		seqSet = new SequenceNumberSet();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Chat21");
@@ -84,8 +88,12 @@ public class BasicGUI extends JFrame {
 		JMenu mnFile = new JMenu("Menu");
 		menuBar.add(mnFile);
 		
+		menuSettings = new JMenuItem("Settings");
+		mnFile.add(menuSettings);
+		
 		menuExit = new JMenuItem("Exit");
 		mnFile.add(menuExit);
+		
 		getContentPane().setLayout(new MigLayout("", "[grow][grow][][][][][][][][][][][][][]", "[grow][][][][][][][][][]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -111,8 +119,30 @@ public class BasicGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//System.exit(0);									//TODO change to proper exit mechanism
-				program.stop();
+				getProgram().stop();
 			}
+		});
+		
+		menuSettings.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					setEnabled(false);
+					SettingsGUI frame = new SettingsGUI(getProgram(), getGUI());
+					frame.pack();
+					frame.setVisible(true);
+					frame.addWindowListener(new WindowAdapter() {
+						public void windowClosing(WindowEvent e)
+					    {
+					        setEnabled(true);
+					    }
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
 		});
 		
 	}
@@ -134,4 +164,13 @@ public class BasicGUI extends JFrame {
 	public void printText(String text, String name) {
 		textArea.append("<" + name + "> " + text);
 	}
+	
+	public Program getProgram() {
+		return program;
+	}
+	
+	public BasicGUI getGUI() {
+		return this;
+	}
+	
 }
