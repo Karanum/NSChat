@@ -63,7 +63,7 @@ public class BasicGUI extends JFrame {
 				short seq = seqSet.get();
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text);
-				program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
+				program.getConnection().getSendingBuffer().add(PacketType.TEXT, seq, p.pack());
 			}
 		}
 	}
