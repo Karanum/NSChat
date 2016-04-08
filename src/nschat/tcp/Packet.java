@@ -101,14 +101,15 @@ public class Packet {
 		}
 		
 		flags = (byte) (packet[0] & 0b11111);
-		seq = (short) ((packet[9] << 8) + packet[10]);
-		ack = (short) ((packet[11] << 8) + packet[12]);
+		seq = (short) ((packet[9] << 8) | packet[10]);
+		ack = (short) ((packet[11] << 8) | packet[12]);
 		
 		timestamp = 0;
 		for (int i = 1; i < 9; ++i) {
+			timestamp = (timestamp | packet[i]);
 			timestamp = (timestamp << 8);
-			timestamp += packet[i];
 		}
+		timestamp = (timestamp >> 8);
 		
 		try {
 			byte[] srcIp = new byte[4];
@@ -296,8 +297,7 @@ public class Packet {
 			time = (time >> 8);
 		}
 		
-		System.arraycopy(data, 0, packet, HEADER_SIZE, data.length);
-		
+		System.arraycopy(data, 0, packet, HEADER_SIZE, data.length);		
 		return packet;
 	}
 	

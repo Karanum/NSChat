@@ -70,18 +70,18 @@ public class Connection implements Runnable {
 			} catch (PacketFormatException e) { 
 				continue;
 			}
-			PacketType type = p.getPacketType();
 			
-			if (seenPackets.containsKey(type) && seenPackets.get(type).contains(p.getSeqNumber())) {
+			PacketType type = p.getPacketType();
+			if (seenPackets.containsKey(type) && seenPackets.get(type).contains((int) (p.getSeqNumber()))) {
 				continue;
 			}
-			
 			if (type != PacketType.ROUTING) {
 				forwardPacket(p);
 			}
 			
 			switch (type) {
 				case TEXT:
+					System.out.println(seenPackets.toString());
 					System.out.println("Received text, SEQ: " + p.getSeqNumber() + ", Src: " + p.getSenderAddress() + "Data: " + p.getDataAsString());
 					program.getUI().printText(p.getDataAsString());
 					if (p.isAck()) {
