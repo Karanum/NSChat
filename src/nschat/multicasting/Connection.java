@@ -109,4 +109,8 @@ public class Connection implements Runnable {
 	public SendingBuffer getSendingBuffer() {
 		return sendingBuffer;
 	}
+	
+	public Multicast getMulticast() {
+		return cast;
+	}
 }

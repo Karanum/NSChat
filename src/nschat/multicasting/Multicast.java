@@ -85,6 +85,10 @@ public class Multicast {
 			}
 		}
 	}
+	
+	public int getPort() {
+		return GROUP_PORT;
+	}
 	/*
 	public void byteToString(DatagramPacket received) {
 		byte[] data = received.getData();

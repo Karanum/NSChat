@@ -19,6 +19,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -31,6 +33,7 @@ public class BasicGUI extends JFrame {
 	private JTextArea textArea;
 	private JMenuItem menuExit;
 	private JButton sendButton;
+	private JMenuItem menuSettings;
 	
 	private SequenceNumberSet seqSet;
 	private Program program;
@@ -88,8 +91,12 @@ public class BasicGUI extends JFrame {
 		JMenu mnFile = new JMenu("Menu");
 		menuBar.add(mnFile);
 		
+		menuSettings = new JMenuItem("Settings");
+		mnFile.add(menuSettings);
+		
 		menuExit = new JMenuItem("Exit");
 		mnFile.add(menuExit);
+		
 		getContentPane().setLayout(new MigLayout("", "[grow][grow][][][][][][][][][][][][][]", "[grow][][][][][][][][][]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -118,6 +125,28 @@ public class BasicGUI extends JFrame {
 			}
 		});
 		
+		menuSettings.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					setEnabled(false);
+					SettingsGUI frame = new SettingsGUI(getProgram(), getGUI());
+					frame.pack();
+					frame.setVisible(true);
+					frame.addWindowListener(new WindowAdapter() {
+						public void windowClosing(WindowEvent e)
+					    {
+					        setEnabled(true);
+					    }
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+		});
+		
 	}
 	
 	//TODO change such that messages are ordered by sending time.
@@ -137,4 +166,13 @@ public class BasicGUI extends JFrame {
 	public void printText(String text, String name) {
 		textArea.append("<" + name + "> " + text);
 	}
+	
+	public Program getProgram() {
+		return program;
+	}
+	
+	public BasicGUI getGUI() {
+		return this;
+	}
+	
 }
