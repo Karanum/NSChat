@@ -127,20 +127,7 @@ public class BasicGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					setEnabled(false);
-					SettingsGUI frame = new SettingsGUI(getProgram(), getGUI());
-					frame.pack();
-					frame.setVisible(true);
-					frame.addWindowListener(new WindowAdapter() {
-						public void windowClosing(WindowEvent e)
-					    {
-					        setEnabled(true);
-					    }
-					});
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				runSettings();
 			}
 			
 		});
@@ -173,4 +160,21 @@ public class BasicGUI extends JFrame {
 		return this;
 	}
 	
+	public void runSettings() {
+		try {
+			setEnabled(false);
+			SettingsGUI frame = new SettingsGUI(getProgram(), getGUI());
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+			frame.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e)
+			    {
+			        setEnabled(true);
+			    }
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -12,7 +12,7 @@ public class Multicast {
 
 	private final int BUFFER_LENGTH = 1028;
 	private final String GROUP_ADDRESS = "227.21.137.0";
-	private final int GROUP_PORT = 8637; //TODO ask user for port number
+	private int groupPort = 8637;
 	private ReceivingBuffer receivingBuffer; 
 
 	MulticastSocket mcsocket;
@@ -20,7 +20,7 @@ public class Multicast {
 	
 	public Multicast(ReceivingBuffer receivingBuffer) throws IOException {
 		//System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
-		mcsocket = new MulticastSocket(GROUP_PORT);
+		mcsocket = new MulticastSocket(groupPort);
 		this.receivingBuffer = receivingBuffer; 
 	}
 	
@@ -48,7 +48,7 @@ public class Multicast {
 	
 	public DatagramPacket makeDgramPacket(byte[] bytes) {
 		DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
-				group, GROUP_PORT);	
+				group, groupPort);	
 		return packet;
 	}
 	
@@ -78,6 +78,10 @@ public class Multicast {
 	}
 	
 	public int getPort() {
-		return GROUP_PORT;
+		return groupPort;
+	}
+	
+	public void setPort(int port) {
+		groupPort = port;
 	}
 }

@@ -19,6 +19,7 @@ public class Program {
 	private Connection conn;
 	private BasicGUI ui;
 	private static boolean running = false;
+	private String userName;
 	
 	/**
 	 * Starts a new instance of the program, can only be called once.
@@ -49,6 +50,7 @@ public class Program {
 					ui.pack();
 					ui.setLocationRelativeTo(null);
 					ui.setVisible(true);
+					ui.runSettings();
 					System.out.println("Window created!");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -108,4 +110,19 @@ public class Program {
 		running = false;
 	}
 
+	/**
+	 * Returns the name of the user.
+	 * @return
+	 */
+	public String getName() {
+		return userName;
+	}
+	
+	/**
+	 * Sets the name of the user.
+	 * @param name
+	 */
+	public void setName(String name) {
+		userName = name;
+	}
 }

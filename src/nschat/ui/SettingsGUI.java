@@ -8,6 +8,8 @@ import net.miginfocom.swing.MigLayout;
 import nschat.Program;
 
 import java.awt.Button;
+import java.awt.Component;
+
 import javax.swing.JLabel;
 import java.awt.Choice;
 import java.awt.event.ActionEvent;
@@ -52,11 +54,13 @@ public class SettingsGUI extends JFrame {
 			String b = null;
 			String c = null;
 			if (e.getActionCommand().equals("save")) {
-				a = nameField.getText(); //TODO give to correct method
+				getProgram().setName(nameField.getText());
+				//getProgram().getConnection().getMulticast().setPort(portField.get); //TODO change
+				a = nameField.getText();
 				b = portField.getText(); //TODO give it to the correct method
 				c = choice.getSelectedItem(); //TODO give to correct method
+				System.out.println("saved settings:\nname: " + a + ", port: " + b + ", interface: " + c);
 			}
-			System.out.println("name: " + a + ", port: " + b + ", interface: " + c);
 			gui.setEnabled(true);
 			getGUI().dispose();
 		}
@@ -92,7 +96,11 @@ public class SettingsGUI extends JFrame {
 		contentPane.add(userNameLabel, "cell 1 0");
 		
 		nameField = new JTextField();
-		nameField.setText("UserName"); //TODO set as current name
+		if (getProgram().getName() == null) {
+			nameField.setText("UserName");
+		} else {
+			nameField.setText(getProgram().getName());
+		}
 		contentPane.add(nameField, "cell 3 0 8 1,growx");
 		nameField.setColumns(10);
 		
@@ -139,5 +147,9 @@ public class SettingsGUI extends JFrame {
 	
 	public SettingsGUI getGUI() {
 		return this;
+	}
+	
+	public Program getProgram() {
+		return program;
 	}
 }
