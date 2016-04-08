@@ -71,6 +71,16 @@ public class Connection implements Runnable {
 				continue;
 			}
 			
+			System.out.print("Received: ");
+			for (byte b : packet) {
+				System.out.print(b + ", ");
+			}
+			System.out.print("\nPacked: ");
+			for (byte b : p.pack()) {
+				System.out.print(b + ", ");
+			}
+			System.out.println("");
+			
 			PacketType type = p.getPacketType();
 			if (seenPackets.containsKey(type) && seenPackets.get(type).contains((int) (p.getSeqNumber()))) {
 				continue;
