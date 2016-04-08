@@ -106,10 +106,10 @@ public class Packet {
 		
 		timestamp = 0;
 		for (int i = 1; i < 9; ++i) {
-			timestamp = (timestamp | packet[i]);
-			timestamp = (timestamp << 8);
+			timestamp = (long) (timestamp << 8);
+			timestamp = (long) (timestamp | (packet[i] & 0xff));
 		}
-		timestamp = (timestamp >> 8);
+		System.out.println("");
 		
 		try {
 			byte[] srcIp = new byte[4];
