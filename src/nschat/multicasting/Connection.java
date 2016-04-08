@@ -24,6 +24,10 @@ public class Connection implements Runnable {
 	private Multicast cast;
 	private Program program;
 	
+	private short lastAckReceived;
+	private short lastSeqReceived;
+	private boolean seqReceived;
+	
 	private Map<PacketType, List<Integer>> seenPackets;
 	
 	public Connection(Program program) throws IOException {
@@ -39,6 +43,10 @@ public class Connection implements Runnable {
 		this.program = program;
 		routing = new BasicRoutingProtocol();
 		seenPackets = new HashMap<PacketType, List<Integer>>();
+		
+		lastAckReceived = 0;
+		lastSeqReceived = 0;
+		seqReceived = false;
 	}
 
 	@Override
@@ -65,7 +73,9 @@ public class Connection implements Runnable {
 			
 			PacketType type = p.getPacketType();
 			if (type != PacketType.ROUTING) {
-				acknowledgePacket(p);
+				if (!p.isAck()) {
+					acknowledgePacket(p);
+				}
 				forwardPacket(p);
 			}
 			
@@ -105,10 +115,20 @@ public class Connection implements Runnable {
 	}
 	
 	private void acknowledgePacket(Packet packet) {
+		short ack = packet.getSeqNumber();
+		if (seqReceived) {
+			if (lastSeqReceived + 1 == ack || (lastSeqReceived == Short.MAX_VALUE && ack == Short.MIN_VALUE)) {
+				lastSeqReceived = ack;
+			} else {
+				ack = lastSeqReceived;
+			}
+		} else {
+			seqReceived = true;
+			lastSeqReceived = ack;
+		}
+		
 		InetAddress dest = packet.getSenderAddress();
 		PacketType type = packet.getPacketType();
-		
-		short ack = packet.getSeqNumber();
 		short seq = SequenceNumbers.get(type);
 		
 		Packet p = new Packet(type, Packet.ACK_FLAG, seq, ack, dest);
