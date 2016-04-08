@@ -109,7 +109,6 @@ public class Packet {
 			timestamp = (long) (timestamp << 8);
 			timestamp = (long) (timestamp | (packet[i] & 0xff));
 		}
-		System.out.println("");
 		
 		try {
 			byte[] srcIp = new byte[4];
