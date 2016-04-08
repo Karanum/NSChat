@@ -13,7 +13,7 @@ public class Multicast {
 	private final int BUFFER_LENGTH = 1028;
 	private final String GROUP_ADDRESS = "227.21.137.0";
 	private final int GROUP_PORT = 8637; //TODO ask user for port number
-	private ReceivingBuffer receivingBuffer;
+	private ReceivingBuffer receivingBuffer; 
 
 	MulticastSocket mcsocket;
 	InetAddress group;
