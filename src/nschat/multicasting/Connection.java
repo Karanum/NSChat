@@ -78,6 +78,7 @@ public class Connection implements Runnable {
 			
 			switch (type) {
 				case TEXT:
+					System.out.println("Received text, SEQ: " + p.getSeqNumber() + ", Src: " + p.getSenderAddress() + "Data: " + p.getDataAsString());
 					program.getUI().printText(p.getDataAsString());
 					if (p.isAck()) {
 						checkTextAck(p);
@@ -138,7 +139,7 @@ public class Connection implements Runnable {
 		short seq = SequenceNumbers.get(type);
 		
 		Packet p = new Packet(type, Packet.ACK_FLAG, seq, ack, dest);
-		sendingBuffer.add(type, seq, p.pack());
+		//sendingBuffer.add(type, seq, p.pack());
 	}
 	
 	private void checkTextAck(Packet packet) {
