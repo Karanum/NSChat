@@ -37,7 +37,7 @@ public class BasicGUI extends JFrame {
 	
 	/**
 	 * Launch the application for testing purposes.
-	 */
+	 *//*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -51,7 +51,7 @@ public class BasicGUI extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	private class Listener implements ActionListener {
 		@Override
@@ -71,7 +71,7 @@ public class BasicGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public BasicGUI(/*Program program*/) {
+	public BasicGUI(Program program) {
 		this.program = program;
 		seqSet = new SequenceNumberSet();
 		
