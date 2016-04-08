@@ -7,6 +7,10 @@ public class test {
 	 */
 	public static void main(String[] args) {
 
+		
+		System.out.println(System.getProperty("os.name"));
+		
+		/*
 		short a = -1;
 		Short c = new Short(a);
 		int z = a >> 8;
@@ -22,7 +26,7 @@ public class test {
 		String is = "" + i;
 		byte[] iba = is.getBytes();
 		System.out.println(new String(iba));
-		
+		*/
 		
 		
 		/*
