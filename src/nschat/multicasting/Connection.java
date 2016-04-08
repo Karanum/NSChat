@@ -47,10 +47,6 @@ public class Connection implements Runnable {
 		lastSeqReceived = 0;
 		seqReceived = false;
 	}
-	
-	public void start() {
-		cast.joinGroup();
-	}
 
 	@Override
 	public void run() {

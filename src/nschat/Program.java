@@ -1,10 +1,16 @@
 package nschat;
 
 import java.awt.EventQueue;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 import nschat.multicasting.Connection;
 import nschat.ui.BasicGUI;
+import nschat.ui.InterfaceChoser;
 import nschat.ui.InterfacePopUp;
 
 /**
@@ -36,7 +42,7 @@ public class Program {
 			//UI.error("Port already in use, please restart your system!");
 			return;
 		}
-		
+		//Let user pick from Network Interfaces
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -44,12 +50,34 @@ public class Program {
 					ipu.pack();
 					ipu.setLocationRelativeTo(null);
 					ipu.setVisible(true);
-					
+					ipu.addWindowListener(new WindowListener() {
+						public void windowActivated(WindowEvent arg0) {}
+						public void windowClosed(WindowEvent arg0) {
+							//getProgram().continueSetup();
+							//System.out.println("window closed");
+							getProgram().notifyAll();
+						}
+						public void windowClosing(WindowEvent arg0) {
+							//System.out.println("Window closing");
+							System.exit(0);
+
+						}
+						public void windowDeactivated(WindowEvent arg0) {}
+						public void windowDeiconified(WindowEvent arg0) {}
+						public void windowIconified(WindowEvent arg0) {}
+						public void windowOpened(WindowEvent arg0) {}
+					});
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		Thread t = new Thread(conn);
 		t.start();
@@ -58,14 +86,15 @@ public class Program {
 		/*
 		 * Creating the GUI window
 		 */
-		ui = new BasicGUI(this);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					ui = new BasicGUI(getProgram());
+					System.out.println("kom ik hier?");
 					ui.pack();
 					ui.setLocationRelativeTo(null);
 					ui.setVisible(true);
-					ui.runSettings();
+					//ui.runSettings();
 					System.out.println("Window created!");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -101,6 +130,10 @@ public class Program {
 		}
 		
 		System.out.println("Shutdown");
+	}
+	
+	private void continueSetup() {
+		
 	}
 	
 	/**

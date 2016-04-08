@@ -33,6 +33,7 @@ public class Multicast {
 			if (nInterface == null) {
 				System.out.println("Interface not declared!");
 			} else {
+				mcsocket.setNetworkInterface(nInterface);
 				group = InetAddress.getByName(GROUP_ADDRESS);
 				System.out.println("Connected with Interface: " + mcsocket.getNetworkInterface().getDisplayName());
 				mcsocket.joinGroup(group);
@@ -94,12 +95,9 @@ public class Multicast {
 		return mcsocket;
 	}
 	
-	/*public void setInterface(NetworkInterface ni) {
-		if (group == null) {
-			leaveGroup();
-		}
+	public void setInterface(NetworkInterface ni) {
 		nInterface = ni;
-		System.out.println("Succesfullty changed interface to: " + nInterface.getDisplayName());
 		joinGroup();
-	}*/
+		System.out.println("Succesfullty set interface to: " + nInterface.getDisplayName());
+	}
 }
