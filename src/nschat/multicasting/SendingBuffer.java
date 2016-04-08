@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import nschat.tcp.Packet.PacketType;
 import nschat.tcp.SequenceNumberSet;
 
 /**
@@ -14,28 +16,34 @@ import nschat.tcp.SequenceNumberSet;
 public class SendingBuffer {
 	
 	private List<byte[]> buffer;
-	private Map<SequenceNumberSet, Map<Short, byte[]>> archive;
+	private Map<PacketType, Map<Short, byte[]>> archive;
 	
 	public SendingBuffer() {
 		buffer = new ArrayList<byte[]>();
-		archive = new HashMap<SequenceNumberSet, Map<Short, byte[]>>();
+		archive = new HashMap<PacketType, Map<Short, byte[]>>();
 	}
 	
 	/**
 	 * Adds a packet to the buffer belonging to the specified SEQ set.
-	 * @param set The SequenceNumberSet that the packet belongs to
+	 * @param type The PacketType of the packet being sent
 	 * @param seq The SEQ number of the packet
 	 * @param packet The packet that needs to be added
 	 */
-	public void add(SequenceNumberSet set, short seq, byte[] packet) {
+	public void add(PacketType type, short seq, byte[] packet) {
 		synchronized(this) {
 			buffer.add(packet);
-			if (!archive.containsKey(set)) {
-				archive.put(set, new HashMap<Short, byte[]>());
+			if (!archive.containsKey(type)) {
+				archive.put(type, new HashMap<Short, byte[]>());
 			}
-			archive.get(set).put(seq, packet);
+			archive.get(type).put(seq, packet);
 		}
 		System.out.println("Added into the buffer: " + new String(packet));
+	}
+	
+	public void forward(byte[] packet) {
+		synchronized(this) {
+			buffer.add(packet);
+		}
 	}
 
 	/**
