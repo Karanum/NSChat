@@ -1,7 +1,6 @@
 package nschat.ui;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -62,13 +61,9 @@ public class BasicGUI extends JFrame {
 				String text = textField.getText();
 				textField.setText("");
 				
-<<<<<<< HEAD
 				//printText(text);
 				
-				short seq = seqSet.get();
-=======
 				short seq = SequenceNumbers.get(PacketType.TEXT);
->>>>>>> 9d142e835d102032a475220807ffa434263dcd29
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text);
 				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
@@ -124,7 +119,7 @@ public class BasicGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//System.exit(0);									//TODO change to proper exit mechanism
-				program.stop();
+				getProgram().stop();
 			}
 		});
 		

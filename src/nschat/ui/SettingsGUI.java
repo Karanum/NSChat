@@ -1,22 +1,17 @@
 package nschat.ui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
-import nschat.multicasting.Multicast;
 
 import java.awt.Button;
 import javax.swing.JLabel;
 import java.awt.Choice;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
@@ -106,7 +101,11 @@ public class SettingsGUI extends JFrame {
 		
 		portField = new JTextField();
 		portField.setToolTipText("Enter the portnumber that you want to use");
-		portField.setText((new Integer(program.getConnection().getMulticast().getPort()).toString()));
+		if (program.getConnection().getMulticast().getPort() == 0) {
+			portField.setText("PortNumber");
+		} else {
+			portField.setText((new Integer(program.getConnection().getMulticast().getPort()).toString()));
+		}
 		contentPane.add(portField, "cell 3 1,growx");
 		portField.setColumns(10);
 		
