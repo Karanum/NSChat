@@ -125,4 +125,10 @@ public class Program {
 	public void setName(String name) {
 		userName = name;
 	}
+	
+	/*public void reconnect() {
+		conn.getMulticast().leaveGroup();
+		stop();
+		new Program();
+	}*/
 }

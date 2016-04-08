@@ -56,6 +56,12 @@ public class SettingsGUI extends JFrame {
 			if (e.getActionCommand().equals("save")) {
 				getProgram().setName(nameField.getText());
 				//getProgram().getConnection().getMulticast().setPort(portField.get); //TODO change
+				/*try {
+					getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
+				} catch (SocketException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}*/
 				a = nameField.getText();
 				b = portField.getText(); //TODO give it to the correct method
 				c = choice.getSelectedItem(); //TODO give to correct method
@@ -101,7 +107,7 @@ public class SettingsGUI extends JFrame {
 		} else {
 			nameField.setText(getProgram().getName());
 		}
-		contentPane.add(nameField, "cell 3 0 8 1,growx");
+		contentPane.add(nameField, "cell 2 0 9 1,growx");
 		nameField.setColumns(10);
 		
 		JLabel portLabel = new JLabel("PortNumber:");
@@ -114,11 +120,11 @@ public class SettingsGUI extends JFrame {
 		} else {
 			portField.setText((new Integer(program.getConnection().getMulticast().getPort()).toString()));
 		}
-		contentPane.add(portField, "cell 3 1,growx");
+		contentPane.add(portField, "cell 2 1 2 1,growx");
 		portField.setColumns(10);
 		
 		choice = new Choice();
-		contentPane.add(choice, "cell 1 2 2 1,growx");
+		contentPane.add(choice, "cell 2 2 2 1,growx");
 		
 		try {
 			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
@@ -129,10 +135,16 @@ public class SettingsGUI extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		choice.select(0); //TODO set as current interface
-		//choice.addItemListener(new ChoiceListener());
 		
-		Button resetButton = new Button("Reset");
+		try {
+			System.out.println(getProgram().getConnection().getMulticast().getSocket().getNetworkInterface().getDisplayName());
+			choice.select(getProgram().getConnection().getMulticast().getSocket().getNetworkInterface().getDisplayName());
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Button resetButton = new Button("Cancel");
 		contentPane.add(resetButton, "cell 1 3");
 		
 		Button saveButton = new Button("Save");

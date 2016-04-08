@@ -14,9 +14,10 @@ public class Multicast {
 	private final String GROUP_ADDRESS = "227.21.137.0";
 	private int groupPort = 8637;
 	private ReceivingBuffer receivingBuffer; 
+	private NetworkInterface nInterface;
 
 	MulticastSocket mcsocket;
-	InetAddress group;
+	InetAddress group = null;
 	
 	public Multicast(ReceivingBuffer receivingBuffer) throws IOException {
 		//System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
@@ -26,12 +27,16 @@ public class Multicast {
 	
 	public void joinGroup() {
 		try {
-			if (System.getProperty("os.name").contains("Linux")) {
+			/*if (System.getProperty("os.name").contains("Linux")) {
 				mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement()); //TODO change such that it can be chosen in GUI
+			}*/
+			if (nInterface == null) {
+				System.out.println("Interface not declared!");
+			} else {
+				group = InetAddress.getByName(GROUP_ADDRESS);
+				System.out.println("Connected with Interface: " + mcsocket.getNetworkInterface().getDisplayName());
+				mcsocket.joinGroup(group);
 			}
-			group = InetAddress.getByName(GROUP_ADDRESS);
-			System.out.println("Connected with Interface: " + mcsocket.getNetworkInterface().getDisplayName());
-			mcsocket.joinGroup(group);
 		} catch (IOException e) { 
 			e.printStackTrace();
 		}
@@ -84,4 +89,17 @@ public class Multicast {
 	public void setPort(int port) {
 		groupPort = port;
 	}
+	
+	public MulticastSocket getSocket() {
+		return mcsocket;
+	}
+	
+	/*public void setInterface(NetworkInterface ni) {
+		if (group == null) {
+			leaveGroup();
+		}
+		nInterface = ni;
+		System.out.println("Succesfullty changed interface to: " + nInterface.getDisplayName());
+		joinGroup();
+	}*/
 }

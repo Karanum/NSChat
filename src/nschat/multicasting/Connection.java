@@ -38,7 +38,7 @@ public class Connection implements Runnable {
 			cast.joinGroup();
 		} catch (IOException e) {
 			throw e;
-		}
+		} 
 		
 		this.program = program;
 		routing = new BasicRoutingProtocol();
