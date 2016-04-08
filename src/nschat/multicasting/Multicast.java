@@ -20,7 +20,7 @@ public class Multicast {
 	InetAddress group;
 	
 	public Multicast(ReceivingBuffer receivingBuffer) throws IOException {
-		System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
+		//System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
 		mcsocket = new MulticastSocket(GROUP_PORT);
 		this.receivingBuffer = receivingBuffer; 
 	}
