@@ -48,6 +48,8 @@ public class Program {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					ui.pack();
+					ui.setLocationRelativeTo(null);
 					ui.setVisible(true);
 					System.out.println("Window created!");
 				} catch (Exception e) {
