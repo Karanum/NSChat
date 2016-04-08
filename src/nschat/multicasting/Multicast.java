@@ -53,8 +53,6 @@ public class Multicast {
 	}
 	
 	public void sendDatagram(DatagramPacket dgram) {
-		System.out.println("Sending " + dgram.getData().length + " bytes to " + 
-			dgram.getAddress() + ":" + dgram.getPort());
 		try {
 			mcsocket.send(dgram);
 			Thread.sleep(1000);
@@ -72,7 +70,6 @@ public class Multicast {
 				mcsocket.receive(received);
 				byte[] data = received.getData();
 				byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
-				System.out.println("Received packet: " + new String(actualData));
 				receivingBuffer.add(actualData);
 				//byteToString(received);
 				

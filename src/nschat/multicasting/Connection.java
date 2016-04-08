@@ -50,7 +50,6 @@ public class Connection implements Runnable {
 			}
 			
 			PacketType type = p.getPacketType();
-			System.out.println(p.toString());
 			switch (type) {
 				case TEXT:
 					program.getUI().printText(p.getDataAsString());
