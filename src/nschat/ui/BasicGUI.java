@@ -91,10 +91,10 @@ public class BasicGUI extends JFrame {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, "cell 0 0 15 9,grow");
+		scrollPane.setPreferredSize(new Dimension(500,300));
 		
 		textArea = new JTextArea();
 		textArea.setEditable(false);
-		textArea.setPreferredSize(new Dimension(500,300));
 		scrollPane.setViewportView(textArea);
 		
 		textField = new JTextField();
