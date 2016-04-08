@@ -20,14 +20,17 @@ public class Multicast {
 	InetAddress group = null;
 	
 	public Multicast(ReceivingBuffer receivingBuffer) throws IOException {
+
 		//System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
 		mcsocket = new MulticastSocket(groupPort);
+
 		this.receivingBuffer = receivingBuffer; 
 	}
 	
 	public void joinGroup() {
 		try {
 			/*if (System.getProperty("os.name").contains("Linux")) {
+
 				mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement()); //TODO change such that it can be chosen in GUI
 			}*/
 			if (nInterface == null) {

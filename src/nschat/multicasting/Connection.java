@@ -71,6 +71,9 @@ public class Connection implements Runnable {
 			}
 			
 			PacketType type = p.getPacketType();
+			if (seenPackets.containsKey(type) && seenPackets.get(type).contains((int) (p.getSeqNumber()))) {
+				continue;
+			}
 			if (type != PacketType.ROUTING) {
 				forwardPacket(p);
 			}
@@ -137,7 +140,7 @@ public class Connection implements Runnable {
 		short seq = SequenceNumbers.get(type);
 		
 		Packet p = new Packet(type, Packet.ACK_FLAG, seq, ack, dest);
-		sendingBuffer.add(type, seq, p.pack());
+		//sendingBuffer.add(type, seq, p.pack());
 	}
 	
 	private void checkTextAck(Packet packet) {

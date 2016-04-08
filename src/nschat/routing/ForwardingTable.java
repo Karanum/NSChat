@@ -10,22 +10,48 @@ public class ForwardingTable {
 	// FORWARDING TABLE CONTAINS: DESTINATION, COST, VIA NEIGHBOUR!!!
 	private Map<Integer, BasicRoute> forwardingTable;
 	private BasicRoutingProtocol brp;
+	private int myAddress;
 	
-	public ForwardingTable(BasicRoutingProtocol brp) {
+	//MAP DESTINATION -> UNLINK_COOLDOWN
+	private Map<Integer, Integer> unlinkedDests;
+	private static final int UNLINK_COOLDOWN = 2;	
+	
+	public ForwardingTable(BasicRoutingProtocol brp, int myAddress) {
 		forwardingTable = new HashMap<Integer, BasicRoute>();
 		this.brp = brp;
+		this.myAddress = myAddress;
 	}
-	//TODO
-	public void addRoute(int destination, BasicRoute route) {
-		// Check if the route already exists in the forwarding table add if not, else compare cost.
-		
-		if (!forwardingTable.containsKey(destination)) {
-			forwardingTable.put(destination, route);
-		} else {
-			if (route.getCost() < forwardingTable.get(destination).getCost()) {
-				forwardingTable.put(destination, route);
+	
+	//TODO finish
+	public void addRoute(int dest, BasicRoute route) {
+		if (dest == myAddress || route.getNextHop() == myAddress) {	// DO NOTHING
+			return;
+		} 
+		if (!forwardingTable.containsKey(dest)) {		//DOESNT CONTAIN THE DESTINATION
+			forwardingTable.put(dest, route);
+		} else if (forwardingTable.containsKey(dest)) {		//CONTAINS THE DESTINATION
+			
+			BasicRoute oldRoute = forwardingTable.get(dest);
+			if ((route.getCost() < oldRoute.getCost() && route.getCost() != -1)					
+				   || oldRoute.getCost() == -1 || oldRoute.getNextHop() == route.getNextHop()) {
+				forwardingTable.put(dest, route);
 			}
 		}
+	}
+	
+	public void tick(int dest, BasicRoute route) {
+		int linkCost = brp.getSenderRTT().get(dest);
+		if (linkCost == -1) {
+			addRoute(dest, route);
+			
+			
+			for (int desti : forwardingTable.keySet()) {
+				if (route.getNextHop() != myAddress && !unlinkedDests.containsKey(desti)) {
+					
+				}
+			}
+		}
+		
 	}
 	
 	public void removeRoute(Integer destination) {
@@ -39,7 +65,8 @@ public class ForwardingTable {
 	public void updateTable(List<BasicRoute> routes, int nextHop) {
 		for (BasicRoute route : routes) {
 			int linkCost = brp.getSenderRTT().get(nextHop);
-			BasicRoute newRoute = new BasicRoute(route.getDestination(), route.getCost() + linkCost, nextHop);
+			BasicRoute newRoute = new BasicRoute(route.getDestination(), 
+					  route.getCost() + linkCost, nextHop);
 			addRoute(route.getDestination(), newRoute);
 		}
 	}
