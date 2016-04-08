@@ -72,6 +72,7 @@ public class Multicast {
 				mcsocket.receive(received);
 				byte[] data = received.getData();
 				byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
+				System.out.println("Received packet: " + new String(actualData));
 				receivingBuffer.add(actualData);
 				//byteToString(received);
 				

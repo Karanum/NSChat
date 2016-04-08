@@ -17,13 +17,14 @@ public class Connection implements Runnable {
 	
 	public Connection(Program program) throws IOException {
 		this.program = program;
+		receivingBuffer = new ReceivingBuffer();
+		sendingBuffer = new SendingBuffer();
 		try {
 			cast = new Multicast(receivingBuffer);
+			cast.joinGroup();
 		} catch (IOException e) {
 			throw e;
 		}
-		receivingBuffer = new ReceivingBuffer();
-		sendingBuffer = new SendingBuffer();
 	}
 
 	@Override
@@ -49,6 +50,7 @@ public class Connection implements Runnable {
 			}
 			
 			PacketType type = p.getPacketType();
+			System.out.println(p.toString());
 			switch (type) {
 				case TEXT:
 					program.getUI().printText(p.getDataAsString());
