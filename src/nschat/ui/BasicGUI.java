@@ -1,5 +1,6 @@
 package nschat.ui;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -33,6 +34,24 @@ public class BasicGUI extends JFrame {
 	
 	private SequenceNumberSet seqSet;
 	private Program program;
+	
+	/**
+	 * Launch the application for testing purposes.
+	 *//*
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					BasicGUI frame = new BasicGUI();
+					frame.pack();
+					frame.setLocationRelativeTo(null);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}*/
 
 	private class Listener implements ActionListener {
 		@Override
@@ -75,6 +94,7 @@ public class BasicGUI extends JFrame {
 		
 		textArea = new JTextArea();
 		textArea.setEditable(false);
+		textArea.setPreferredSize(new Dimension(500,300));
 		scrollPane.setViewportView(textArea);
 		
 		textField = new JTextField();
