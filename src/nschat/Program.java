@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import nschat.multicasting.Connection;
 import nschat.ui.BasicGUI;
+import nschat.ui.InterfacePopUp;
 
 /**
  * Main class for the application.
@@ -35,6 +36,20 @@ public class Program {
 			//UI.error("Port already in use, please restart your system!");
 			return;
 		}
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					InterfacePopUp ipu = new InterfacePopUp(getProgram());
+					ipu.pack();
+					ipu.setLocationRelativeTo(null);
+					ipu.setVisible(true);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		
 		Thread t = new Thread(conn);
 		t.start();
@@ -127,9 +142,7 @@ public class Program {
 		userName = name;
 	}
 	
-	/*public void reconnect() {
-		conn.getMulticast().leaveGroup();
-		stop();
-		new Program();
-	}*/
+	public Program getProgram() {
+		return this;
+	}
 }

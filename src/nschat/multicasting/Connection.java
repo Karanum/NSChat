@@ -35,7 +35,6 @@ public class Connection implements Runnable {
 		sendingBuffer = new SendingBuffer();
 		try {
 			cast = new Multicast(receivingBuffer);
-			cast.joinGroup();
 		} catch (IOException e) {
 			throw e;
 		} 
@@ -47,6 +46,10 @@ public class Connection implements Runnable {
 		lastAckReceived = 0;
 		lastSeqReceived = 0;
 		seqReceived = false;
+	}
+	
+	public void start() {
+		cast.joinGroup();
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class SettingsGUI extends JFrame {
 	private JTextField portField;
 	private Program program;
 	private BasicGUI gui;
-	private Choice choice;
+	//private Choice choice;
 
 	/**
 	 * Launch the application.
@@ -52,7 +52,6 @@ public class SettingsGUI extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String a = null;
 			String b = null;
-			String c = null;
 			if (e.getActionCommand().equals("save")) {
 				getProgram().setName(nameField.getText());
 				//getProgram().getConnection().getMulticast().setPort(portField.get); //TODO change
@@ -64,8 +63,8 @@ public class SettingsGUI extends JFrame {
 				}*/
 				a = nameField.getText();
 				b = portField.getText(); //TODO give it to the correct method
-				c = choice.getSelectedItem(); //TODO give to correct method
-				System.out.println("saved settings:\nname: " + a + ", port: " + b + ", interface: " + c);
+			//	c = choice.getSelectedItem(); //TODO give to correct method
+				System.out.println("saved settings:\nname: " + a + ", port: " + b);
 			}
 			gui.setEnabled(true);
 			getGUI().dispose();
@@ -122,27 +121,10 @@ public class SettingsGUI extends JFrame {
 		}
 		contentPane.add(portField, "cell 2 1 2 1,growx");
 		portField.setColumns(10);
-		
+		/*
 		choice = new Choice();
 		contentPane.add(choice, "cell 2 2 2 1,growx");
-		
-		try {
-			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
-			while (ni.hasMoreElements()) {
-				choice.add(ni.nextElement().getDisplayName());
-			}
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		try {
-			System.out.println(getProgram().getConnection().getMulticast().getSocket().getNetworkInterface().getDisplayName());
-			choice.select(getProgram().getConnection().getMulticast().getSocket().getNetworkInterface().getDisplayName());
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		*/
 		
 		Button resetButton = new Button("Cancel");
 		contentPane.add(resetButton, "cell 1 3");
