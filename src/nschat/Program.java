@@ -78,6 +78,7 @@ public class Program {
 		 * Thread cleanup
 		 */
 		ui.setVisible(false);
+		ui.stop();
 		try {
 			t.join();
 		} catch (InterruptedException e) {

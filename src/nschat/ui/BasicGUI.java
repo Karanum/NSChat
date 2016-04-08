@@ -33,6 +33,7 @@ public class BasicGUI extends JFrame {
 	private JMenuItem menuExit;
 	private JButton sendButton;
 	private JMenuItem menuSettings;
+	private SettingsGUI frame;
 	
 	private Program program;
 	
@@ -129,7 +130,6 @@ public class BasicGUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				runSettings();
 			}
-			
 		});
 		
 	}
@@ -163,7 +163,7 @@ public class BasicGUI extends JFrame {
 	public void runSettings() {
 		try {
 			setEnabled(false);
-			SettingsGUI frame = new SettingsGUI(getProgram(), getGUI());
+			frame = new SettingsGUI(getProgram(), getGUI());
 			frame.pack();
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
@@ -175,6 +175,13 @@ public class BasicGUI extends JFrame {
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void stop() {
+		if (frame != null) {
+			frame.dispose();
+			dispose();
 		}
 	}
 }
