@@ -13,7 +13,7 @@ public class Multicast {
 	private final int BUFFER_LENGTH = 1028;
 	private final String GROUP_ADDRESS = "227.21.137.0";
 	private final int GROUP_PORT = 8637; //TODO ask user for port number
-	private ReceivingBuffer receivingBuffer;
+	private ReceivingBuffer receivingBuffer; 
 
 	MulticastSocket mcsocket;
 	InetAddress group;
@@ -53,8 +53,6 @@ public class Multicast {
 	}
 	
 	public void sendDatagram(DatagramPacket dgram) {
-		System.out.println("Sending " + dgram.getData().length + " bytes to " + 
-			dgram.getAddress() + ":" + dgram.getPort());
 		try {
 			mcsocket.send(dgram);
 			Thread.sleep(1000);
@@ -72,7 +70,6 @@ public class Multicast {
 				mcsocket.receive(received);
 				byte[] data = received.getData();
 				byte[] actualData = Arrays.copyOfRange(data, 0, received.getLength());
-				System.out.println("Received packet: " + new String(actualData));
 				receivingBuffer.add(actualData);
 				//byteToString(received);
 				
