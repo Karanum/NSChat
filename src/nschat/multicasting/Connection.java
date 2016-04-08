@@ -73,23 +73,29 @@ public class Connection implements Runnable {
 			
 			PacketType type = p.getPacketType();
 			if (type != PacketType.ROUTING) {
-				if (!p.isAck()) {
-					acknowledgePacket(p);
-				}
 				forwardPacket(p);
 			}
 			
 			switch (type) {
 				case TEXT:
 					program.getUI().printText(p.getDataAsString());
+					if (p.isAck()) {
+						checkTextAck(p);
+					} else {
+						acknowledgeTextPacket(p);
+					}
 					break;
+					
 				case FILE:
 					break;
+					
 				case ROUTING:
 					routing.receivePacket(p);
 					break;
+					
 				case SECURITY:
 					break;
+					
 				default:
 			}
 		}
@@ -114,7 +120,7 @@ public class Connection implements Runnable {
 		}
 	}
 	
-	private void acknowledgePacket(Packet packet) {
+	private void acknowledgeTextPacket(Packet packet) {
 		short ack = packet.getSeqNumber();
 		if (seqReceived) {
 			if (lastSeqReceived + 1 == ack || (lastSeqReceived == Short.MAX_VALUE && ack == Short.MIN_VALUE)) {
@@ -133,6 +139,10 @@ public class Connection implements Runnable {
 		
 		Packet p = new Packet(type, Packet.ACK_FLAG, seq, ack, dest);
 		sendingBuffer.add(type, seq, p.pack());
+	}
+	
+	private void checkTextAck(Packet packet) {
+		//TODO Implement
 	}
 	
 	public ReceivingBuffer getReceivingBuffer() {
