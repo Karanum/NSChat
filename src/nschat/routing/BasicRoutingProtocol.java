@@ -71,7 +71,7 @@ public class BasicRoutingProtocol {
 		}
 		packet.setData(data);
 		
-		sendingBuffer.add(set, seq, packet.pack());
+		sendingBuffer.add(PacketType.ROUTING, seq, packet.pack());
 	}
 	
 	/*
