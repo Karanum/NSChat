@@ -2,6 +2,7 @@ package nschat.tcp;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import nschat.exception.PacketFormatException;
 
@@ -91,7 +92,8 @@ public class Packet {
 			throw new PacketFormatException();
 		}
 		
-		byte typeByte = (byte) (packet[0] >> 5);
+		byte typeByte = (byte) (packet[0] & 0b11100000);
+		this.type = PacketType.UNDEFINED;
 		for (PacketType type : PacketType.values()) {
 			if (type.getByte() == typeByte) {
 				this.type = type;
@@ -118,6 +120,10 @@ public class Packet {
 			dest = InetAddress.getByAddress(destIp);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
+		}
+		
+		if (packet.length > HEADER_SIZE) {
+			data = Arrays.copyOfRange(packet, HEADER_SIZE, packet.length);
 		}
 	}
 	
@@ -307,6 +313,11 @@ public class Packet {
 	 */
 	public InetAddress getRecipientAddress() {
 		return dest;
+	}
+	
+	public String toString() {
+		return String.format("Type: %s, Flags: %d, Time: %d, Src: %d, Dst: %d", 
+							type, flags, timestamp, getSender(), getRecipient());
 	}
 	
 }

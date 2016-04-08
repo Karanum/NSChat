@@ -58,7 +58,6 @@ public class BasicGUI extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 			if (!textField.getText().isEmpty()) {
 				String text = textField.getText();
-				printText(text);
 				textField.setText("");
 				
 				short seq = seqSet.get();
