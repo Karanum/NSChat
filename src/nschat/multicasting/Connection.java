@@ -92,12 +92,9 @@ public class Connection implements Runnable {
 		}
 		if (!seenPackets.get(type).contains(seq)) {
 			seenPackets.get(type).add(seq);
-			try {
-				if (packet.getSenderAddress() != InetAddress.getLocalHost()) {
-					sendingBuffer.forward(packet.pack());
-				}
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
+			if (packet.getSenderAddress() != InetAddress.getLoopbackAddress()) {
+				sendingBuffer.forward(packet.pack());
+				System.out.println("Forwarded message with SEQ: " + seq + " from address: " + packet.getSenderAddress());
 			}
 		}
 	}
