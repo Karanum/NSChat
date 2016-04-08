@@ -20,13 +20,16 @@ public class Multicast {
 	InetAddress group;
 	
 	public Multicast(ReceivingBuffer receivingBuffer) throws IOException {
-		System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
+//		System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
+//		System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
 		mcsocket = new MulticastSocket(GROUP_PORT);
 		this.receivingBuffer = receivingBuffer; 
 	}
 	
 	public void joinGroup() {
 		try {
+			//mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement());
+			System.out.println(mcsocket.getNetworkInterface().getDisplayName());
 			group = InetAddress.getByName(GROUP_ADDRESS);
 			mcsocket.joinGroup(group);
 		} catch (UnknownHostException e) { 
