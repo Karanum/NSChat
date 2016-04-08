@@ -37,6 +37,12 @@ public class SendingBuffer {
 		}
 		System.out.println("Added into the buffer: " + new String(packet));
 	}
+	
+	public void forward(byte[] packet) {
+		synchronized(this) {
+			buffer.add(packet);
+		}
+	}
 
 	/**
 	 * Removes a packet from the buffer belonging to the specified SEQ set.

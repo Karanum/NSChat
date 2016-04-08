@@ -2,6 +2,12 @@ package nschat.multicasting;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import nschat.Program;
 import nschat.exception.PacketFormatException;
@@ -11,11 +17,13 @@ import nschat.tcp.Packet.PacketType;
 
 public class Connection implements Runnable {
 	
-	ReceivingBuffer receivingBuffer; 
-	SendingBuffer sendingBuffer;
-	BasicRoutingProtocol routing;
-	Multicast cast;
-	Program program;
+	private ReceivingBuffer receivingBuffer; 
+	private SendingBuffer sendingBuffer;
+	private BasicRoutingProtocol routing;
+	private Multicast cast;
+	private Program program;
+	
+	private Map<PacketType, List<Integer>> seenPackets;
 	
 	public Connection(Program program) throws IOException {
 		receivingBuffer = new ReceivingBuffer();
@@ -29,6 +37,7 @@ public class Connection implements Runnable {
 		
 		this.program = program;
 		routing = new BasicRoutingProtocol();
+		seenPackets = new HashMap<PacketType, List<Integer>>();
 	}
 
 	@Override
@@ -54,6 +63,10 @@ public class Connection implements Runnable {
 			}
 			
 			PacketType type = p.getPacketType();
+			if (type != PacketType.ROUTING) {
+				forwardPacket(p);
+			}
+			
 			switch (type) {
 				case TEXT:
 					program.getUI().printText(p.getDataAsString());
@@ -66,6 +79,25 @@ public class Connection implements Runnable {
 				case SECURITY:
 					break;
 				default:
+			}
+		}
+	}
+	
+	private void forwardPacket(Packet packet) {
+		PacketType type = packet.getPacketType();
+		int seq = (int) packet.getSeqNumber();
+		
+		if (!seenPackets.containsKey(type)) {
+			seenPackets.put(type, new ArrayList<Integer>());
+		}
+		if (!seenPackets.get(type).contains(seq)) {
+			seenPackets.get(type).add(seq);
+			try {
+				if (packet.getSenderAddress() != InetAddress.getLocalHost()) {
+					sendingBuffer.forward(packet.pack());
+				}
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
 			}
 		}
 	}
