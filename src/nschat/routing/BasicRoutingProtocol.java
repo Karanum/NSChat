@@ -10,7 +10,7 @@ import java.util.Map;
 import nschat.exception.PacketFormatException;
 import nschat.multicasting.SendingBuffer;
 import nschat.tcp.Packet;
-import nschat.tcp.SequenceNumberSet;
+import nschat.tcp.SequenceNumbers;
 import nschat.tcp.Packet.PacketType;
 
 /**
@@ -20,7 +20,6 @@ import nschat.tcp.Packet.PacketType;
  */
 public class BasicRoutingProtocol {
 
-	private SequenceNumberSet set;
 	private SendingBuffer sendingBuffer;
 	private ForwardingTable forwardingTable;
 	
@@ -29,7 +28,6 @@ public class BasicRoutingProtocol {
 	
 	
 	public BasicRoutingProtocol() {
-		set = new SequenceNumberSet();
 		sendingBuffer = new SendingBuffer();
 		forwardingTable = new ForwardingTable(this);
 		senderRTT = new HashMap<Integer, Integer>();
@@ -45,7 +43,7 @@ public class BasicRoutingProtocol {
 	}
 	
 	public int getRTT(Packet packet) {
-		byte[] old = sendingBuffer.get(set, packet.getAckNumber());
+		byte[] old = sendingBuffer.get(PacketType.ROUTING, packet.getAckNumber());
 		Packet oldPacket;
 		try {
 			oldPacket = new Packet(old);
@@ -58,7 +56,7 @@ public class BasicRoutingProtocol {
 	}
 	
 	public void sendPacket() {
-		short seq = set.get();
+		short seq = SequenceNumbers.get(PacketType.ROUTING);
 		
 		Packet packet = new Packet(PacketType.ROUTING, (byte) 0, seq, (short) 0, null);
 		Collection<BasicRoute> routes = forwardingTable.getRoutes();

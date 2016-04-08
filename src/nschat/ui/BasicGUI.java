@@ -11,7 +11,7 @@ import net.miginfocom.swing.MigLayout;
 import nschat.Program;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
-import nschat.tcp.SequenceNumberSet;
+import nschat.tcp.SequenceNumbers;
 
 import javax.swing.JScrollPane;
 import javax.swing.JMenuBar;
@@ -32,7 +32,6 @@ public class BasicGUI extends JFrame {
 	private JMenuItem menuExit;
 	private JButton sendButton;
 	
-	private SequenceNumberSet seqSet;
 	private Program program;
 	
 	/**
@@ -60,7 +59,7 @@ public class BasicGUI extends JFrame {
 				String text = textField.getText();
 				textField.setText("");
 				
-				short seq = seqSet.get();
+				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text);
 				program.getConnection().getSendingBuffer().add(PacketType.TEXT, seq, p.pack());
@@ -73,7 +72,6 @@ public class BasicGUI extends JFrame {
 	 */
 	public BasicGUI(Program program) {
 		this.program = program;
-		seqSet = new SequenceNumberSet();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Chat21");

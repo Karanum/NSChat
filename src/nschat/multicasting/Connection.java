@@ -13,6 +13,7 @@ import nschat.Program;
 import nschat.exception.PacketFormatException;
 import nschat.routing.BasicRoutingProtocol;
 import nschat.tcp.Packet;
+import nschat.tcp.SequenceNumbers;
 import nschat.tcp.Packet.PacketType;
 
 public class Connection implements Runnable {
@@ -103,9 +104,15 @@ public class Connection implements Runnable {
 		}
 	}
 	
-	//TODO Finish implementing acknowledgements
 	private void acknowledgePacket(Packet packet) {
+		InetAddress dest = packet.getSenderAddress();
+		PacketType type = packet.getPacketType();
+		
 		short ack = packet.getSeqNumber();
+		short seq = SequenceNumbers.get(type);
+		
+		Packet p = new Packet(type, Packet.ACK_FLAG, seq, ack, dest);
+		sendingBuffer.add(type, seq, p.pack());
 	}
 	
 	public ReceivingBuffer getReceivingBuffer() {
