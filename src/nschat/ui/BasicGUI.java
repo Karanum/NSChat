@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.ScrollPaneConstants;
+
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
 import nschat.tcp.Packet;
@@ -20,6 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.DropMode;
+import javax.swing.text.DefaultCaret;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -34,6 +38,7 @@ public class BasicGUI extends JFrame {
 	private JButton sendButton;
 	private JMenuItem menuSettings;
 	private SettingsGUI frame;
+	private JScrollPane scrollPane;
 	
 	private Program program;
 	
@@ -99,14 +104,23 @@ public class BasicGUI extends JFrame {
 		
 		getContentPane().setLayout(new MigLayout("", "[grow][grow][][][][][][][][][][][][][]", "[grow][][][][][][][][][]"));
 		
-		JScrollPane scrollPane = new JScrollPane();
+		textArea = new JTextArea();
+		//textArea.setDropMode(DropMode.INSERT);
+		textArea.setEditable(false);
+		//textArea.setLineWrap(true);
+		//textArea.setWrapStyleWord(true);
+		//scrollPane.setViewportView(textArea);
+		
+		scrollPane = new JScrollPane(textArea);
 		getContentPane().add(scrollPane, "cell 0 0 15 9,grow");
 		scrollPane.setPreferredSize(new Dimension(500,300));
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setAutoscrolls(true);
+		scrollPane.setWheelScrollingEnabled(true);
 		
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		scrollPane.setViewportView(textArea);
+		DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
 		textField = new JTextField();
 		getContentPane().add(textField, "cell 0 9 14 1,grow");
