@@ -15,7 +15,7 @@ import nschat.tcp.SequenceNumbers;
 import nschat.tcp.Packet.PacketType;
 
 /**
- * Distance vector routing protocol
+ * Distance vector routing protocol.
  * @author Pieter Jan
  *
  */

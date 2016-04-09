@@ -2,6 +2,7 @@ package nschat.routing;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,8 @@ public class ForwardingTable {
 	}
 	
 	//TODO finish
-	public void addRoute(int dest, BasicRoute route) {
+	public void addRoute(BasicRoute route) {
+		int dest = route.getDestination();
 		if (dest == myAddress || route.getNextHop() == myAddress) {	// DO NOTHING
 			return;
 		} 
@@ -39,19 +41,51 @@ public class ForwardingTable {
 		}
 	}
 	
-	public void tick(int dest, BasicRoute route) {
-		int linkCost = brp.getSenderRTT().get(dest);
-		if (linkCost == -1) {
-			addRoute(dest, route);
-			
+	public void tick(BasicRoute route, int routeSender) {
+		int dest = route.getDestination();
+		int linkCost = brp.getSenderRTT().get(routeSender);
+		if (linkCost != -1) {
+			addRoute(new BasicRoute(routeSender, linkCost, routeSender));
 			
 			for (int desti : forwardingTable.keySet()) {
 				if (route.getNextHop() != myAddress && !unlinkedDests.containsKey(desti)) {
-					
+					int cost = route.getCost();
+					if (cost != -1) {
+						cost += linkCost;
+					} else if (forwardingTable.containsKey(dest) && forwardingTable.get(dest).getCost() != -1) {
+						unlinkedDests.put(dest, UNLINK_COOLDOWN);
+					}
+					addRoute(new BasicRoute(dest, cost, routeSender));
 				}
 			}
 		}
 		
+		clearUnseenRoutes();
+		
+		//SEND PACKETS
+		
+		Iterator<Integer> iter = unlinkedDests.keySet().iterator();
+		while (iter.hasNext()) {
+			int destination = iter.next();
+			unlinkedDests.put(destination, unlinkedDests.get(destination) - 1);
+			if (unlinkedDests.get(destination) <= 0) {
+				iter.remove();
+				unlinkedDests.remove(destination);
+			}
+			
+		}
+		
+	}
+	
+	public void clearUnseenRoutes() {
+		for (int dest : forwardingTable.keySet()) {
+			int nextHop = forwardingTable.get(dest).getNextHop();
+			if (nextHop != myAddress && forwardingTable.get(dest).getCost() == -1) {
+				BasicRoute destRoute = forwardingTable.get(dest);
+				destRoute.setCost(-1);
+				forwardingTable.put(dest, destRoute);
+			}
+		}
 	}
 	
 	public void removeRoute(Integer destination) {
@@ -62,12 +96,12 @@ public class ForwardingTable {
 		return forwardingTable.values();
 	}
 	
-	public void updateTable(List<BasicRoute> routes, int nextHop) {
+	public void updateTable(List<BasicRoute> routes, int routesSender) {
 		for (BasicRoute route : routes) {
-			int linkCost = brp.getSenderRTT().get(nextHop);
+			int linkCost = brp.getSenderRTT().get(routesSender);
 			BasicRoute newRoute = new BasicRoute(route.getDestination(), 
-					  route.getCost() + linkCost, nextHop);
-			addRoute(route.getDestination(), newRoute);
+					  route.getCost() + linkCost, routesSender);
+			tick(newRoute, routesSender);
 		}
 	}
 	
