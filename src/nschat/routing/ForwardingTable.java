@@ -23,7 +23,7 @@ public class ForwardingTable {
 		this.myAddress = myAddress;
 	}
 	
-	//TODO finish
+	
 	public void addRoute(BasicRoute route) {
 		int dest = route.getDestination();
 		if (dest == myAddress || route.getNextHop() == myAddress) {	// DO NOTHING
@@ -52,18 +52,17 @@ public class ForwardingTable {
 					int cost = route.getCost();
 					if (cost != -1) {
 						cost += linkCost;
-					} else if (forwardingTable.containsKey(dest) && forwardingTable.get(dest).getCost() != -1) {
+					} else if (forwardingTable.containsKey(dest) 
+							  && forwardingTable.get(dest).getCost() != -1) {
 						unlinkedDests.put(dest, UNLINK_COOLDOWN);
 					}
 					addRoute(new BasicRoute(dest, cost, routeSender));
 				}
 			}
 		}
-		
-		clearUnseenRoutes();
-		
-		//SEND PACKETS
-		
+	}
+	
+	public void updateUnlinkedDests() {
 		Iterator<Integer> iter = unlinkedDests.keySet().iterator();
 		while (iter.hasNext()) {
 			int destination = iter.next();
@@ -72,15 +71,13 @@ public class ForwardingTable {
 				iter.remove();
 				unlinkedDests.remove(destination);
 			}
-			
 		}
-		
 	}
 	
 	public void clearUnseenRoutes() {
 		for (int dest : forwardingTable.keySet()) {
 			int nextHop = forwardingTable.get(dest).getNextHop();
-			if (nextHop != myAddress && forwardingTable.get(dest).getCost() == -1) {
+			if (nextHop != myAddress && brp.getSenderRTT().get(nextHop) == -1) {
 				BasicRoute destRoute = forwardingTable.get(dest);
 				destRoute.setCost(-1);
 				forwardingTable.put(dest, destRoute);
@@ -98,11 +95,15 @@ public class ForwardingTable {
 	
 	public void updateTable(List<BasicRoute> routes, int routesSender) {
 		for (BasicRoute route : routes) {
-			int linkCost = brp.getSenderRTT().get(routesSender);
-			BasicRoute newRoute = new BasicRoute(route.getDestination(), 
-					  route.getCost() + linkCost, routesSender);
-			tick(newRoute, routesSender);
+//			int linkCost = brp.getSenderRTT().get(routesSender);
+//			BasicRoute newRoute = new BasicRoute(route.getDestination(), 
+//					  route.getCost() + linkCost, routesSender);	//linkcost should not be here
+//			tick(newRoute, routesSender);
+			tick(route, routesSender);
 		}
+		clearUnseenRoutes();
+		brp.sendPacket();
+		updateUnlinkedDests();
 	}
 	
 }
