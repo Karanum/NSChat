@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ForwardingTable {
+public class ForwardingTable {	//TODO CHECK WHETHER A NODE HASN'T BEEN SENDING FOR A WHILE AND UP RTT/SET COST TO -1!
 	
 	// MAP DESTINATION -> COST -> VIA NEIGHBOUR
 	private Map<Integer, BasicRoute> forwardingTable;
