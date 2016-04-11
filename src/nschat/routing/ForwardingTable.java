@@ -23,8 +23,11 @@ public class ForwardingTable {
 		this.myAddress = myAddress;
 	}
 	
-	
-	public void addRoute(BasicRoute route) {
+	/*
+	 * Does several checks whether or not the given BasicRoute is useful, 
+	 * and adds it into the forwardingTable if it is.
+	 */
+	private void addRoute(BasicRoute route) {
 		int dest = route.getDestination();
 		if (dest == myAddress || route.getNextHop() == myAddress) {	// DO NOTHING
 			return;
@@ -41,11 +44,16 @@ public class ForwardingTable {
 		}
 	}
 	
-	public void tick(BasicRoute route, int routeSender) {
+	/*
+	 * Adds the sender of the BasicRoute to the forwardingTable and puts checks if the given 
+	 * BasicRoutes are valid and adds them if so.
+	 * 
+	 */
+	private void tick(BasicRoute route, int routeSender) {
 		int dest = route.getDestination();
 		int linkCost = brp.getSenderRTT().get(routeSender);
 		if (linkCost != -1) {
-			addRoute(new BasicRoute(routeSender, linkCost, routeSender));
+			addRoute(new BasicRoute(routeSender, linkCost, routeSender));	//ADD SENDER ROUTE
 			
 			for (int desti : forwardingTable.keySet()) {
 				if (route.getNextHop() != myAddress && !unlinkedDests.containsKey(desti)) {
@@ -62,7 +70,11 @@ public class ForwardingTable {
 		}
 	}
 	
-	public void updateUnlinkedDests() {
+	/*
+	 * Update the unlinkedDests list, lowering each destination's unlink_cooldown with 1,
+	 * and removing it from the list if its unlink_cooldown is 0.
+	 */
+	private void updateUnlinkedDests() {
 		Iterator<Integer> iter = unlinkedDests.keySet().iterator();
 		while (iter.hasNext()) {
 			int destination = iter.next();
@@ -74,7 +86,10 @@ public class ForwardingTable {
 		}
 	}
 	
-	public void clearUnseenRoutes() {
+	/*
+	 * Sets all route costs to -1 if the link to the node is broken.
+	 */
+	private void clearUnseenRoutes() {
 		for (int dest : forwardingTable.keySet()) {
 			int nextHop = forwardingTable.get(dest).getNextHop();
 			if (nextHop != myAddress && brp.getSenderRTT().get(nextHop) == -1) {
@@ -85,14 +100,27 @@ public class ForwardingTable {
 		}
 	}
 	
+	/**
+	 * Removes the BasicRoute corresponding to the given destination from the forwardingTable.
+	 * @param destination The destination of which the corresponding BasicRoute will be deleted
+	 */
 	public void removeRoute(Integer destination) {
 		forwardingTable.remove(destination);
 	}
 	
+	/**
+	 * Returns all BasicRoutes in the forwardingTable.
+	 */
 	public Collection<BasicRoute> getRoutes() {
 		return forwardingTable.values();
 	}
 	
+	/**
+	 * Updates the forwardingTable with the given BasicRoutes, and adds the forwardingTable 
+	 * to the sendingBuffer.
+	 * @param routes BasicRoutes which will be used to update the forwardingTable
+	 * @param routesSender The sender of the BasicRoute
+	 */
 	public void updateTable(List<BasicRoute> routes, int routesSender) {
 		for (BasicRoute route : routes) {
 //			int linkCost = brp.getSenderRTT().get(routesSender);
