@@ -8,6 +8,8 @@ import net.miginfocom.swing.MigLayout;
 import nschat.Program;
 
 import java.awt.Button;
+import java.awt.Component;
+
 import javax.swing.JLabel;
 import java.awt.Choice;
 import java.awt.event.ActionEvent;
@@ -25,7 +27,7 @@ public class SettingsGUI extends JFrame {
 	private JTextField portField;
 	private Program program;
 	private BasicGUI gui;
-	private Choice choice;
+	//private Choice choice;
 
 	/**
 	 * Launch the application.
@@ -50,13 +52,20 @@ public class SettingsGUI extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String a = null;
 			String b = null;
-			String c = null;
 			if (e.getActionCommand().equals("save")) {
-				a = nameField.getText(); //TODO give to correct method
+				getProgram().setName(nameField.getText());
+				//getProgram().getConnection().getMulticast().setPort(portField.get); //TODO change
+				/*try {
+					getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
+				} catch (SocketException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}*/
+				a = nameField.getText();
 				b = portField.getText(); //TODO give it to the correct method
-				c = choice.getSelectedItem(); //TODO give to correct method
+			//	c = choice.getSelectedItem(); //TODO give to correct method
+				System.out.println("saved settings:\nname: " + a + ", port: " + b);
 			}
-			System.out.println("name: " + a + ", port: " + b + ", interface: " + c);
 			gui.setEnabled(true);
 			getGUI().dispose();
 		}
@@ -92,8 +101,12 @@ public class SettingsGUI extends JFrame {
 		contentPane.add(userNameLabel, "cell 1 0");
 		
 		nameField = new JTextField();
-		nameField.setText("UserName"); //TODO set as current name
-		contentPane.add(nameField, "cell 3 0 8 1,growx");
+		if (getProgram().getName() == null) {
+			nameField.setText("UserName");
+		} else {
+			nameField.setText(getProgram().getName());
+		}
+		contentPane.add(nameField, "cell 2 0 9 1,growx");
 		nameField.setColumns(10);
 		
 		JLabel portLabel = new JLabel("PortNumber:");
@@ -106,25 +119,14 @@ public class SettingsGUI extends JFrame {
 		} else {
 			portField.setText((new Integer(program.getConnection().getMulticast().getPort()).toString()));
 		}
-		contentPane.add(portField, "cell 3 1,growx");
+		contentPane.add(portField, "cell 2 1 2 1,growx");
 		portField.setColumns(10);
-		
+		/*
 		choice = new Choice();
-		contentPane.add(choice, "cell 1 2 2 1,growx");
+		contentPane.add(choice, "cell 2 2 2 1,growx");
+		*/
 		
-		try {
-			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
-			while (ni.hasMoreElements()) {
-				choice.add(ni.nextElement().getDisplayName());
-			}
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		choice.select(0); //TODO set as current interface
-		//choice.addItemListener(new ChoiceListener());
-		
-		Button resetButton = new Button("Reset");
+		Button resetButton = new Button("Cancel");
 		contentPane.add(resetButton, "cell 1 3");
 		
 		Button saveButton = new Button("Save");
@@ -139,5 +141,9 @@ public class SettingsGUI extends JFrame {
 	
 	public SettingsGUI getGUI() {
 		return this;
+	}
+	
+	public Program getProgram() {
+		return program;
 	}
 }

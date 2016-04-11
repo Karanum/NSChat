@@ -1,11 +1,18 @@
 package nschat;
 
 import java.awt.EventQueue;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 import nschat.multicasting.Connection;
 import nschat.tcp.Packet;
 import nschat.ui.BasicGUI;
+import nschat.ui.InterfaceChoser;
+import nschat.ui.InterfacePopUp;
 
 /**
  * Main class for the application.
@@ -20,6 +27,8 @@ public class Program {
 	private Connection conn;
 	private BasicGUI ui;
 	private static boolean running = false;
+	private String userName;
+	private InterfacePopUp ipu;
 	
 	/**
 	 * Starts a new instance of the program, can only be called once.
@@ -35,6 +44,45 @@ public class Program {
 			//UI.error("Port already in use, please restart your system!");
 			return;
 		}
+		//Let user pick from Network Interfaces
+		ipu = new InterfacePopUp(getProgram());
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ipu.pack();
+					ipu.setLocationRelativeTo(null);
+					ipu.setVisible(true);
+					ipu.addWindowListener(new WindowListener() {
+						public void windowActivated(WindowEvent arg0) {}
+						public void windowClosed(WindowEvent arg0) {
+							//getProgram().continueSetup();
+							//System.out.println("window closed");
+						}
+						public void windowClosing(WindowEvent arg0) {
+							//System.out.println("Window closing");
+							System.exit(0);
+
+						}
+						public void windowDeactivated(WindowEvent arg0) {}
+						public void windowDeiconified(WindowEvent arg0) {}
+						public void windowIconified(WindowEvent arg0) {}
+						public void windowOpened(WindowEvent arg0) {}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		while (!ipu.finished()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		
 		Thread t = new Thread(conn);
 		t.start();
@@ -43,13 +91,14 @@ public class Program {
 		/*
 		 * Creating the GUI window
 		 */
-		ui = new BasicGUI(this);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					ui = new BasicGUI(getProgram());
 					ui.pack();
 					ui.setLocationRelativeTo(null);
 					ui.setVisible(true);
+					//ui.runSettings();
 					System.out.println("Window created!");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -77,6 +126,7 @@ public class Program {
 		 * Thread cleanup
 		 */
 		ui.setVisible(false);
+		ui.stop();
 		try {
 			t.join();
 		} catch (InterruptedException e) {
@@ -109,4 +159,23 @@ public class Program {
 		running = false;
 	}
 
+	/**
+	 * Returns the name of the user.
+	 * @return
+	 */
+	public String getName() {
+		return userName;
+	}
+	
+	/**
+	 * Sets the name of the user.
+	 * @param name
+	 */
+	public void setName(String name) {
+		userName = name;
+	}
+	
+	public Program getProgram() {
+		return this;
+	}
 }

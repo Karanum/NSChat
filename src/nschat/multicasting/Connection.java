@@ -35,10 +35,9 @@ public class Connection implements Runnable {
 		sendingBuffer = new SendingBuffer();
 		try {
 			cast = new Multicast(receivingBuffer);
-			cast.joinGroup();
 		} catch (IOException e) {
 			throw e;
-		}
+		} 
 		
 		this.program = program;
 		routing = new BasicRoutingProtocol();
