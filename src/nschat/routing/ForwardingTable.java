@@ -47,7 +47,6 @@ public class ForwardingTable {
 	/*
 	 * Adds the sender of the BasicRoute to the forwardingTable and puts checks if the given 
 	 * BasicRoutes are valid and adds them if so.
-	 * 
 	 */
 	private void tick(BasicRoute route, int routeSender) {
 		int dest = route.getDestination();
