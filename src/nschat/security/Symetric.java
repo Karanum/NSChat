@@ -14,11 +14,12 @@ import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 
 public class Symetric {
-	
+	// TODO change IV to private after testing
 	private byte[] keyByte = new byte[]{0b01101100 , 65 , 51 , 85 ,  127 , 99 ,(byte) 0x8c , 0b00111011 , 22 , 55 , 10 , 88 ,(byte) 0b11110000 ,(byte) 0b11001110 ,(byte) 0b11011000 ,(byte) 0xc2 };
-	private static final int KEYSIZE = 16;
-	private Key key = new SecretKeySpec(keyByte, "AES/CBC");;
-	private byte[] IV;
+	private static final int KEYSIZE = 16; //In bytes
+	private Key key = new SecretKeySpec(keyByte, "AES/CBC");
+	public byte[] IV;
+
 	
 	/**
 	 * Used to setup the secure connection.
@@ -73,9 +74,26 @@ public class Symetric {
 	 * @param plaintext
 	 * @return
 	 */
-	public byte[] encrypt(byte[] plaintext) {		
+	public byte[] encrypt(byte[] plaintext) {	
+		byte[] tempKey = new byte[KEYSIZE];
+		byte[] result = new byte[plaintext.length];
 		
-		return null;
+		for (int j = 0; j < plaintext.length + KEYSIZE ; j += KEYSIZE) {
+			try {
+				Cipher c = Cipher.getInstance("AES/ECB/NoPadding");
+				c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(IV, "AES/ECB/NoPadding"));
+				tempKey = c.doFinal(IV);			
+			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+				// TODO Auto-generated catch block
+				
+				e.printStackTrace();
+			}
+			for (int i = 0; i < KEYSIZE; i++) {
+				result[i+j] = (byte) (tempKey[i] ^ plaintext[i+j]); //XOR the plaintext with the AES encrypted IV
+			}
+			increaseIV();
+		}
+		return result;
 	}
 	
 	/**
@@ -84,7 +102,7 @@ public class Symetric {
 	 * @return
 	 */
 	public byte[] decrypt(byte[] ciphertext) {
-		return ciphertext;
+		return encrypt(ciphertext);
 	}
 	
 	private byte[] createIV() {
@@ -92,5 +110,23 @@ public class Symetric {
 		byte[] bytes = new byte[KEYSIZE];
 		random.nextBytes(bytes);
 		return bytes;
+	}
+	
+	//TODO change to private after testing
+	public void increaseIV() {
+		for (int i = KEYSIZE -1; i >= 0; i--) {
+			if ((IV[i] + 1) % Byte.MAX_VALUE == 0) {
+				IV[i] = 0;
+				increaseIV(i+1);
+			}
+		}
+	}
+	private void increaseIV(int start) {
+		for (int i = start; i >= 0; i--) {
+			if ((IV[i] + 1) % Byte.MAX_VALUE == 0) {
+				IV[i] = 0;
+				increaseIV(i+1);
+			}
+		}
 	}
 }

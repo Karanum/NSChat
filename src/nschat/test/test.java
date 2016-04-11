@@ -6,9 +6,35 @@ public class test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
 		
-		System.out.println(System.getProperty("os.name"));
+		byte[] test = new byte[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+		String a = new String(test);
+		System.out.println(a);
+		
+		
+		/*
+		byte[] test = new byte[16];
+		byte[] a = test.clone();
+		byte[] b = test;
+		System.out.printf("Before change: test[15] = %d, a[15] = %d, b[15] = %d\n", test[15], a[15], b[15]);
+		test[15] = 10;
+		System.out.printf("After change: test[15] = %d, a[15] = %d, b[15] = %d\n", test[15], a[15], b[15]);
+		*/
+		
+		//System.out.println(0b10 ^ 0b10);
+		
+		/*final int d = 16;
+		int a = 31;
+		for (a = 0; a<100000; a+=48) {
+			System.out.printf("rounded up division for %d: ", a);
+			if (a%d==0) {
+				System.out.println(a/d);
+			} else {
+				System.out.println(a/d+1);
+			}
+		}*/
+		
+		//System.out.println(System.getProperty("os.name"));
 		
 		/*
 		short a = -1;
