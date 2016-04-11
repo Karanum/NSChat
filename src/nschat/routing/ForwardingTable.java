@@ -8,12 +8,12 @@ import java.util.Map;
 
 public class ForwardingTable {
 	
-	// FORWARDING TABLE CONTAINS: DESTINATION, COST, VIA NEIGHBOUR!!!
+	// MAP DESTINATION -> COST -> VIA NEIGHBOUR
 	private Map<Integer, BasicRoute> forwardingTable;
 	private BasicRoutingProtocol brp;
 	private int myAddress;
 	
-	//MAP DESTINATION -> UNLINK_COOLDOWN
+	// MAP DESTINATION -> UNLINK_COOLDOWN
 	private Map<Integer, Integer> unlinkedDests;
 	private static final int UNLINK_COOLDOWN = 2;	
 	

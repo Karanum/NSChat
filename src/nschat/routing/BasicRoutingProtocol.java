@@ -1,6 +1,5 @@
 package nschat.routing;
 
-//import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +23,7 @@ public class BasicRoutingProtocol {
 	private SendingBuffer sendingBuffer;
 	private ForwardingTable forwardingTable;
 	
-	//MAP SENDER -> RTT
+	// MAP SENDER -> RTT
 	private Map<Integer, Integer> senderRTT;
 	
 	
