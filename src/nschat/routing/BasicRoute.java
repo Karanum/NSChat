@@ -12,18 +12,31 @@ public class BasicRoute {
 		this.next = next;
 	}
 	
+	/**
+	 * Returns the cost value of the BasicRoute.
+	 */
 	public int getCost() {
 		return cost;
 	}
 	
+	/**
+	 * Returns the destination of the BasicRoute.
+	 */
 	public int getDestination() {
 		return dest;
 	}
 	
+	/**
+	 * Returns the next hop of the BasicRoute.
+	 */
 	public int getNextHop() {
 		return next;
 	}
 	
+	/**
+	 * Sets the BasicRoute's cost with the given cost value.
+	 * @param cost The cost the BasicRoute will have
+	 */
 	public void setCost(int cost) {
 		this.cost = cost;
 	}

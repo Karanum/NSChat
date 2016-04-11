@@ -1,6 +1,5 @@
 package nschat.routing;
 
-//import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +14,7 @@ import nschat.tcp.SequenceNumbers;
 import nschat.tcp.Packet.PacketType;
 
 /**
- * Distance vector routing protocol
+ * Distance-vector routing protocol.
  * @author Pieter Jan
  *
  */
@@ -24,7 +23,7 @@ public class BasicRoutingProtocol {
 	private SendingBuffer sendingBuffer;
 	private ForwardingTable forwardingTable;
 	
-	//map person id -> rtt
+	// MAP SENDER -> RTT
 	private Map<Integer, Integer> senderRTT;
 	
 	
@@ -34,6 +33,11 @@ public class BasicRoutingProtocol {
 		senderRTT = new HashMap<Integer, Integer>();
 	}
 
+	/**
+	 * Allows to receive a packet, ensued by getting the RTT of the sender, and updating its
+	 * own forwardingTable.
+	 * @param packet The packet with the routing data.
+	 */
 	public void receivePacket(Packet packet) {
 		int rtt = getRTT(packet);
 		setSenderRTT(rtt, packet.getSender());
@@ -43,6 +47,11 @@ public class BasicRoutingProtocol {
 		forwardingTable.updateTable(routes, packet.getSender());
 	}
 	
+	/**
+	 * Calculates and returns the RTT value of the sender from the given packet.
+	 * @param packet The sender's packet
+	 * @return The RTT value of the sender
+	 */
 	public int getRTT(Packet packet) {
 		byte[] old = sendingBuffer.get(PacketType.ROUTING, packet.getAckNumber());
 		Packet oldPacket;
@@ -56,6 +65,9 @@ public class BasicRoutingProtocol {
 		return rtt;
 	}
 	
+	/**
+	 * Converts this forwardingTable into a Routing packet and add it to the sendingBuffer.
+	 */
 	public void sendPacket() {
 		short seq = SequenceNumbers.get(PacketType.ROUTING);
 		
@@ -103,6 +115,9 @@ public class BasicRoutingProtocol {
 		return bytesList;
 	}
 	
+	/*
+	 * Sets the given RTT value for the given sender in the senderRTT map.
+	 */
 	private void setSenderRTT(int rtt, int sender) {
 		if (senderRTT.containsKey(sender)) {
 			int currentRTT = senderRTT.get(sender);
@@ -112,6 +127,9 @@ public class BasicRoutingProtocol {
 		}
 	}
 	
+	/**
+	 * Returns a map containing all senders with their corresponding RTT cost.
+	 */
 	public Map<Integer, Integer> getSenderRTT() {
 		return senderRTT;
 	}
