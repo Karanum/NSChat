@@ -1,5 +1,6 @@
 package nschat.ui;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 
 import javax.swing.JEditorPane;
@@ -26,9 +27,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.DropMode;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -109,6 +113,25 @@ public class BasicGUI extends JFrame {
 		}
 		
 	}
+	
+	private class LinkListener implements HyperlinkListener {
+		@Override
+		public void hyperlinkUpdate(HyperlinkEvent e) {
+			if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+				if(Desktop.isDesktopSupported()) {
+				    try {
+						Desktop.getDesktop().open(new File(e.getURL().toURI()));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+		    }
+		}
+	}
 
 	/**
 	 * Create the frame.
@@ -172,7 +195,8 @@ public class BasicGUI extends JFrame {
 		
 		sendButton.addActionListener(new Listener());
 		textField.addActionListener(new Listener());
-
+		
+		
 		menuExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -190,6 +214,12 @@ public class BasicGUI extends JFrame {
 		});
 		
 		menuSendFile.addActionListener(new SendFileListener());
+		
+		setVisible(true);
+		
+		textField.requestFocusInWindow();
+		
+		editorPane.addHyperlinkListener(new LinkListener());
 	}
 	
 	//TODO change such that messages are ordered by sending time.
@@ -198,13 +228,14 @@ public class BasicGUI extends JFrame {
 	 * @param text
 	 */
 	public void printText(String text) {
-		textArea.append(text + "\n");
-		try {
-			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		textArea.append(text + "\n");
+//		try {
+//			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
+//		} catch (BadLocationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		printFile("a");
 	}
 	
 	/**
@@ -260,11 +291,6 @@ public class BasicGUI extends JFrame {
 	 * @param filePath
 	 */
 	public void printFile(String filePath) {
-		try {
-			doc.insertString(doc.getLength(), "<a href=\"test.html\">C</a>" , new SimpleAttributeSet());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		editorPane.setText("<a href=\"test.html\">Test</a>");
 	}
 }
