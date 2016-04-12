@@ -112,24 +112,11 @@ public class InterfacePopUp extends JFrame {
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(new KeyEventDispatcher(){
 			@Override
-<<<<<<< HEAD
-			public void actionPerformed(ActionEvent e) {
-				try {
-					getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
-					Thread.sleep(500);
-					finished = true;
-					dispose();
-				} catch (SocketException e1) {
-					e1.printStackTrace();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-=======
 			public boolean dispatchKeyEvent(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					System.out.println("enter pressed");
 					//button.setActionCommand("enter pressed");
 					enterPress.doClick();
->>>>>>> 5cb3279f495c07e7342d2361323bfdf117e7ca7c
 				}
 				return false;
 			}
