@@ -317,8 +317,8 @@ public class Packet {
 	}
 	
 	public String toString() {
-		return String.format("Type: %s, Flags: %d, Time: %d, Src: %d, Dst: %d", 
-							type, flags, timestamp, getSender(), getRecipient());
+		return String.format("\n\tType: %s\n\tFlags: %d\n\tTime: %d\n\tSrc: %d\n\tDst: %d\n\tSEQ: %d\n\tACK: %d\n\tData: %s", 
+							type, flags, timestamp, getSender(), getRecipient(), seq, ack, getDataAsString());
 	}
 	
 }

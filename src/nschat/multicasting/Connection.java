@@ -62,11 +62,17 @@ public class Connection implements Runnable {
 				continue;
 			}
 			
+			if (Program.DEBUG) {
+				System.out.println("Received packet: " + p.toString());
+			}
+						
 			PacketType type = p.getPacketType();
 			if (seenPackets.containsKey(type)) {
 				int sender = p.getSender();
+				
 				if (seenPackets.get(type).containsKey(sender) &&
-						seenPackets.get(type).get(sender).contains(p.getSeqNumber())) {
+						seenPackets.get(type).get(sender).contains((int) p.getSeqNumber())) {
+					System.out.println("CONTINUE");
 					continue;
 				}
 			}
@@ -74,6 +80,7 @@ public class Connection implements Runnable {
 				forwardPacket(p);
 				if (p.isAck()) {
 					checkAck(p);
+					continue;
 				} else {
 					acknowledgePacket(p);
 				}
@@ -119,10 +126,12 @@ public class Connection implements Runnable {
 			}
 			
 			InetAddress senderAddr = packet.getSenderAddress();
-			try {
+			try {				
 				if (!senderAddr.equals(InetAddress.getLocalHost()) && !senderAddr.isLoopbackAddress()) {
 					sendingBuffer.add(packet.pack());
-					System.out.println("Forwarded message with SEQ: " + seq + " from address: " + senderAddr);
+					if (Program.DEBUG) {
+						System.out.println("Forwarded message with SEQ: " + seq + " from address: " + senderAddr);
+					}
 				}
 			} catch (UnknownHostException e) { }
 		}
@@ -133,6 +142,9 @@ public class Connection implements Runnable {
 		Packet ack = AckHandler.getHandler(type).createAck(packet).orElse(null);
 		if (ack != null) {
 			sendingBuffer.add(ack.pack());
+			if (Program.DEBUG) {
+				System.out.println("ACKing packet: " + ack.toString());
+			}
 		}
 	}
 	
