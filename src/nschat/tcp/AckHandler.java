@@ -5,6 +5,8 @@ import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 import java.util.Map;
 import java.util.Optional;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,8 +40,13 @@ public abstract class AckHandler {
 	 * @return Optional containing the acknowledgement packet, empty if the packet should not be acknowledged
 	 */
 	public Optional<Packet> createAck(Packet p) {
-		if (p.getData().length == 0) {
-			return Optional.empty();
+		InetAddress senderAddr = p.getSenderAddress();
+		try {
+			if (p.getData().length == 0 || senderAddr.equals(InetAddress.getLocalHost()) || senderAddr.isLoopbackAddress()) {
+				return Optional.empty();
+			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
 		}
 		
 		short ack = p.getSeqNumber();
@@ -71,9 +78,8 @@ public abstract class AckHandler {
 
 		int sender = p.getSender();
 		short ack = p.getAckNumber();
-		short prevAck = lastSeenAck.get(sender);
 		
-		if (ack == (short) (prevAck + 1)) {
+		if (!lastSeenAck.containsKey(sender) || ack == (short) (lastSeenAck.get(sender) + 1)) {
 			retransmitCount.put(sender, 0);
 			if (!seenSeqs.containsKey(sender) || seenSeqs.get(sender).size() == 0) {
 				lastSeenAck.put(sender, ack);
