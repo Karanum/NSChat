@@ -1,12 +1,13 @@
 package nschat.routing;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ForwardingTable {	//TODO CHECK WHETHER A NODE HASN'T BEEN SENDING FOR A WHILE AND UP RTT/SET COST TO -1!
+public class ForwardingTable {								//TODO STILL NEEDS TO BE TESTED IF IT WORKS!
 	
 	// MAP DESTINATION -> COST -> VIA NEIGHBOUR
 	private Map<Integer, BasicRoute> forwardingTable;
@@ -17,14 +18,49 @@ public class ForwardingTable {	//TODO CHECK WHETHER A NODE HASN'T BEEN SENDING F
 	private Map<Integer, Integer> unlinkedDests;
 	private static final int UNLINK_COOLDOWN = 2;	
 	
+	private List<Integer> linkedSenders;
+	private static final int INCREASE_RTT = 10;
+	private static final int MAX_RTT = 20;
+	private static final int MAX_ITERATIONS = 3;
+	private int iterationCounter;
+	
 	public ForwardingTable(BasicRoutingProtocol brp, int myAddress) {
-		forwardingTable = new HashMap<Integer, BasicRoute>();
+		this.forwardingTable = new HashMap<Integer, BasicRoute>();
 		this.brp = brp;
 		this.myAddress = myAddress;
+		this.linkedSenders = new ArrayList<Integer>();
+		iterationCounter = 0;
+	}
+	
+	/**
+	 * Main loop.
+	 */
+	public void run() {
+		brp.sendPacket();
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		clearUnseenRoutes();
+		updateUnlinkedDests();
+		
+		if (iterationCounter >= MAX_ITERATIONS) {
+			setCost();
+			linkedSenders.clear();
+			iterationCounter = 0;
+		}
+		iterationCounter++;
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		}
 	}
 	
 	/*
-	 * Does several checks whether or not the given BasicRoute is useful, 
+	 * Does several checks whether the given BasicRoute is useful, 
 	 * and adds it into the forwardingTable if it is.
 	 */
 	private void addRoute(BasicRoute route) {
@@ -45,7 +81,7 @@ public class ForwardingTable {	//TODO CHECK WHETHER A NODE HASN'T BEEN SENDING F
 	}
 	
 	/*
-	 * Adds the sender of the BasicRoute to the forwardingTable and puts checks if the given 
+	 * Adds the sender of the BasicRoute to the forwardingTable and checks if the given 
 	 * BasicRoutes are valid and adds them if so.
 	 */
 	private void tick(BasicRoute route, int routeSender) {
@@ -127,10 +163,27 @@ public class ForwardingTable {	//TODO CHECK WHETHER A NODE HASN'T BEEN SENDING F
 //					  route.getCost() + linkCost, routesSender);	//linkcost should not be here
 //			tick(newRoute, routesSender);
 			tick(route, routesSender);
+		}	
+		linkedSenders.add(routesSender);
+	}
+
+	/*
+	 * Increases the cost of a destination in the forwardingTable if not heard from in a long time,
+	 * if the cost goes above a certain amount, the cost is set to -1.
+	 */
+	private void setCost() {
+		for (int sender : brp.getSenderRTT().keySet()) {
+			if (!linkedSenders.contains(sender)) {
+				brp.setRTT(sender, brp.getSenderRTT().get(sender) + INCREASE_RTT);
+			}
 		}
-		clearUnseenRoutes();
-		brp.sendPacket();
-		updateUnlinkedDests();
+		
+		for (int sender : brp.getSenderRTT().keySet()) {
+			if (brp.getSenderRTT().get(sender) >= MAX_RTT) {
+				brp.setRTT(sender, -1);
+			}
+		}
 	}
 	
 }
+

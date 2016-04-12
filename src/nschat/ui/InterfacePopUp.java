@@ -27,12 +27,17 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import nschat.Program;
 
 public class InterfacePopUp extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Program program;
 	private Choice choice;
@@ -92,7 +97,6 @@ public class InterfacePopUp extends JFrame {
 				choice.add(ni.nextElement().getName());
 			}
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import nschat.tcp.Packet.PacketType;
-import nschat.tcp.SequenceNumbers;
 
 /**
  * Buffer for sending packets that is thread safe.
@@ -32,14 +31,20 @@ public class SendingBuffer {
 	public void add(PacketType type, short seq, byte[] packet) {
 		synchronized(this) {
 			buffer.add(packet);
-			if (!archive.containsKey(type)) {
-				archive.put(type, new HashMap<Short, byte[]>());
+			if (seq != 0) {
+				if (!archive.containsKey(type)) {
+					archive.put(type, new HashMap<Short, byte[]>());
+				}
+				archive.get(type).put(seq, packet);
 			}
-			archive.get(type).put(seq, packet);
 		}
 	}
 	
-	public void forward(byte[] packet) {
+	/**
+	 * Adds a packet to the buffer without storing it for later use.
+	 * @param packet The packet that needs to be added
+	 */
+	public void add(byte[] packet) {
 		synchronized(this) {
 			buffer.add(packet);
 		}

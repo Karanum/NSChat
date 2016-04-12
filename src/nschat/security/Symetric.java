@@ -1,16 +1,16 @@
 package nschat.security;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.KeyRep;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.*;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import nschat.tcp.Packet;
@@ -39,8 +39,6 @@ public class Symetric {
 			ivAuth.setData(data);
 			//TODO send the packet
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-			// TODO Auto-generated catch block
-			
 			e.printStackTrace();
 		}
 	}
@@ -54,7 +52,6 @@ public class Symetric {
 				byte[] temp = c.doFinal(packet.getData());
 				IVs.put(packet.getSender(), temp);
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			Packet ackPacket = new Packet();
@@ -78,8 +75,6 @@ public class Symetric {
 					tempKey = c.doFinal(IV);
 					increaseIV(IV);
 				} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-					// TODO Auto-generated catch block
-					
 					e.printStackTrace();
 				}
 			}
@@ -92,7 +87,6 @@ public class Symetric {
 				c.init(Cipher.ENCRYPT_MODE, key);
 				tempKey = c.doFinal(IV);		
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-				// TODO Auto-generated catch block
 				
 				e.printStackTrace();
 			}

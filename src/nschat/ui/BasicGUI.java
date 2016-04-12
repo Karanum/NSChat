@@ -13,6 +13,7 @@ import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
+import nschat.multicasting.SendingBuffer;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 import nschat.tcp.SequenceNumbers;
@@ -25,16 +26,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import javax.swing.DropMode;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AttributeSet;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Document;
@@ -47,6 +51,7 @@ import javax.swing.text.SimpleAttributeSet;
  */
 public class BasicGUI extends JFrame {
 	
+	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private JTextArea textArea;
 	private JMenuItem menuExit;
@@ -87,6 +92,12 @@ public class BasicGUI extends JFrame {
 				
 				//printText(text);
 				
+				if (text.equalsIgnoreCase("Filefilefile")) {
+					SendingBuffer buffer = program.getConnection().getSendingBuffer();
+					program.getConnection().getFileHandler().sendFile(buffer, "D:\\reuniclus.png");
+					System.out.println("SENDING A FILE WHOOAAAAA");
+				}
+				
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text);
@@ -120,14 +131,11 @@ public class BasicGUI extends JFrame {
 			if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 				if(Desktop.isDesktopSupported()) {
 				    try {
-						Desktop.getDesktop().open(new File(e.getURL().toURI()));
+						Desktop.getDesktop().open(new File(e.getURL().getPath()));
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					} catch (URISyntaxException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					} 
 				}
 		    }
 		}
@@ -200,7 +208,6 @@ public class BasicGUI extends JFrame {
 		menuExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//System.exit(0);									//TODO change to proper exit mechanism
 				getProgram().stop();
 			}
 		});
@@ -291,6 +298,6 @@ public class BasicGUI extends JFrame {
 	 * @param filePath
 	 */
 	public void printFile(String filePath) {
-		editorPane.setText("<a href=\"test.html\">Test</a>");
+		editorPane.setText("<a href=\"file:///" + (new File("")).getAbsolutePath() + "/src/nschat/ui/test.html\">Test</a>");
 	}
 }

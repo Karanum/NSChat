@@ -1,6 +1,5 @@
 package nschat.test;
 
-import java.math.*;
 import nschat.security.*;
 
 public class test {

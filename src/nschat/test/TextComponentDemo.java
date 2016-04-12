@@ -45,6 +45,9 @@ import javax.swing.event.*;
 import javax.swing.undo.*;
  
 public class TextComponentDemo extends JFrame {
+	
+	private static final long serialVersionUID = 1L;
+	
     JTextPane textPane;
     AbstractDocument doc;
     static final int MAX_CHARACTERS = 300;
@@ -121,7 +124,9 @@ public class TextComponentDemo extends JFrame {
     //This listens for and reports caret movements.
     protected class CaretListenerLabel extends JLabel
                                        implements CaretListener {
-        public CaretListenerLabel(String label) {
+		private static final long serialVersionUID = 1L;
+
+		public CaretListenerLabel(String label) {
             super(label);
         }
  
@@ -350,6 +355,9 @@ public class TextComponentDemo extends JFrame {
     }
  
     class UndoAction extends AbstractAction {
+    	
+    	private static final long serialVersionUID = 1L;
+    	
         public UndoAction() {
             super("Undo");
             setEnabled(false);
@@ -378,6 +386,9 @@ public class TextComponentDemo extends JFrame {
     }
  
     class RedoAction extends AbstractAction {
+    	
+    	private static final long serialVersionUID = 1L;
+    	
         public RedoAction() {
             super("Redo");
             setEnabled(false);

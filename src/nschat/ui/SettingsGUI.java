@@ -1,27 +1,22 @@
 package nschat.ui;
 
 
+import java.awt.Button;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
 
-import java.awt.Button;
-import java.awt.Component;
-
-import javax.swing.JLabel;
-import java.awt.Choice;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
-import javax.swing.JTextField;
-
 public class SettingsGUI extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField nameField;
 	private JTextField portField;
@@ -58,7 +53,6 @@ public class SettingsGUI extends JFrame {
 				/*try {
 					getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
 				} catch (SocketException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}*/
 				a = nameField.getText();

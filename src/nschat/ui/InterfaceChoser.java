@@ -1,28 +1,23 @@
 package nschat.ui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Choice;
-import net.miginfocom.swing.MigLayout;
-import nschat.Program;
-
-import javax.swing.JLabel;
 import java.awt.Button;
-import java.awt.event.ActionListener;
+import java.awt.Choice;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import nschat.Program;
 
 public class InterfaceChoser extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private Program program;
 	private Choice choice;
 	
@@ -59,7 +54,6 @@ public class InterfaceChoser extends JDialog {
 					choice.add(ni.nextElement().getDisplayName());
 				}
 			} catch (SocketException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -81,7 +75,6 @@ public class InterfaceChoser extends JDialog {
 						getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
 						getProgram().notifyAll();
 					} catch (SocketException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
