@@ -74,7 +74,6 @@ public class Connection implements Runnable {
 				
 				if (seenPackets.get(type).containsKey(sender) &&
 						seenPackets.get(type).get(sender).contains((int) p.getSeqNumber())) {
-					System.out.println("CONTINUE");
 					continue;
 				}
 			}
@@ -167,5 +166,9 @@ public class Connection implements Runnable {
 	
 	public Multicast getMulticast() {
 		return cast;
+	}
+	
+	public FileHandler getFileHandler() {
+		return fileManager;
 	}
 }

@@ -18,11 +18,16 @@ public class FileHandler {
 	public void writeToFile(String filename, byte[] fileBytes) {
 		
 		FileOutputStream fileOutputStream;
-		try {
-			String filePath = new File("downloads/" + filename).getAbsolutePath();
-			fileOutputStream = new FileOutputStream(filePath);
-			fileOutputStream.write(fileBytes);
-		    fileOutputStream.close();
+		try {			
+			File file = new File("downloads");
+			if (!file.exists()) {
+				file.mkdir();
+			}
+			
+			Path path = Paths.get(file.getAbsolutePath()).resolve(filename);
+			
+			Files.createFile(path);
+			Files.write(path, fileBytes);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e) {

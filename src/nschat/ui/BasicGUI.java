@@ -12,6 +12,7 @@ import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
+import nschat.multicasting.SendingBuffer;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 import nschat.tcp.SequenceNumbers;
@@ -77,6 +78,12 @@ public class BasicGUI extends JFrame {
 				textField.setText("");
 				
 				//printText(text);
+				
+				if (text.equalsIgnoreCase("Filefilefile")) {
+					SendingBuffer buffer = program.getConnection().getSendingBuffer();
+					program.getConnection().getFileHandler().sendFile(buffer, "D:\\reuniclus.png");
+					System.out.println("SENDING A FILE WHOOAAAAA");
+				}
 				
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
