@@ -53,7 +53,7 @@ public class InterfacePopUp extends JFrame {
 		try {
 			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
 			while (ni.hasMoreElements()) {
-				choice.add(ni.nextElement().getDisplayName());
+				choice.add(ni.nextElement().getName());
 			}
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
