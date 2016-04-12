@@ -2,6 +2,8 @@ package nschat.ui;
 
 import java.awt.Dimension;
 
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -23,6 +25,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -39,6 +43,9 @@ public class BasicGUI extends JFrame {
 	private JMenuItem menuSettings;
 	private SettingsGUI frame;
 	private JScrollPane scrollPane;
+	private JEditorPane editorPane;
+	private Document doc;
+	private JMenuItem menuSendFile;
 	
 	private Program program;
 	
@@ -80,6 +87,21 @@ public class BasicGUI extends JFrame {
 			}
 		}
 	}
+	
+	private class SendFileListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			JFileChooser chooser = new JFileChooser();
+		    
+		    int returnVal = chooser.showOpenDialog(getParent());
+		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+		       System.out.println("You chose to open this file: " +
+		            chooser.getSelectedFile().getName());
+		       //TODO send the file to where it is send!
+		    }
+		}
+		
+	}
 
 	/**
 	 * Create the frame.
@@ -96,6 +118,9 @@ public class BasicGUI extends JFrame {
 		JMenu mnFile = new JMenu("Menu");
 		menuBar.add(mnFile);
 		
+		menuSendFile = new JMenuItem("Send File");
+		mnFile.add(menuSendFile);
+		
 		menuSettings = new JMenuItem("Settings");
 		mnFile.add(menuSettings);
 		
@@ -111,13 +136,22 @@ public class BasicGUI extends JFrame {
 		//textArea.setWrapStyleWord(true);
 		//scrollPane.setViewportView(textArea);
 		
-		scrollPane = new JScrollPane(textArea);
+		editorPane = new JEditorPane();
+		editorPane.setEditable(false);
+		editorPane.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
+		
+		doc = editorPane.getDocument();
+		
+		scrollPane = new JScrollPane(editorPane);
 		getContentPane().add(scrollPane, "cell 0 0 15 9,grow");
 		scrollPane.setPreferredSize(new Dimension(500,300));
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setAutoscrolls(true);
 		scrollPane.setWheelScrollingEnabled(true);
+		
+		DefaultCaret paneCaret = (DefaultCaret)editorPane.getCaret();
+		paneCaret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
 		DefaultCaret caret = (DefaultCaret)textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -147,6 +181,8 @@ public class BasicGUI extends JFrame {
 			}
 		});
 		
+		menuSendFile.addActionListener(new SendFileListener());
+		
 	}
 	
 	//TODO change such that messages are ordered by sending time.
@@ -156,6 +192,12 @@ public class BasicGUI extends JFrame {
 	 */
 	public void printText(String text) {
 		textArea.append(text + "\n");
+		try {
+			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -164,7 +206,13 @@ public class BasicGUI extends JFrame {
 	 * @param name
 	 */
 	public void printText(String text, String name) {
-		textArea.append("<" + name + "> " + text);
+		//textArea.append("<" + name + "> " + text);
+		try {
+			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public Program getProgram() {
