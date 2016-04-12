@@ -15,30 +15,26 @@ public class EncryptionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
+		enc.setup();
 	}
 	
 	@Test
 	public void IVLengthTest() {
-		assertEquals(enc.IV.length, 16);
-	}
-	
-	@Test
-	public void IVIncreaseTest() {
-		byte[] startIV = enc.IV.clone();
-		enc.increaseIV();
-		byte[] endIV = enc.IV.clone();
-		
-		
+		assertEquals(enc.localIV.length, 16);
 	}
 	
 	@Test
 	public void EncryptDecryptCorrect() {
 		byte[] input = INPUTA.getBytes();
+		byte[] IV = enc.localIV.clone();
 		byte[] encrypted = enc.encrypt(input);
-		assertEquals(encrypted, input); //TODO change to not equals
-		byte[] result = enc.decrypt(encrypted);
-		assertEquals(result, input);
+		//assertEquals(encrypted, input); //TODO change to not equals
+		byte[] result = enc.encdec(encrypted, IV);
+//		assertEquals(result.length, input.length);
+//		for (int i = 0; i < result.length; ++i) {
+//			assertEquals(result[i], input[i]);
+//		}
+		//System.out.println(new String(result));
+		assertTrue((new String(result)).equals(INPUTA));
 	}
-
 }
