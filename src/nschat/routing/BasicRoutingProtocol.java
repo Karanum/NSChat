@@ -65,6 +65,12 @@ public class BasicRoutingProtocol {
 		return rtt;
 	}
 	
+	public void setRTT(int dest, int rtt) {
+		if (senderRTT.containsKey(dest)) {
+			senderRTT.put(dest, rtt);
+		}
+	}
+	
 	/**
 	 * Converts this forwardingTable into a Routing packet and add it to the sendingBuffer.
 	 */
