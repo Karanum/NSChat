@@ -3,15 +3,10 @@ package nschat;
 import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
 
 import nschat.multicasting.Connection;
-import nschat.tcp.Packet;
 import nschat.ui.BasicGUI;
-import nschat.ui.InterfaceChoser;
 import nschat.ui.InterfacePopUp;
 
 /**
@@ -78,7 +73,6 @@ public class Program {
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

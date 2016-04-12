@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import nschat.tcp.Packet.PacketType;
-import nschat.tcp.SequenceNumbers;
 
 /**
  * Buffer for sending packets that is thread safe.

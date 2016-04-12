@@ -14,7 +14,6 @@ import nschat.exception.PacketFormatException;
 import nschat.routing.BasicRoutingProtocol;
 import nschat.tcp.AckHandler;
 import nschat.tcp.Packet;
-import nschat.tcp.SequenceNumbers;
 import nschat.tcp.Packet.PacketType;
 
 public class Connection implements Runnable {

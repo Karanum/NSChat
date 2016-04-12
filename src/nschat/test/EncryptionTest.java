@@ -10,7 +10,7 @@ import org.junit.Test;
 public class EncryptionTest {
 	
 	private final String INPUTA = "De eerste test string";
-	private final int INPUTB = 541;
+	//private final int INPUTB = 541;
 	private Symetric enc = new Symetric();
 
 	@Before

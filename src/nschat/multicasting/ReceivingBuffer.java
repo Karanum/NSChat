@@ -1,11 +1,7 @@
 package nschat.multicasting;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import nschat.tcp.Packet.PacketType;
 
 /**
  * Buffer for receiving packets that is thread safe.
