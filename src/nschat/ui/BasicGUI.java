@@ -214,9 +214,9 @@ public class BasicGUI extends JFrame {
 	 * @param name
 	 */
 	public void printText(String text, String name) {
-		//textArea.append("<" + name + "> " + text);
+		textArea.append("<" + name + "> " + text);
 		try {
-			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
+			doc.insertString(doc.getLength() , "<" + name + "> " + text + "\n", new SimpleAttributeSet());
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
