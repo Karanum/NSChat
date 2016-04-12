@@ -191,7 +191,6 @@ public class BasicGUI extends JFrame {
 		});
 		
 		menuSendFile.addActionListener(new SendFileListener());
-		
 	}
 	
 	//TODO change such that messages are ordered by sending time.
@@ -254,6 +253,19 @@ public class BasicGUI extends JFrame {
 		if (frame != null) {
 			frame.dispose();
 			dispose();
+		}
+	}
+	
+	/**
+	 * Prints a link to the file.
+	 * @param filePath
+	 */
+	public void printFile(String filePath) {
+		try {
+			doc.insertString(doc.getLength(), "<a href=\"test.html\">C</a>" , new SimpleAttributeSet());
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

@@ -44,6 +44,8 @@ public class InterfacePopUp extends JFrame {
 	private boolean finished = false;
 	private Button button;
 	private JButton enterPress;
+	private KeyboardFocusManager manager;
+	private KeyEventDispatcher dispatcher;
 	
 	private class Listener implements ActionListener {
 		@Override
@@ -109,19 +111,21 @@ public class InterfacePopUp extends JFrame {
 		
 		enterPress.addActionListener(new Listener());
 		
-		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(new KeyEventDispatcher(){
+		manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		dispatcher =  (new KeyEventDispatcher()  {
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					System.out.println("enter pressed");
 					//button.setActionCommand("enter pressed");
 					enterPress.doClick();
+					manager.removeKeyEventDispatcher(dispatcher);
 				}
 				return false;
 			}
         	
-        });		
+        });	
+        manager.addKeyEventDispatcher(dispatcher);
 	}
 
 	public Program getProgram() {
