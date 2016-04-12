@@ -23,6 +23,7 @@ public class Connection implements Runnable {
 	private BasicRoutingProtocol routing;
 	private Multicast cast;
 	private Program program;
+	private FileHandler fileManager;
 	
 	private Map<PacketType, Map<Integer, List<Integer>>> seenPackets;
 	
@@ -37,6 +38,7 @@ public class Connection implements Runnable {
 		
 		this.program = program;
 		routing = new BasicRoutingProtocol();
+		fileManager = new FileHandler();
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
 	}
 
@@ -85,7 +87,8 @@ public class Connection implements Runnable {
 					break;
 					
 				case FILE:
-					//Example
+					fileManager.receiveFile(p);
+					//program.getUI().printImage(p.get)
 					break;
 					
 				case ROUTING:
