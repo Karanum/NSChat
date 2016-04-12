@@ -31,7 +31,7 @@ public class Multicast {
 		try {
 			/*if (System.getProperty("os.name").contains("Linux")) {
 
-				mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement()); //TODO change such that it can be chosen in GUI
+				mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement());
 			}*/
 			if (nInterface == null) {
 				System.out.println("Interface not declared!");

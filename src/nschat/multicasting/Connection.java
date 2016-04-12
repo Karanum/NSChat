@@ -12,8 +12,8 @@ import java.util.Map;
 import nschat.Program;
 import nschat.exception.PacketFormatException;
 import nschat.routing.BasicRoutingProtocol;
+import nschat.tcp.AckHandler;
 import nschat.tcp.Packet;
-import nschat.tcp.SequenceNumbers;
 import nschat.tcp.Packet.PacketType;
 
 public class Connection implements Runnable {
@@ -24,11 +24,7 @@ public class Connection implements Runnable {
 	private Multicast cast;
 	private Program program;
 	
-	private short lastAckReceived;
-	private short lastSeqReceived;
-	private boolean seqReceived;
-	
-	private Map<PacketType, List<Integer>> seenPackets;
+	private Map<PacketType, Map<Integer, List<Integer>>> seenPackets;
 	
 	public Connection(Program program) throws IOException {
 		receivingBuffer = new ReceivingBuffer();
@@ -41,11 +37,7 @@ public class Connection implements Runnable {
 		
 		this.program = program;
 		routing = new BasicRoutingProtocol();
-		seenPackets = new HashMap<PacketType, List<Integer>>();
-		
-		lastAckReceived = 0;
-		lastSeqReceived = 0;
-		seqReceived = false;
+		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
 	}
 
 	@Override
@@ -70,22 +62,33 @@ public class Connection implements Runnable {
 				continue;
 			}
 			
-			PacketType type = p.getPacketType();
-			if (seenPackets.containsKey(type) && seenPackets.get(type).contains((int) (p.getSeqNumber()))) {
-				continue;
+			if (Program.DEBUG) {
+				System.out.println("Received packet: " + p.toString());
 			}
-			if (type != PacketType.ROUTING) {
+						
+			PacketType type = p.getPacketType();
+			if (seenPackets.containsKey(type)) {
+				int sender = p.getSender();
+				
+				if (seenPackets.get(type).containsKey(sender) &&
+						seenPackets.get(type).get(sender).contains((int) p.getSeqNumber())) {
+					System.out.println("CONTINUE");
+					continue;
+				}
+			}
+			if (type != PacketType.ROUTING && type != PacketType.UNDEFINED) {
 				forwardPacket(p);
+				if (p.isAck()) {
+					checkAck(p);
+					continue;
+				} else {
+					acknowledgePacket(p);
+				}
 			}
 			
 			switch (type) {
 				case TEXT:
 					program.getUI().printText(p.getDataAsString());
-					if (p.isAck()) {
-						checkTextAck(p);
-					} else {
-						acknowledgeTextPacket(p);
-					}
 					break;
 					
 				case FILE:
@@ -105,46 +108,49 @@ public class Connection implements Runnable {
 	
 	private void forwardPacket(Packet packet) {
 		PacketType type = packet.getPacketType();
+		int sender = packet.getSender();
 		int seq = (int) packet.getSeqNumber();
 		
 		if (!seenPackets.containsKey(type)) {
-			seenPackets.put(type, new ArrayList<Integer>());
+			seenPackets.put(type, new HashMap<Integer, List<Integer>>());
 		}
-		if (!seenPackets.get(type).contains(seq)) {
-			seenPackets.get(type).add(seq);
-			InetAddress sender = packet.getSenderAddress();
-			try {
-				if (!sender.equals(InetAddress.getLocalHost()) && !sender.isLoopbackAddress()) {
-					sendingBuffer.forward(packet.pack());
-					System.out.println("Forwarded message with SEQ: " + seq + " from address: " + sender);
+		if (!seenPackets.get(type).containsKey(sender)) {
+			seenPackets.get(type).put(sender, new ArrayList<Integer>());
+		}
+		
+		List<Integer> list = seenPackets.get(type).get(sender);
+		if (!list.contains(seq)) {
+			list.add(seq);
+			if (list.size() > 50) {
+				list.remove(0);
+			}
+			
+			InetAddress senderAddr = packet.getSenderAddress();
+			try {				
+				if (!senderAddr.equals(InetAddress.getLocalHost()) && !senderAddr.isLoopbackAddress()) {
+					sendingBuffer.add(packet.pack());
+					if (Program.DEBUG) {
+						System.out.println("Forwarded message with SEQ: " + seq + " from address: " + senderAddr);
+					}
 				}
 			} catch (UnknownHostException e) { }
 		}
 	}
 	
-	private void acknowledgeTextPacket(Packet packet) {
-		short ack = packet.getSeqNumber();
-		if (seqReceived) {
-			if (lastSeqReceived + 1 == ack || (lastSeqReceived == Short.MAX_VALUE && ack == Short.MIN_VALUE)) {
-				lastSeqReceived = ack;
-			} else {
-				ack = lastSeqReceived;
-			}
-		} else {
-			seqReceived = true;
-			lastSeqReceived = ack;
-		}
-		
-		InetAddress dest = packet.getSenderAddress();
+	private void acknowledgePacket(Packet packet) {
 		PacketType type = packet.getPacketType();
-		short seq = SequenceNumbers.get(type);
-		
-		Packet p = new Packet(type, Packet.ACK_FLAG, seq, ack, dest);
-		//sendingBuffer.add(type, seq, p.pack());
+		Packet ack = AckHandler.getHandler(type).createAck(packet).orElse(null);
+		if (ack != null) {
+			sendingBuffer.add(ack.pack());
+			if (Program.DEBUG) {
+				System.out.println("ACKing packet: " + ack.toString());
+			}
+		}
 	}
 	
-	private void checkTextAck(Packet packet) {
-		//TODO Implement
+	private void checkAck(Packet packet) {
+		PacketType type = packet.getPacketType();
+		AckHandler.getHandler(type).handleAck(this, packet);
 	}
 	
 	public ReceivingBuffer getReceivingBuffer() {

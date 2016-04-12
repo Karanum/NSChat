@@ -1,27 +1,22 @@
 package nschat.ui;
 
 
+import java.awt.Button;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
 
-import java.awt.Button;
-import java.awt.Component;
-
-import javax.swing.JLabel;
-import java.awt.Choice;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
-import javax.swing.JTextField;
-
 public class SettingsGUI extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField nameField;
 	private JTextField portField;
@@ -54,17 +49,16 @@ public class SettingsGUI extends JFrame {
 			String b = null;
 			if (e.getActionCommand().equals("save")) {
 				getProgram().setName(nameField.getText());
-				//getProgram().getConnection().getMulticast().setPort(portField.get); //TODO change
+				//getProgram().getConnection().getMulticast().setPort(parseInt(portField.getText())); //TODO change
 				/*try {
 					getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
 				} catch (SocketException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}*/
 				a = nameField.getText();
 				b = portField.getText(); //TODO give it to the correct method
 			//	c = choice.getSelectedItem(); //TODO give to correct method
-				System.out.println("saved settings:\nname: " + a + ", port: " + b);
+				System.out.println("saved settings:\nname: " + a /*+ ", port: " + b*/); //TODO if port change works change!
 			}
 			gui.setEnabled(true);
 			getGUI().dispose();
@@ -113,6 +107,8 @@ public class SettingsGUI extends JFrame {
 		contentPane.add(portLabel, "cell 1 1");
 		
 		portField = new JTextField();
+		portField.setEditable(false);
+		portField.setText("Comming soon");
 		portField.setToolTipText("Enter the portnumber that you want to use");
 		if (program.getConnection().getMulticast().getPort() == 0) {
 			portField.setText("PortNumber");

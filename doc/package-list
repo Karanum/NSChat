@@ -4,6 +4,4 @@ nschat.multicasting
 nschat.routing
 nschat.security
 nschat.tcp
-nschat.test
 nschat.ui
-org.eclipse.wb.swing
