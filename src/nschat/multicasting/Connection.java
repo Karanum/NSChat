@@ -38,7 +38,7 @@ public class Connection implements Runnable {
 		
 		this.program = program;
 		routing = new BasicRoutingProtocol();
-		fileManager = new FileHandler();
+		fileManager = new FileHandler(this);
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
 	}
 
@@ -170,5 +170,9 @@ public class Connection implements Runnable {
 	
 	public FileHandler getFileHandler() {
 		return fileManager;
+	}
+	
+	public Program getProgram() {
+		return program;
 	}
 }

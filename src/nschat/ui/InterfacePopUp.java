@@ -56,6 +56,7 @@ public class InterfacePopUp extends JFrame {
 				Thread.sleep(500);
 				finished = true;
 				dispose();
+				manager.removeKeyEventDispatcher(dispatcher);
 			} catch (SocketException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -119,7 +120,7 @@ public class InterfacePopUp extends JFrame {
 					System.out.println("enter pressed");
 					//button.setActionCommand("enter pressed");
 					enterPress.doClick();
-					manager.removeKeyEventDispatcher(dispatcher);
+					//manager.removeKeyEventDispatcher(dispatcher);
 				}
 				return false;
 			}

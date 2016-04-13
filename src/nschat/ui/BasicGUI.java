@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.swing.DropMode;
@@ -43,6 +44,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.html.HTMLDocument;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -60,8 +62,9 @@ public class BasicGUI extends JFrame {
 	private SettingsGUI frame;
 	private JScrollPane scrollPane;
 	private JEditorPane editorPane;
-	private Document doc;
+	private HTMLDocument doc;			//TODO might change
 	private JMenuItem menuSendFile;
+	private StringBuffer text = new StringBuffer("<html><body>\n");
 	
 	private Program program;
 	
@@ -92,11 +95,11 @@ public class BasicGUI extends JFrame {
 				
 				//printText(text);
 				
-				if (text.equalsIgnoreCase("Filefilefile")) {
-					SendingBuffer buffer = program.getConnection().getSendingBuffer();
-					program.getConnection().getFileHandler().sendFile(buffer, "D:\\reuniclus.png");
-					System.out.println("SENDING A FILE WHOOAAAAA");
-				}
+//				if (text.equalsIgnoreCase("Filefilefile")) {
+//					SendingBuffer buffer = program.getConnection().getSendingBuffer();
+//					program.getConnection().getFileHandler().sendFile(buffer, "D:\\reuniclus.png");
+//					System.out.println("SENDING A FILE WHOOAAAAA");
+//				}
 				
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
@@ -117,8 +120,9 @@ public class BasicGUI extends JFrame {
 		    
 		    int returnVal = chooser.showOpenDialog(getParent());
 		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-		       System.out.println("You chose to open this file: " +
+		       System.out.println("You chose to send this file: " +
 		            chooser.getSelectedFile().getName());
+		       getProgram().getConnection().getFileHandler().sendFile(chooser.getSelectedFile().getPath());
 		       //TODO send the file to where it is send!
 		    }
 		}
@@ -178,7 +182,7 @@ public class BasicGUI extends JFrame {
 		editorPane.setEditable(false);
 		editorPane.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
 		
-		doc = editorPane.getDocument();
+		doc = (HTMLDocument) editorPane.getDocument();
 		
 		scrollPane = new JScrollPane(editorPane);
 		getContentPane().add(scrollPane, "cell 0 0 15 9,grow");
@@ -227,6 +231,7 @@ public class BasicGUI extends JFrame {
 		textField.requestFocusInWindow();
 		
 		editorPane.addHyperlinkListener(new LinkListener());
+		
 	}
 	
 	//TODO change such that messages are ordered by sending time.
@@ -235,14 +240,15 @@ public class BasicGUI extends JFrame {
 	 * @param text
 	 */
 	public void printText(String text) {
-//		textArea.append(text + "\n");
+		textArea.append(text + "\n");
+		appendString("<font>" + text + "</font><br>");
 //		try {
 //			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
 //		} catch (BadLocationException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		printFile("a");
+		//printFile("a");
 	}
 	
 	/**
@@ -251,13 +257,15 @@ public class BasicGUI extends JFrame {
 	 * @param name
 	 */
 	public void printText(String text, String name) {
-		textArea.append("<" + name + "> " + text);
-		try {
-			doc.insertString(doc.getLength() , "<" + name + "> " + text + "\n", new SimpleAttributeSet());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		textArea.append("<" + name + "> " + text + "\n");
+		appendString("<font>" +  "<" + name + "> " + text + "</font><br>");
+
+//		try {
+//			doc.insertString(doc.getLength() , "<" + name + "> " + text + "\n", new SimpleAttributeSet());
+//		} catch (BadLocationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	public Program getProgram() {
@@ -297,7 +305,12 @@ public class BasicGUI extends JFrame {
 	 * Prints a link to the file.
 	 * @param filePath
 	 */
-	public void printFile(String filePath) {
-		editorPane.setText("<a href=\"file:///" + (new File("")).getAbsolutePath() + "/src/nschat/ui/test.html\">Test</a>");
+	public void printFile(Path filePath, String fileName) {
+		appendString("<a href=\"file:///" + filePath  + "\"> " + fileName + "</a><br>");
+	}
+	
+	private void appendString(String string) {
+		text.append(string);
+		editorPane.setText(text.toString());
 	}
 }
