@@ -48,7 +48,7 @@ public class Packet {
 	private short ack;
 	private InetAddress src;
 	private InetAddress dest;
-	private Symetric enc = new Symetric();
+	//private Symetric enc = new Symetric();
 
 	private byte[] data;
 	
@@ -188,10 +188,27 @@ public class Packet {
 	}
 	
 	/**
-	 * Sets the payload data of the packet and encrypts it.
+	 * Sets the encrypted payload data of the packet.
+	 * @param data The packet data as a String
+	 */
+	public void setData(String data, Symetric enc) {
+		this.data = enc.encrypt(data.getBytes());
+	}
+	
+	/**
+	 * Sets the payload data of the packet.
 	 * @param data The packet data as bytes
 	 */
 	public void setData(byte[] data) {
+		this.data = data;
+	}
+	
+	/**
+	 * Sets the encrypted payload data of the packet.
+	 * @param data The packet data as bytes
+	 * @param enc
+	 */
+	public void setData(byte[] data, Symetric enc) {
 		this.data = enc.encrypt(data);
 	}
 	
@@ -260,10 +277,25 @@ public class Packet {
 	}
 	
 	/**
+	 * Returns the packet payload data as a String.
+	 */
+	public String getDataAsString(Symetric enc) {
+		return new String(enc.decrypt(data, getSender()));
+	}
+	
+	/**
 	 * Returns the packet payload data as bytes.
 	 * @return
 	 */
 	public byte[] getData() {
+		return data;
+	}
+	/**
+	 * Returns the packet payload data as decrypted bytes.
+	 * @param enc
+	 * @return
+	 */
+	public byte[] getData(Symetric enc) {
 		return enc.decrypt(data, getSender());
 	}
 	

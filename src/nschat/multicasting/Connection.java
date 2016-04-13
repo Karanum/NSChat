@@ -102,6 +102,7 @@ public class Connection implements Runnable {
 					break;
 					
 				case SECURITY:
+					program.getSecurity().IVReceived(p);
 					break;
 					
 				default:
