@@ -240,12 +240,9 @@ public class BasicGUI extends JFrame {
 	 * @param text
 	 */
 	public void printText(String text) {
-//		if (text.indexOf(":(") != -1) {
-//			parseEmote(text);
-//		} else {
-			textArea.append(parseEmote(text) + "\n");
-			appendString("<font>" + parseEmote(text) + "</font><br>");
-//		}
+		textArea.append(parseEmote(text) + "\n");
+		appendString("<font>" + parseEmote(text) + "</font><br>");
+
 //		try {
 //			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
 //		} catch (BadLocationException e) {
@@ -318,36 +315,50 @@ public class BasicGUI extends JFrame {
 		editorPane.setText(text.toString());
 	}
 	
+	/**
+	 * Checks the entire string and if it contains any smiley symbols,
+	 * and converts them to the corresponding emoji IMG-tag if so.
+	 * @param message The received text message 
+	 * @return A text message with every emoji-symbol replaced with its IMG-tag
+	 */
 	public String parseEmote(String message) {
 		String folder = ((new File("")).getAbsolutePath()).replace("\\", "/").replace(" ", "%20");
-		String filePathDislike = "file:///" + folder + "/images/dislike.png";
+		
+		// GET EMOJI FILE PATH
 		String filePathSmile = "file:///" + folder + "/images/smile.png";
+		String filePathSad = "file:///" + folder + "/images/sad.png";
+		String filePathBigsmile = "file:///" + folder + "/images/bigsmile.png";
 		String filePathWink = "file:///" + folder + "/images/wink.png";
 		String filePathCry = "file:///" + folder + "/images/cry.png";
-//		System.out.println(filePath);
-//		printEmote(message, filePath);
+		String filePathToung = "file:///" + folder + "/images/toung.png";
+		String filePathEksdi = "file:///" + folder + "/images/eksdi.png";
+		String filePathBadboy = "file:///" + folder + "/images/badboy.png";
+		String filePathKappa = "file:///" + folder + "/images/kappa.png";
+		String filePathHeart = "file:///" + folder + "/images/heart.png";
+		String filePathPoop = "file:///" + folder + "/images/poop.png";
+		String filePathLike = "file:///" + folder + "/images/like.png";
+		String filePathDislike = "file:///" + folder + "/images/dislike.png";
+		String filePathFire = "file:///" + folder + "/images/fire.png";
 		
-//		String imgTag = "<img src=\"" + filePath + "\"/>";
-		
-		
+		//REPLACE THE EMOJI SYMBOL WITH THE IMG-TAG OF THE CORRESPONDING EMOJI
 		String result = message;
-		result = result.replace(":(", "<img src=\"" + filePathDislike + "\"/>");
-		result = result.replace(":D", "<img src=\"" + filePathSmile + "\"/>");
+		result = result.replace(":)", "<img src=\"" + filePathSmile + "\"/>");
+		result = result.replace(":(", "<img src=\"" + filePathSad + "\"/>");
+		result = result.replace(":D", "<img src=\"" + filePathBigsmile + "\"/>");
 		result = result.replace(";)", "<img src=\"" + filePathWink + "\"/>");
 		result = result.replace(":'(", "<img src=\"" + filePathCry + "\"/>");
-		
-//		result += "<br>";
-		System.out.println("result: " + result);
-		//appendString(result + "<br>");
+		result = result.replace(";(", "<img src=\"" + filePathCry + "\"/>");
+		result = result.replace(":P", "<img src=\"" + filePathToung + "\"/>");
+		result = result.replace("xd", "<img src=\"" + filePathEksdi + "\"/>");
+		result = result.replace("/badboy", "<img src=\"" + filePathBadboy + "\"/>");
+		result = result.replace("/kappa", "<img src=\"" + filePathKappa + "\"/>");
+		result = result.replace("<3", "<img src=\"" + filePathHeart + "\"/>");
+		result = result.replace("/poop", "<img src=\"" + filePathPoop + "\"/>");
+		result = result.replace("/like", "<img src=\"" + filePathLike + "\"/>");
+		result = result.replace("/dislike", "<img src=\"" + filePathDislike + "\"/>");
+		result = result.replace("/burn", "<img src=\"" + filePathFire + "\"/>");
+
 		return result;
 	}
-	
-	public void printEmote(String message, String filePath) {
-		String imgTag = "<img src=\"" + filePath + "\"/>";
-//		appendString("<img src=\"" + filePath + "\"/><br>");
-		String result = message.replace(":(", imgTag);
-		System.out.println("result: " + result);
-		appendString(result + "<br>");
-		
-	}
+
 }
