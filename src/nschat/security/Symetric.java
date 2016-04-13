@@ -58,11 +58,11 @@ public class Symetric {
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 		}
-//		System.out.print("send IV: ");
-//		for (int i = 0; i< KEYSIZE; i++) {
-//			System.out.print(localIV[i]);
-//		}
-//		System.out.print("\n");
+		System.out.print("send IV: ");
+		for (int i = 0; i< KEYSIZE; i++) {
+			System.out.print(localIV[i]);
+		}
+		System.out.print("\n");
 	}
 	
 	public void IVReceived(Packet packet) {
@@ -81,6 +81,9 @@ public class Symetric {
 //					System.out.print(temp[i]);
 //				}
 //				System.out.print("\n");
+				if (!IVs.get(packet.getSender()).equals(temp)) {
+					setup();
+				}
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 				e.printStackTrace();
 			}
