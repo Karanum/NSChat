@@ -13,6 +13,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import nschat.Program;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 
@@ -23,41 +24,70 @@ public class Symetric {
 	private Key key = new SecretKeySpec(keyByte, "AES");
 	public byte[] localIV;
 	private Map<Integer, byte[]> IVs = new HashMap<Integer , byte[]>();
+	private Program program;
+	
+	//for testing only.
+	public Symetric() {
+		
+	}
 
+	public Symetric(Program program) {
+		this.program = program;
+		localIV = createIV();
+	}
+	
+	// for testing only
+	public void setup(String test) {
+		localIV = createIV();
+	}
+	
+	
 	/**
 	 * Used to setup the secure connection.
 	 */
 	public void setup() {
-		localIV = createIV();
 		Packet ivAuth = new Packet();
 		ivAuth.setPacketType(PacketType.SECURITY);
-		ivAuth.setSeqNumber((short) 10);
+		ivAuth.setSeqNumber((short) (Math.random()*Short.MAX_VALUE));
 		try {
 			Cipher c = Cipher.getInstance("AES/ECB/NoPadding");
 			c.init(Cipher.ENCRYPT_MODE, key);
 			byte[] data = c.doFinal(localIV);
 			ivAuth.setData(data);
-			//TODO send the packet
+			program.getConnection().getSendingBuffer().add(ivAuth.pack());
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 		}
+		System.out.print("send IV: ");
+		for (int i = 0; i< KEYSIZE; i++) {
+			System.out.print(localIV[i]);
+		}
+		System.out.print("\n");
 	}
 	
 	public void IVReceived(Packet packet) {
 		if (!packet.isAck()) {
+			if (!IVs.containsKey(packet.getSender())) {
+				setup();
+			}
 			Cipher c;
 			try {
 				c = Cipher.getInstance("AES/ECB/NoPadding");
 				c.init(Cipher.DECRYPT_MODE, key);
 				byte[] temp = c.doFinal(packet.getData());
 				IVs.put(packet.getSender(), temp);
+//				System.out.print("received IV: ");
+//				for (int i = 0; i< KEYSIZE; i++) {
+//					System.out.print(temp[i]);
+//				}
+//				System.out.print("\n");
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 				e.printStackTrace();
 			}
 			Packet ackPacket = new Packet();
 			ackPacket.setFlags(Packet.ACK_FLAG);
 			ackPacket.setRecipient(packet.getSenderAddress());
-			//TODO send the ack packet
+			program.getConnection().getSendingBuffer().add(ackPacket.pack());
 		}
 	}
 	
@@ -79,6 +109,7 @@ public class Symetric {
 				}
 			}
 			result[i] = (byte) (tempKey[i % KEYSIZE] ^ plaintext[i]);
+			//System.out.println("send IV: " + IV[15]); 
 		}
 		
 		/*for (int j = 0; j < plaintext.length + KEYSIZE ; j += KEYSIZE) {
