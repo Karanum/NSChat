@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import nschat.exception.PacketFormatException;
+import nschat.security.Symetric;
 
 /**
  * Packet data structure used for creating and reading data from packets.
@@ -47,6 +48,7 @@ public class Packet {
 	private short ack;
 	private InetAddress src;
 	private InetAddress dest;
+	private Symetric enc = new Symetric();
 
 	private byte[] data;
 	
@@ -186,11 +188,11 @@ public class Packet {
 	}
 	
 	/**
-	 * Sets the payload data of the packet.
+	 * Sets the payload data of the packet and encrypts it.
 	 * @param data The packet data as bytes
 	 */
 	public void setData(byte[] data) {
-		this.data = data;
+		this.data = enc.encrypt(data);
 	}
 	
 	/**
@@ -262,7 +264,7 @@ public class Packet {
 	 * @return
 	 */
 	public byte[] getData() {
-		return data;
+		return enc.decrypt(data, getSender());
 	}
 	
 	/**
