@@ -33,6 +33,7 @@ public class Symetric {
 
 	public Symetric(Program program) {
 		this.program = program;
+		localIV = createIV();
 	}
 	
 	// for testing only
@@ -45,7 +46,6 @@ public class Symetric {
 	 * Used to setup the secure connection.
 	 */
 	public void setup() {
-		localIV = createIV();
 		Packet ivAuth = new Packet();
 		ivAuth.setPacketType(PacketType.SECURITY);
 		ivAuth.setSeqNumber((short) 10);
@@ -67,6 +67,9 @@ public class Symetric {
 	
 	public void IVReceived(Packet packet) {
 		if (!packet.isAck()) {
+			if (!IVs.containsKey(packet.getSender())) {
+				setup();
+			}
 			Cipher c;
 			try {
 				c = Cipher.getInstance("AES/ECB/NoPadding");

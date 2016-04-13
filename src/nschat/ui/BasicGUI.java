@@ -106,7 +106,7 @@ public class BasicGUI extends JFrame {
 				p.setData(text, getProgram().getSecurity());
 				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
 				
-				System.out.println("Sending text, SEQ: " + p.getSeqNumber() + ", Data: " + p.getDataAsString(getProgram().getSecurity()));
+				System.out.println("Sending text, SEQ: " + p.getSeqNumber() + ", Data: " + p.getDataAsString());
 
 				program.getConnection().getSendingBuffer().add(PacketType.TEXT, seq, p.pack());
 			}
