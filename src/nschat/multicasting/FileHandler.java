@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,7 +41,10 @@ public class FileHandler {
 			return path;
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
+		} catch (FileAlreadyExistsException e) {
+			return writeToFile(filename.replace(".", "(1)."), fileBytes);
 		} catch (IOException e) {
+		
 			e.printStackTrace();
 		}
 		return null;
@@ -71,6 +77,7 @@ public class FileHandler {
 		System.arraycopy(file, 0, data, nameLength + 1, file.length);
 		packet.setData(data);
 		con.getSendingBuffer().add(type, packet.getSeqNumber(), packet.pack());
+		con.getProgram().getUI().printFile(Paths.get(filePath), new String(fileName));
 	}
 	
 
@@ -81,7 +88,13 @@ public class FileHandler {
 		byte[] name = Arrays.copyOfRange(receivedData, 1, nameLength + 1);
 		String filename = new String(name);
 		byte[] data = Arrays.copyOfRange(receivedData, nameLength + 1, receivedData.length);
-		
-		con.getProgram().getUI().printFile(writeToFile(filename, data), filename);
+		try {
+			if (!packet.getSenderAddress().equals(InetAddress.getLocalHost())) {
+				con.getProgram().getUI().printFile(writeToFile(filename, data), filename);
+			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

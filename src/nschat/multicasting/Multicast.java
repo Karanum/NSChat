@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class Multicast {
 
-	private final int BUFFER_LENGTH = 1028;
+	private final int BUFFER_LENGTH = 4096;
 	private final String GROUP_ADDRESS = "227.21.137.0";
 	private int groupPort = 8637;
 	private ReceivingBuffer receivingBuffer; 
