@@ -6,6 +6,7 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 
 import nschat.multicasting.Connection;
+import nschat.security.Symetric;
 import nschat.ui.BasicGUI;
 import nschat.ui.InterfacePopUp;
 
@@ -26,6 +27,7 @@ public class Program {
 	private static boolean running = false;
 	private String userName;
 	private InterfacePopUp ipu;
+	private Symetric encryption;
 	
 	/**
 	 * Starts a new instance of the program, can only be called once.
@@ -77,8 +79,9 @@ public class Program {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		}		
 		
+		encryption = new Symetric(this);
 		
 		Thread t = new Thread(conn);
 		t.start();
@@ -173,5 +176,9 @@ public class Program {
 	
 	public Program getProgram() {
 		return this;
+	}
+	
+	public Symetric getSecurity() {
+		return encryption;
 	}
 }

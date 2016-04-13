@@ -1,5 +1,6 @@
 package nschat.ui;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 
 import javax.swing.JEditorPane;
@@ -26,10 +27,24 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.swing.DropMode;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AttributeSet;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.html.HTMLDocument;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -47,8 +62,9 @@ public class BasicGUI extends JFrame {
 	private SettingsGUI frame;
 	private JScrollPane scrollPane;
 	private JEditorPane editorPane;
-	private Document doc;
+	private HTMLDocument doc;			//TODO might change
 	private JMenuItem menuSendFile;
+	private StringBuffer text = new StringBuffer("<html><body>\n");
 	
 	private Program program;
 	
@@ -79,15 +95,15 @@ public class BasicGUI extends JFrame {
 				
 				//printText(text);
 				
-				if (text.equalsIgnoreCase("Filefilefile")) {
-					SendingBuffer buffer = program.getConnection().getSendingBuffer();
-					program.getConnection().getFileHandler().sendFile(buffer, "D:\\reuniclus.png");
-					System.out.println("SENDING A FILE WHOOAAAAA");
-				}
+//				if (text.equalsIgnoreCase("Filefilefile")) {
+//					SendingBuffer buffer = program.getConnection().getSendingBuffer();
+//					program.getConnection().getFileHandler().sendFile(buffer, "D:\\reuniclus.png");
+//					System.out.println("SENDING A FILE WHOOAAAAA");
+//				}
 				
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
-				p.setData(text);
+				p.setData(text, getProgram().getSecurity());
 				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
 				
 				System.out.println("Sending text, SEQ: " + p.getSeqNumber() + ", Data: " + p.getDataAsString());
@@ -104,12 +120,29 @@ public class BasicGUI extends JFrame {
 		    
 		    int returnVal = chooser.showOpenDialog(getParent());
 		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-		       System.out.println("You chose to open this file: " +
+		       System.out.println("You chose to send this file: " +
 		            chooser.getSelectedFile().getName());
+		       getProgram().getConnection().getFileHandler().sendFile(chooser.getSelectedFile().getPath());
 		       //TODO send the file to where it is send!
 		    }
 		}
 		
+	}
+	
+	private class LinkListener implements HyperlinkListener {
+		@Override
+		public void hyperlinkUpdate(HyperlinkEvent e) {
+			if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+				if(Desktop.isDesktopSupported()) {
+				    try {
+						Desktop.getDesktop().open(new File(e.getURL().getPath()));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} 
+				}
+		    }
+		}
 	}
 
 	/**
@@ -149,7 +182,7 @@ public class BasicGUI extends JFrame {
 		editorPane.setEditable(false);
 		editorPane.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
 		
-		doc = editorPane.getDocument();
+		doc = (HTMLDocument) editorPane.getDocument();
 		
 		scrollPane = new JScrollPane(editorPane);
 		getContentPane().add(scrollPane, "cell 0 0 15 9,grow");
@@ -174,7 +207,8 @@ public class BasicGUI extends JFrame {
 		
 		sendButton.addActionListener(new Listener());
 		textField.addActionListener(new Listener());
-
+		
+		
 		menuExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -191,6 +225,13 @@ public class BasicGUI extends JFrame {
 		});
 		
 		menuSendFile.addActionListener(new SendFileListener());
+		
+		setVisible(true);
+		
+		textField.requestFocusInWindow();
+		
+		editorPane.addHyperlinkListener(new LinkListener());
+		
 	}
 	
 	//TODO change such that messages are ordered by sending time.
@@ -199,13 +240,19 @@ public class BasicGUI extends JFrame {
 	 * @param text
 	 */
 	public void printText(String text) {
-		textArea.append(text + "\n");
-		try {
-			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		if (text.indexOf(":(") != -1) {
+//			parseEmote(text);
+//		} else {
+			textArea.append(parseEmote(text) + "\n");
+			appendString("<font>" + parseEmote(text) + "</font><br>");
+//		}
+//		try {
+//			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
+//		} catch (BadLocationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		//printFile("a");
 	}
 	
 	/**
@@ -214,13 +261,15 @@ public class BasicGUI extends JFrame {
 	 * @param name
 	 */
 	public void printText(String text, String name) {
-		textArea.append("<" + name + "> " + text);
-		try {
-			doc.insertString(doc.getLength() , "<" + name + "> " + text + "\n", new SimpleAttributeSet());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		textArea.append("<" + name + "> " + text + "\n");
+		appendString("<font>" +  "<" + name + "> " + text + "</font><br>");
+
+//		try {
+//			doc.insertString(doc.getLength() , "<" + name + "> " + text + "\n", new SimpleAttributeSet());
+//		} catch (BadLocationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	public Program getProgram() {
@@ -260,12 +309,45 @@ public class BasicGUI extends JFrame {
 	 * Prints a link to the file.
 	 * @param filePath
 	 */
-	public void printFile(String filePath) {
-		try {
-			doc.insertString(doc.getLength(), "<a href=\"test.html\">C</a>" , new SimpleAttributeSet());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void printFile(Path filePath, String fileName) {
+		appendString("<a href=\"file:///" + filePath  + "\"> " + fileName + "</a><br>");
+	}
+	
+	private void appendString(String string) {
+		text.append(string);
+		editorPane.setText(text.toString());
+	}
+	
+	public String parseEmote(String message) {
+		String folder = ((new File("")).getAbsolutePath()).replace("\\", "/").replace(" ", "%20");
+		String filePathDislike = "file:///" + folder + "/images/dislike.png";
+		String filePathSmile = "file:///" + folder + "/images/smile.png";
+		String filePathWink = "file:///" + folder + "/images/wink.png";
+		String filePathCry = "file:///" + folder + "/images/cry.png";
+//		System.out.println(filePath);
+//		printEmote(message, filePath);
+		
+//		String imgTag = "<img src=\"" + filePath + "\"/>";
+		
+		
+		String result = message;
+		result = result.replace(":(", "<img src=\"" + filePathDislike + "\"/>");
+		result = result.replace(":D", "<img src=\"" + filePathSmile + "\"/>");
+		result = result.replace(";)", "<img src=\"" + filePathWink + "\"/>");
+		result = result.replace(":'(", "<img src=\"" + filePathCry + "\"/>");
+		
+//		result += "<br>";
+		System.out.println("result: " + result);
+		//appendString(result + "<br>");
+		return result;
+	}
+	
+	public void printEmote(String message, String filePath) {
+		String imgTag = "<img src=\"" + filePath + "\"/>";
+//		appendString("<img src=\"" + filePath + "\"/><br>");
+		String result = message.replace(":(", imgTag);
+		System.out.println("result: " + result);
+		appendString(result + "<br>");
+		
 	}
 }

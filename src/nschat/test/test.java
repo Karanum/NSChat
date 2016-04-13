@@ -11,7 +11,7 @@ public class test {
 		
 		String InputA = "De eerste test string"; //"testing encryption, It seems that it works, lets make the test working now!!!";
 		Symetric enc = new Symetric();
-		enc.setup();
+		enc.setup(true);
 		byte[] IV = enc.localIV.clone();
 		byte[] ciph = enc.encrypt(InputA.getBytes());
 		System.out.println("InputA from bytes: " + new String(InputA.getBytes()));

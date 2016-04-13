@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +18,13 @@ import nschat.tcp.SequenceNumbers;
 
 public class FileHandler {
 	
-	public void writeToFile(String filename, byte[] fileBytes) {
+	private Connection con;
+	
+	public FileHandler(Connection con) {
+		this.con = con;
+	}
+	
+	public Path writeToFile(String filename, byte[] fileBytes) {
 		
 		FileOutputStream fileOutputStream;
 		try {			
@@ -28,14 +37,20 @@ public class FileHandler {
 			
 			Files.createFile(path);
 			Files.write(path, fileBytes);
+			System.out.println("File downloaded");
+			return path;
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
+		} catch (FileAlreadyExistsException e) {
+			return writeToFile(filename.replace(".", "(1)."), fileBytes);
 		} catch (IOException e) {
+		
 			e.printStackTrace();
 		}
+		return null;
 	}
 
-	public void sendFile(SendingBuffer buffer, String filePath) {
+	public void sendFile(String filePath) {
 		PacketType type = PacketType.FILE;
 		Packet packet = new Packet(type, (byte) 0, SequenceNumbers.get(type), (short) 0, null);
 		int last1 = filePath.lastIndexOf('/');
@@ -61,7 +76,8 @@ public class FileHandler {
 		System.arraycopy(fileName, 0, data, 1, nameLength);
 		System.arraycopy(file, 0, data, nameLength + 1, file.length);
 		packet.setData(data);
-		buffer.add(type, packet.getSeqNumber(), packet.pack());
+		con.getSendingBuffer().add(type, packet.getSeqNumber(), packet.pack());
+		con.getProgram().getUI().printFile(Paths.get(filePath), new String(fileName));
 	}
 	
 
@@ -72,8 +88,13 @@ public class FileHandler {
 		byte[] name = Arrays.copyOfRange(receivedData, 1, nameLength + 1);
 		String filename = new String(name);
 		byte[] data = Arrays.copyOfRange(receivedData, nameLength + 1, receivedData.length);
-		
-		writeToFile(filename, data);
+		try {
+			if (!packet.getSenderAddress().equals(InetAddress.getLocalHost())) {
+				con.getProgram().getUI().printFile(writeToFile(filename, data), filename);
+			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
 }

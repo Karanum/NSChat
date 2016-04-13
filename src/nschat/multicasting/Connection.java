@@ -38,7 +38,7 @@ public class Connection implements Runnable {
 		
 		this.program = program;
 		routing = new BasicRoutingProtocol();
-		fileManager = new FileHandler();
+		fileManager = new FileHandler(this);
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
 	}
 
@@ -89,7 +89,7 @@ public class Connection implements Runnable {
 			
 			switch (type) {
 				case TEXT:
-					program.getUI().printText(p.getDataAsString());
+					program.getUI().printText(p.getDataAsString(program.getSecurity()));
 					break;
 					
 				case FILE:
@@ -102,6 +102,7 @@ public class Connection implements Runnable {
 					break;
 					
 				case SECURITY:
+					getProgram().getSecurity().IVReceived(p);
 					break;
 					
 				default:
@@ -170,5 +171,9 @@ public class Connection implements Runnable {
 	
 	public FileHandler getFileHandler() {
 		return fileManager;
+	}
+	
+	public Program getProgram() {
+		return program;
 	}
 }
