@@ -48,7 +48,7 @@ public class Symetric {
 	public void setup() {
 		Packet ivAuth = new Packet();
 		ivAuth.setPacketType(PacketType.SECURITY);
-		ivAuth.setSeqNumber((short) 10);
+		ivAuth.setSeqNumber((short) (Math.random()*Short.MAX_VALUE));
 		try {
 			Cipher c = Cipher.getInstance("AES/ECB/NoPadding");
 			c.init(Cipher.ENCRYPT_MODE, key);
@@ -58,11 +58,11 @@ public class Symetric {
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 		}
-//		System.out.print("send IV: ");
-//		for (int i = 0; i< KEYSIZE; i++) {
-//			System.out.print(localIV[i]);
-//		}
-//		System.out.print("\n");
+		System.out.print("send IV: ");
+		for (int i = 0; i< KEYSIZE; i++) {
+			System.out.print(localIV[i]);
+		}
+		System.out.print("\n");
 	}
 	
 	public void IVReceived(Packet packet) {
@@ -109,7 +109,7 @@ public class Symetric {
 				}
 			}
 			result[i] = (byte) (tempKey[i % KEYSIZE] ^ plaintext[i]);
-			System.out.println("send IV: " + IV[15]); 
+			//System.out.println("send IV: " + IV[15]); 
 		}
 		
 		/*for (int j = 0; j < plaintext.length + KEYSIZE ; j += KEYSIZE) {
