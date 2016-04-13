@@ -60,6 +60,9 @@ public class SettingsGUI extends JFrame {
 			//	c = choice.getSelectedItem(); //TODO give to correct method
 				System.out.println("saved settings:\nname: " + a /*+ ", port: " + b*/); //TODO if port change works change!
 			}
+			if (e.getActionCommand().equals("enc")) {
+				getProgram().getSecurity().setup(true);
+			}
 			gui.setEnabled(true);
 			getGUI().dispose();
 		}
@@ -123,16 +126,21 @@ public class SettingsGUI extends JFrame {
 		*/
 		
 		Button resetButton = new Button("Cancel");
-		contentPane.add(resetButton, "cell 1 3");
+		contentPane.add(resetButton, "cell 1 4");
 		
 		Button saveButton = new Button("Save");
-		contentPane.add(saveButton, "cell 10 3");
+		contentPane.add(saveButton, "cell 10 4");
+		
+		Button encButton = new Button("Reset encryption");
+		contentPane.add(encButton, "cell 1 3");
 		
 		resetButton.setActionCommand("reset");
 		saveButton.setActionCommand("save");
+		encButton.setActionCommand("enc");
 		
 		resetButton.addActionListener(new ButtonListener());
 		saveButton.addActionListener(new ButtonListener());
+		encButton.addActionListener(new ButtonListener());
 	}
 	
 	public SettingsGUI getGUI() {
