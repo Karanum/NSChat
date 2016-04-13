@@ -27,7 +27,7 @@ public class Program {
 	private static boolean running = false;
 	private String userName;
 	private InterfacePopUp ipu;
-	private Symetric encryption = new Symetric(this);
+	private Symetric encryption;
 	
 	/**
 	 * Starts a new instance of the program, can only be called once.
@@ -79,9 +79,9 @@ public class Program {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		encryption.setup();
-		System.out.println("Encryption set up");
+		}		
+		
+		encryption = new Symetric(this);
 		
 		Thread t = new Thread(conn);
 		t.start();

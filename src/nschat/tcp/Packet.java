@@ -39,6 +39,7 @@ public class Packet {
 	};
 	
 	public static final byte ACK_FLAG = 1;
+	public static final byte NEW_FLAG = 1<<1;
 	private static final int HEADER_SIZE = 21;
 	
 	private PacketType type;
@@ -224,6 +225,10 @@ public class Packet {
 	 */
 	public boolean isAck() {
 		return (flags & ACK_FLAG) != 0;
+	}
+	
+	public boolean isNew() {
+		return (flags & NEW_FLAG) != 0;
 	}
 	
 	/**

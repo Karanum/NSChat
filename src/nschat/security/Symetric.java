@@ -34,6 +34,7 @@ public class Symetric {
 	public Symetric(Program program) {
 		this.program = program;
 		localIV = createIV();
+		setup(true);
 	}
 	
 	// for testing only
@@ -45,10 +46,13 @@ public class Symetric {
 	/**
 	 * Used to setup the secure connection.
 	 */
-	public void setup() {
+	public void setup(boolean newIV) {
 		Packet ivAuth = new Packet();
 		ivAuth.setPacketType(PacketType.SECURITY);
 		ivAuth.setSeqNumber((short) (Math.random()*Short.MAX_VALUE));
+		if (newIV) {
+			ivAuth.setFlags(Packet.NEW_FLAG);
+		}
 		try {
 			Cipher c = Cipher.getInstance("AES/ECB/NoPadding");
 			c.init(Cipher.ENCRYPT_MODE, key);
@@ -58,17 +62,17 @@ public class Symetric {
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 		}
-		System.out.print("send IV: ");
-		for (int i = 0; i< KEYSIZE; i++) {
-			System.out.print(localIV[i]);
-		}
-		System.out.print("\n");
+//		System.out.print("send IV: ");
+//		for (int i = 0; i< KEYSIZE; i++) {
+//			System.out.print(localIV[i]);
+//		}
+//		System.out.print("\n");
 	}
 	
 	public void IVReceived(Packet packet) {
 		if (!packet.isAck()) {
-			if (!IVs.containsKey(packet.getSender())) {
-				setup();
+			if (!IVs.containsKey(packet.getSender()) || packet.isNew()) {
+				setup(false);
 			}
 			Cipher c;
 			try {
@@ -81,9 +85,7 @@ public class Symetric {
 //					System.out.print(temp[i]);
 //				}
 //				System.out.print("\n");
-				if (!IVs.get(packet.getSender()).equals(temp)) {
-					setup();
-				}
+				
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 				e.printStackTrace();
 			}
