@@ -240,8 +240,12 @@ public class BasicGUI extends JFrame {
 	 * @param text
 	 */
 	public void printText(String text) {
-		textArea.append(text + "\n");
-		appendString("<font>" + text + "</font><br>");
+//		if (text.indexOf(":(") != -1) {
+//			parseEmote(text);
+//		} else {
+			textArea.append(parseEmote(text) + "\n");
+			appendString("<font>" + parseEmote(text) + "</font><br>");
+//		}
 //		try {
 //			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
 //		} catch (BadLocationException e) {
@@ -312,5 +316,38 @@ public class BasicGUI extends JFrame {
 	private void appendString(String string) {
 		text.append(string);
 		editorPane.setText(text.toString());
+	}
+	
+	public String parseEmote(String message) {
+		String folder = ((new File("")).getAbsolutePath()).replace("\\", "/").replace(" ", "%20");
+		String filePathDislike = "file:///" + folder + "/images/dislike.png";
+		String filePathSmile = "file:///" + folder + "/images/smile.png";
+		String filePathWink = "file:///" + folder + "/images/wink.png";
+		String filePathCry = "file:///" + folder + "/images/cry.png";
+//		System.out.println(filePath);
+//		printEmote(message, filePath);
+		
+//		String imgTag = "<img src=\"" + filePath + "\"/>";
+		
+		
+		String result = message;
+		result = result.replace(":(", "<img src=\"" + filePathDislike + "\"/>");
+		result = result.replace(":D", "<img src=\"" + filePathSmile + "\"/>");
+		result = result.replace(";)", "<img src=\"" + filePathWink + "\"/>");
+		result = result.replace(":'(", "<img src=\"" + filePathCry + "\"/>");
+		
+//		result += "<br>";
+		System.out.println("result: " + result);
+		//appendString(result + "<br>");
+		return result;
+	}
+	
+	public void printEmote(String message, String filePath) {
+		String imgTag = "<img src=\"" + filePath + "\"/>";
+//		appendString("<img src=\"" + filePath + "\"/><br>");
+		String result = message.replace(":(", imgTag);
+		System.out.println("result: " + result);
+		appendString(result + "<br>");
+		
 	}
 }

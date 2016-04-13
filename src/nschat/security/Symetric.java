@@ -80,12 +80,13 @@ public class Symetric {
 				c.init(Cipher.DECRYPT_MODE, key);
 				byte[] temp = c.doFinal(packet.getData());
 				IVs.put(packet.getSender(), temp);
+
 //				System.out.print("received IV: ");
 //				for (int i = 0; i< KEYSIZE; i++) {
 //					System.out.print(temp[i]);
 //				}
 //				System.out.print("\n");
-				
+
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 				e.printStackTrace();
 			}
