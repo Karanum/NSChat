@@ -15,7 +15,7 @@ public class EncryptionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		enc.setup();
+		enc.setup("a");
 	}
 	
 	@Test

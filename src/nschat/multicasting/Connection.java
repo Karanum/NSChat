@@ -89,7 +89,7 @@ public class Connection implements Runnable {
 			
 			switch (type) {
 				case TEXT:
-					program.getUI().printText(p.getDataAsString());
+					program.getUI().printText(p.getDataAsString(program.getSecurity()));
 					break;
 					
 				case FILE:
@@ -102,7 +102,7 @@ public class Connection implements Runnable {
 					break;
 					
 				case SECURITY:
-					program.getSecurity().IVReceived(p);
+					getProgram().getSecurity().IVReceived(p);
 					break;
 					
 				default:
