@@ -39,8 +39,9 @@ public class Connection implements Runnable {
 			throw e;
 		} 
 		
-		this.program = program;
 		routing = new BasicRoutingProtocol(sendingBuffer);
+		
+		this.program = program;
 		fileManager = new FileHandler(this);
 		timeout = new Timeout(this);
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
@@ -49,14 +50,17 @@ public class Connection implements Runnable {
 	@Override
 	public void run() {
 		cast.receiveDatagram();
+		routing.start();
+		
+		try {
+			routing.join();
+		} catch (InterruptedException e) { }
 	}
 	
 	public void send() {
 		for (byte[] packet : sendingBuffer.getAllFromBuffer()) {
 			DatagramPacket datagram = cast.makeDgramPacket(packet);
 			cast.sendDatagram(datagram);
-			
-			//packet.hashCode();
 		}
 	}
 	
