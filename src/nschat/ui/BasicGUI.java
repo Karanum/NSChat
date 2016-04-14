@@ -101,8 +101,8 @@ public class BasicGUI extends JFrame {
 
 				String data = program.getName() + ";" + text;
 
-				p.setData(data);
-//				p.setData(data, getProgram().getSecurity());
+//				p.setData(data);
+				p.setData(data, getProgram().getSecurity());
 				
 
 				System.out.println("Sending text, SEQ: " + p.getSeqNumber() +

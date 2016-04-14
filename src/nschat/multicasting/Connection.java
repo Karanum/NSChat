@@ -99,8 +99,7 @@ public class Connection implements Runnable {
 			
 			switch (type) {
 				case TEXT:
-
-					String data = p.getDataAsString(/*program.getSecurity()*/);
+					String data = p.getDataAsString(program.getSecurity());
 					int index = data.indexOf(';');
 					if (index != -1) {
 						program.getUI().printText(data.substring(index + 1), data.substring(0, index));
