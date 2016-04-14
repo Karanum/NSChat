@@ -1,6 +1,7 @@
 package nschat.test;
 
 import nschat.security.*;
+import javax.swing.UIManager;
 
 public class test {
 
@@ -8,15 +9,25 @@ public class test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		UIManager.LookAndFeelInfo laf[] = UIManager.getInstalledLookAndFeels();
+		for (int i = 0, n = laf.length; i < n; i++) {
+		System.out.print("LAF Name: " + laf[i].getName() + "\t");
+		System.out.println("  LAF Class name: " + laf[i].getClassName());
+		}
+		System.exit(0);
 		
-		String InputA = "De eerste test string"; //"testing encryption, It seems that it works, lets make the test working now!!!";
-		Symetric enc = new Symetric();
-		enc.setup(true);
-		byte[] IV = enc.localIV.clone();
-		byte[] ciph = enc.encrypt(InputA.getBytes());
-		System.out.println("InputA from bytes: " + new String(InputA.getBytes()));
-		byte[] dec = enc.encdec(ciph, IV);
-		System.out.println("decrypted: " + new String(dec));
+		
+		
+		
+		
+//		String InputA = "De eerste test string"; //"testing encryption, It seems that it works, lets make the test working now!!!";
+//		Symetric enc = new Symetric();
+//		enc.setup(true);
+//		byte[] IV = enc.localIV.clone();
+//		byte[] ciph = enc.encrypt(InputA.getBytes());
+//		System.out.println("InputA from bytes: " + new String(InputA.getBytes()));
+//		byte[] dec = enc.encdec(ciph, IV);
+//		System.out.println("decrypted: " + new String(dec));
 		
 		//BigInteger key = new BigInteger
 		

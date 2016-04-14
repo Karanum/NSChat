@@ -5,14 +5,20 @@ import java.awt.Button;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
+import javax.swing.JCheckBox;
 
 public class SettingsGUI extends JFrame {
 
@@ -22,6 +28,11 @@ public class SettingsGUI extends JFrame {
 	private JTextField portField;
 	private Program program;
 	private BasicGUI gui;
+	private JCheckBox toolTipCheckbox;
+	private JButton resetButton;
+	private JButton saveButton;
+	private JButton encButton;
+
 	//private Choice choice;
 
 	/**
@@ -55,6 +66,13 @@ public class SettingsGUI extends JFrame {
 				} catch (SocketException e1) {
 					e1.printStackTrace();
 				}*/
+				
+				if (toolTipCheckbox.isSelected()) {
+					gui.setTooltips(true);
+				} else {
+					gui.setTooltips(false);
+				}
+				
 				a = nameField.getText();
 				b = portField.getText(); //TODO give it to the correct method
 			//	c = choice.getSelectedItem(); //TODO give to correct method
@@ -62,6 +80,12 @@ public class SettingsGUI extends JFrame {
 			}
 			if (e.getActionCommand().equals("enc")) {
 				getProgram().getSecurity().setup(true);
+			}
+			try {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			} catch (ClassNotFoundException | InstantiationException
+					| IllegalAccessException | UnsupportedLookAndFeelException ex) {
+				ex.printStackTrace();
 			}
 			gui.setEnabled(true);
 			getGUI().dispose();
@@ -86,6 +110,13 @@ public class SettingsGUI extends JFrame {
 		this.program = program;
 		this.gui = gui;
 		
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+       
 		setTitle("Settings");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -111,8 +142,6 @@ public class SettingsGUI extends JFrame {
 		
 		portField = new JTextField();
 		portField.setEditable(false);
-		portField.setText("Comming soon");
-		portField.setToolTipText("Enter the portnumber that you want to use");
 		if (program.getConnection().getMulticast().getPort() == 0) {
 			portField.setText("PortNumber");
 		} else {
@@ -125,13 +154,16 @@ public class SettingsGUI extends JFrame {
 		contentPane.add(choice, "cell 2 2 2 1,growx");
 		*/
 		
-		Button resetButton = new Button("Cancel");
-		contentPane.add(resetButton, "cell 1 4");
+		toolTipCheckbox = new JCheckBox("SeeTooltips", gui.getTooltips());
+		contentPane.add(toolTipCheckbox, "cell 1 4");
 		
-		Button saveButton = new Button("Save");
-		contentPane.add(saveButton, "cell 10 4");
+		resetButton = new JButton("Cancel");
+		contentPane.add(resetButton, "cell 1 5");
 		
-		Button encButton = new Button("Reset encryption");
+		saveButton = new JButton("Save");
+		contentPane.add(saveButton, "cell 10 5");
+		
+		encButton = new JButton("Reset encryption");
 		contentPane.add(encButton, "cell 1 3");
 		
 		resetButton.setActionCommand("reset");
@@ -141,6 +173,20 @@ public class SettingsGUI extends JFrame {
 		resetButton.addActionListener(new ButtonListener());
 		saveButton.addActionListener(new ButtonListener());
 		encButton.addActionListener(new ButtonListener());
+	
+		if (toolTipCheckbox.isSelected()) {
+			portField.setToolTipText("Not supported in this version");
+			nameField.setToolTipText("Enter your username here,\n this version does not use this information yet.");
+			resetButton.setToolTipText("Reset your recent changes");
+			saveButton.setToolTipText("Save the changes you made");
+			encButton.setToolTipText("Reset the encryption");
+		} else {
+			portField.setToolTipText(null);
+			nameField.setToolTipText(null);
+			resetButton.setToolTipText(null);
+			saveButton.setToolTipText(null);
+			encButton.setToolTipText(null);
+		}
 	}
 	
 	public SettingsGUI getGUI() {

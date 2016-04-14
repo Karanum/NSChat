@@ -1,5 +1,6 @@
 package nschat.ui;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 
@@ -65,6 +66,7 @@ public class BasicGUI extends JFrame {
 	private HTMLDocument doc;			//TODO might change
 	private JMenuItem menuSendFile;
 	private StringBuffer text = new StringBuffer("<html><body>\n");
+	private boolean tooltips = true;
 	
 	private Program program;
 	
@@ -103,7 +105,7 @@ public class BasicGUI extends JFrame {
 				
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
-				p.setData(text, getProgram().getSecurity());
+				p.setData(text/*, getProgram().getSecurity()*/); //TODO enable encryption...
 				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
 				
 				System.out.println("Sending text, SEQ: " + p.getSeqNumber() + ", Data: " + p.getDataAsString());
@@ -207,8 +209,7 @@ public class BasicGUI extends JFrame {
 		
 		sendButton.addActionListener(new Listener());
 		textField.addActionListener(new Listener());
-		
-		
+				
 		menuExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -360,5 +361,12 @@ public class BasicGUI extends JFrame {
 
 		return result;
 	}
-
+	
+	public void setTooltips(boolean tips) {
+		this.tooltips = tips;
+	}
+	
+	public boolean getTooltips() {
+		return tooltips;
+	}
 }

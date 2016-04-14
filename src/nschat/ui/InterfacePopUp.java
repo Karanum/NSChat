@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Choice;
 import java.awt.Button;
+import java.awt.Color;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window.Type;
@@ -105,6 +106,8 @@ public class InterfacePopUp extends JFrame {
 		contentPane.add(button, BorderLayout.SOUTH);
 		
 		button.addActionListener(new Listener());
+//		button.setBackground(Color.LIGHT_GRAY);
+//		button.setBorderPainted(false);
 		
 		enterPress = new JButton();
 		enterPress.setVisible(false);
