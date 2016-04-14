@@ -106,6 +106,7 @@ public class BasicGUI extends JFrame {
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
 				p.setData(text/*, getProgram().getSecurity()*/); //TODO enable encryption...
+
 				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
 				
 				System.out.println("Sending text, SEQ: " + p.getSeqNumber() + ", Data: " + p.getDataAsString());

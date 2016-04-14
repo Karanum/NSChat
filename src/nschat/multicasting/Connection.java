@@ -90,6 +90,7 @@ public class Connection implements Runnable {
 			switch (type) {
 				case TEXT:
 					program.getUI().printText(p.getDataAsString(/*program.getSecurity()*/)); //TODO enable encryption...
+
 					break;
 					
 				case FILE:

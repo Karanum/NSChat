@@ -26,7 +26,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -47,20 +52,18 @@ public class InterfacePopUp extends JFrame {
 	private JButton enterPress;
 	private KeyboardFocusManager manager;
 	private KeyEventDispatcher dispatcher;
+	private Map<String, NetworkInterface> interfaces;
 	
 	private class Listener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("button action: " + e.getActionCommand());
 			try {
-				getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
+				getProgram().getConnection().getMulticast().setInterface(interfaces.get(choice.getSelectedItem()));
 				Thread.sleep(500);
 				finished = true;
 				dispose();
 				manager.removeKeyEventDispatcher(dispatcher);
-			} catch (SocketException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -92,11 +95,19 @@ public class InterfacePopUp extends JFrame {
 		
 		choice = new Choice();
 		contentPane.add(choice, BorderLayout.CENTER);
-		
+		interfaces = new HashMap<String, NetworkInterface>();
 		try {
 			Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
+			List<NetworkInterface> netList = new ArrayList<NetworkInterface>();
 			while (ni.hasMoreElements()) {
-				choice.add(ni.nextElement().getName());
+				NetworkInterface ne = ni.nextElement();
+				if (ne.isUp()) {
+					interfaces.put(ne.getDisplayName(), ne);
+					choice.add(ne.getDisplayName());
+				}
+			}
+			for (NetworkInterface network : netList) {
+				choice.add(network.getDisplayName());
 			}
 		} catch (SocketException e) {
 			e.printStackTrace();
