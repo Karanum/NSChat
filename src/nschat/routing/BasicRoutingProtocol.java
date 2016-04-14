@@ -18,7 +18,7 @@ import nschat.tcp.Packet.PacketType;
  * @author Pieter Jan
  *
  */
-public class BasicRoutingProtocol {
+public class BasicRoutingProtocol extends Thread {
 
 	private SendingBuffer sendingBuffer;
 	private ForwardingTable forwardingTable;
