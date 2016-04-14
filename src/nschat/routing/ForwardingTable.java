@@ -3,9 +3,11 @@ package nschat.routing;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ForwardingTable {
 	
@@ -113,6 +115,19 @@ public class ForwardingTable {
 	 */
 	public void removeRoute(Integer destination) {
 		forwardingTable.remove(destination);
+	}
+	
+	/**
+	 * Returns the list of destinations, with the cost unequal to -1.
+	 */
+	public Collection<Integer> getDestinations() {
+		Set<Integer> destinations = new HashSet<Integer>();
+		for (BasicRoute route : getRoutes()) {
+			if (route.getCost() != -1) {
+				destinations.add(route.getDestination());
+			}
+		}
+		return destinations;
 	}
 	
 	/**
