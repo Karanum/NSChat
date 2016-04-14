@@ -171,4 +171,8 @@ public class BasicRoutingProtocol {
 		return senderRTT;
 	}
 	
+	public Collection<Integer> getDestinations() {
+		return forwardingTable.getDestinations();
+	}
+	
 }

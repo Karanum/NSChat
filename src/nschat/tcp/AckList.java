@@ -10,7 +10,7 @@ import nschat.multicasting.Connection;
 import nschat.tcp.Packet.PacketType;
 
 /**
- * List of expected ACKs for each sent packet.
+ * List of expected ACKs for each sent packet. Automatically handles timeout retransmissions.
  * @author Karanum
  */
 public class AckList {
@@ -51,8 +51,8 @@ public class AckList {
 	}
 	
 	public static void createInstance(Connection conn, PacketType type, short seq) {
-		//TODO Make this get the list of all clients from the forwarding table
-		//Collection<Integer> knownClients = conn.getRouting().getForwardingTable().getDestinations();
+		Collection<Integer> knownClients = conn.getRouting().getDestinations();
+		new AckList(conn, type, seq, knownClients);
 	}
 	
 	public static AckList getInstance(PacketType type, short seq) {
