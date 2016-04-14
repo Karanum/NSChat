@@ -13,7 +13,7 @@ import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
-import nschat.multicasting.SendingBuffer;
+//import nschat.multicasting.SendingBuffer;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 import nschat.tcp.SequenceNumbers;
@@ -29,22 +29,22 @@ import java.awt.event.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+//import java.net.URISyntaxException;
+//import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+//import java.nio.file.Paths;
 
-import javax.swing.DropMode;
+//import javax.swing.DropMode;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.AttributeSet;
+//import javax.swing.filechooser.FileNameExtensionFilter;
+//import javax.swing.text.AttributeSet;
 
-import javax.swing.text.BadLocationException;
+//import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.html.HTMLDocument;
+//import javax.swing.text.Document;
+//import javax.swing.text.SimpleAttributeSet;
+//import javax.swing.text.html.HTMLDocument;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -62,9 +62,9 @@ public class BasicGUI extends JFrame {
 	private SettingsGUI frame;
 	private JScrollPane scrollPane;
 	private JEditorPane editorPane;
-	private HTMLDocument doc;			//TODO might change
+//	private HTMLDocument doc;			//TODO might change
 	private JMenuItem menuSendFile;
-	private StringBuffer text = new StringBuffer("<html><body>\n");
+	private StringBuffer stringBuffer = new StringBuffer("<html><body>\n");
 	
 	private Program program;
 	
@@ -93,7 +93,7 @@ public class BasicGUI extends JFrame {
 				String text = textField.getText();
 				textField.setText("");
 				
-				//printText(text);
+//				printText(text);
 				
 //				if (text.equalsIgnoreCase("Filefilefile")) {
 //					SendingBuffer buffer = program.getConnection().getSendingBuffer();
@@ -103,10 +103,13 @@ public class BasicGUI extends JFrame {
 				
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
-				p.setData(text, getProgram().getSecurity());
-				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
+
+				p.setData(text/*, getProgram().getSecurity()*/);
+//				program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
+
 				
-				System.out.println("Sending text, SEQ: " + p.getSeqNumber() + ", Data: " + p.getDataAsString());
+				System.out.println("Sending text, SEQ: " + p.getSeqNumber() +
+						  ", Data: " + p.getDataAsString());
 
 				program.getConnection().getSendingBuffer().add(PacketType.TEXT, seq, p.pack());
 			}
@@ -119,11 +122,11 @@ public class BasicGUI extends JFrame {
 			JFileChooser chooser = new JFileChooser();
 		    
 		    int returnVal = chooser.showOpenDialog(getParent());
-		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-		       System.out.println("You chose to send this file: " +
+		    if (returnVal == JFileChooser.APPROVE_OPTION) {
+		        System.out.println("You chose to send this file: " +
 		            chooser.getSelectedFile().getName());
-		       getProgram().getConnection().getFileHandler().sendFile(chooser.getSelectedFile().getPath());
-		       //TODO send the file to where it is send!
+		        getProgram().getConnection().getFileHandler()
+		        	.sendFile(chooser.getSelectedFile().getPath());
 		    }
 		}
 		
@@ -132,8 +135,8 @@ public class BasicGUI extends JFrame {
 	private class LinkListener implements HyperlinkListener {
 		@Override
 		public void hyperlinkUpdate(HyperlinkEvent e) {
-			if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-				if(Desktop.isDesktopSupported()) {
+			if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+				if (Desktop.isDesktopSupported()) {
 				    try {
 						Desktop.getDesktop().open(new File(e.getURL().getPath()));
 					} catch (IOException e1) {
@@ -169,7 +172,8 @@ public class BasicGUI extends JFrame {
 		menuExit = new JMenuItem("Exit");
 		mnFile.add(menuExit);
 		
-		getContentPane().setLayout(new MigLayout("", "[grow][grow][][][][][][][][][][][][][]", "[grow][][][][][][][][][]"));
+		getContentPane().setLayout(new MigLayout("", "[grow][grow][][][][][][][][][][][][][]",
+				  "[grow][][][][][][][][][]"));
 		
 		textArea = new JTextArea();
 		//textArea.setDropMode(DropMode.INSERT);
@@ -182,20 +186,20 @@ public class BasicGUI extends JFrame {
 		editorPane.setEditable(false);
 		editorPane.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
 		
-		doc = (HTMLDocument) editorPane.getDocument();
+//		doc = (HTMLDocument) editorPane.getDocument();
 		
 		scrollPane = new JScrollPane(editorPane);
 		getContentPane().add(scrollPane, "cell 0 0 15 9,grow");
-		scrollPane.setPreferredSize(new Dimension(500,300));
+		scrollPane.setPreferredSize(new Dimension(500, 300));
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setAutoscrolls(true);
 		scrollPane.setWheelScrollingEnabled(true);
 		
-		DefaultCaret paneCaret = (DefaultCaret)editorPane.getCaret();
+		DefaultCaret paneCaret = (DefaultCaret) editorPane.getCaret();
 		paneCaret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
-		DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
 		textField = new JTextField();
@@ -236,20 +240,11 @@ public class BasicGUI extends JFrame {
 	
 	//TODO change such that messages are ordered by sending time.
 	/**
-	 * Print line of text on the textArea.
+	 * Print line of text on the JEditorPane. 
 	 * @param text
 	 */
-	public void printText(String text) {
-		textArea.append(parseEmote(text) + "\n");
-		appendString("<font>" + parseEmote(text) + "</font><br>");
-
-//		try {
-//			doc.insertString(doc.getLength() , text + "\n", new SimpleAttributeSet());
-//		} catch (BadLocationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		//printFile("a");
+	public void printText(String message) {		
+		appendString("<font face=\"verdana\">" + parseEmote(message) + "</font><br>");
 	}
 	
 	/**
@@ -257,16 +252,9 @@ public class BasicGUI extends JFrame {
 	 * @param text
 	 * @param name
 	 */
-	public void printText(String text, String name) {
-		textArea.append("<" + name + "> " + text + "\n");
-		appendString("<font>" +  "<" + name + "> " + text + "</font><br>");
-
-//		try {
-//			doc.insertString(doc.getLength() , "<" + name + "> " + text + "\n", new SimpleAttributeSet());
-//		} catch (BadLocationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	public void printText(String message, String name) {
+		appendString("<font face=\"verdana\">" +  "[" + name + "] " 
+	        + parseEmote(message) + "</font><br>");
 	}
 	
 	public Program getProgram() {
@@ -278,21 +266,20 @@ public class BasicGUI extends JFrame {
 	}
 	
 	public void runSettings() {
-		try {
-			setEnabled(false);
-			frame = new SettingsGUI(getProgram(), getGUI());
-			frame.pack();
-			frame.setLocationRelativeTo(null);
-			frame.setVisible(true);
-			frame.addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e)
-			    {
-			        setEnabled(true);
-			    }
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+		setEnabled(false);
+		frame = new SettingsGUI(getProgram(), getGUI());
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+		        setEnabled(true);
+		    }
+		});
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void stop() {
@@ -311,12 +298,12 @@ public class BasicGUI extends JFrame {
 	}
 	
 	private void appendString(String string) {
-		text.append(string);
-		editorPane.setText(text.toString());
+		stringBuffer.append(string);
+		editorPane.setText(stringBuffer.toString());
 	}
 	
 	/**
-	 * Checks the entire string and if it contains any smiley symbols,
+	 * Checks the entire string and if it contains any emoji symbols,
 	 * and converts them to the corresponding emoji IMG-tag if so.
 	 * @param message The received text message 
 	 * @return A text message with every emoji-symbol replaced with its IMG-tag
@@ -340,8 +327,9 @@ public class BasicGUI extends JFrame {
 		String filePathDislike = "file:///" + folder + "/images/dislike.png";
 		String filePathFire = "file:///" + folder + "/images/fire.png";
 		
-		//REPLACE THE EMOJI SYMBOL WITH THE IMG-TAG OF THE CORRESPONDING EMOJI
+		// REPLACE THE EMOJI SYMBOL WITH THE IMG-TAG OF THE CORRESPONDING EMOJI
 		String result = message;
+		result = result.replace(" ", "&nbsp;");
 		result = result.replace(":)", "<img src=\"" + filePathSmile + "\"/>");
 		result = result.replace(":(", "<img src=\"" + filePathSad + "\"/>");
 		result = result.replace(":D", "<img src=\"" + filePathBigsmile + "\"/>");
@@ -349,7 +337,10 @@ public class BasicGUI extends JFrame {
 		result = result.replace(":'(", "<img src=\"" + filePathCry + "\"/>");
 		result = result.replace(";(", "<img src=\"" + filePathCry + "\"/>");
 		result = result.replace(":P", "<img src=\"" + filePathToung + "\"/>");
+		result = result.replace(":p", "<img src=\"" + filePathToung + "\"/>");
 		result = result.replace("xd", "<img src=\"" + filePathEksdi + "\"/>");
+		result = result.replace("xD", "<img src=\"" + filePathEksdi + "\"/>");
+		result = result.replace("XD", "<img src=\"" + filePathEksdi + "\"/>");
 		result = result.replace("/badboy", "<img src=\"" + filePathBadboy + "\"/>");
 		result = result.replace("/kappa", "<img src=\"" + filePathKappa + "\"/>");
 		result = result.replace("<3", "<img src=\"" + filePathHeart + "\"/>");

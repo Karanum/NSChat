@@ -96,7 +96,7 @@ public class Connection implements Runnable {
 			
 			switch (type) {
 				case TEXT:
-					program.getUI().printText(p.getDataAsString(program.getSecurity()));
+					program.getUI().printText(p.getDataAsString(/*program.getSecurity()*/));
 					break;
 					
 				case FILE:
