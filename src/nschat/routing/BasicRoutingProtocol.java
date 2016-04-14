@@ -26,13 +26,44 @@ public class BasicRoutingProtocol {
 	// MAP SENDER -> RTT
 	private Map<Integer, Integer> senderRTT;
 	
+	private static final int MAX_ITERATIONS = 3;
+	private int iterationCounter;
+
 	
 	public BasicRoutingProtocol() {
 		sendingBuffer = new SendingBuffer();
 		forwardingTable = new ForwardingTable(this, (new Packet()).getSender());
 		senderRTT = new HashMap<Integer, Integer>();
+		iterationCounter = 0;
 	}
-
+	
+	/**
+	 * Main loop.
+	 */
+	public void run() {
+		sendPacket();
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		forwardingTable.clearUnseenRoutes();
+		forwardingTable.updateUnlinkedDests();
+		
+		if (iterationCounter >= MAX_ITERATIONS) {
+			forwardingTable.setCost();
+			forwardingTable.clearLinkedSenders();
+			iterationCounter = 0;
+		}
+		iterationCounter++;
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Allows to receive a packet, ensued by getting the RTT of the sender, and updating its
 	 * own forwardingTable.

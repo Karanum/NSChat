@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ForwardingTable {								//TODO STILL NEEDS TO BE TESTED IF IT WORKS!
+public class ForwardingTable {
 	
 	// MAP DESTINATION -> COST -> VIA NEIGHBOUR
 	private Map<Integer, BasicRoute> forwardingTable;
@@ -21,44 +21,16 @@ public class ForwardingTable {								//TODO STILL NEEDS TO BE TESTED IF IT WORK
 	private List<Integer> linkedSenders;
 	private static final int INCREASE_RTT = 10;
 	private static final int MAX_RTT = 20;
-	private static final int MAX_ITERATIONS = 3;
-	private int iterationCounter;
+
 	
 	public ForwardingTable(BasicRoutingProtocol brp, int myAddress) {
 		this.forwardingTable = new HashMap<Integer, BasicRoute>();
 		this.brp = brp;
 		this.myAddress = myAddress;
 		this.linkedSenders = new ArrayList<Integer>();
-		iterationCounter = 0;
 	}
 	
-	/**
-	 * Main loop.
-	 */
-	public void run() {
-		brp.sendPacket();
-		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		clearUnseenRoutes();
-		updateUnlinkedDests();
-		
-		if (iterationCounter >= MAX_ITERATIONS) {
-			setCost();
-			linkedSenders.clear();
-			iterationCounter = 0;
-		}
-		iterationCounter++;
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e2) {
-			e2.printStackTrace();
-		}
-	}
-	
+
 	/*
 	 * Does several checks whether the given BasicRoute is useful, 
 	 * and adds it into the forwardingTable if it is.
@@ -105,11 +77,11 @@ public class ForwardingTable {								//TODO STILL NEEDS TO BE TESTED IF IT WORK
 		}
 	}
 	
-	/*
+	/**
 	 * Update the unlinkedDests list, lowering each destination's unlink_cooldown with 1,
 	 * and removing it from the list if its unlink_cooldown is 0.
 	 */
-	private void updateUnlinkedDests() {
+	public void updateUnlinkedDests() {
 		Iterator<Integer> iter = unlinkedDests.keySet().iterator();
 		while (iter.hasNext()) {
 			int destination = iter.next();
@@ -121,10 +93,10 @@ public class ForwardingTable {								//TODO STILL NEEDS TO BE TESTED IF IT WORK
 		}
 	}
 	
-	/*
+	/**
 	 * Sets all route costs to -1 if the link to the node is broken.
 	 */
-	private void clearUnseenRoutes() {
+	public void clearUnseenRoutes() {
 		for (int dest : forwardingTable.keySet()) {
 			int nextHop = forwardingTable.get(dest).getNextHop();
 			if (nextHop != myAddress && brp.getSenderRTT().get(nextHop) == -1) {
@@ -167,11 +139,11 @@ public class ForwardingTable {								//TODO STILL NEEDS TO BE TESTED IF IT WORK
 		linkedSenders.add(routesSender);
 	}
 
-	/*
+	/**
 	 * Increases the cost of a destination in the forwardingTable if not heard from in a long time,
 	 * if the cost goes above a certain amount, the cost is set to -1.
 	 */
-	private void setCost() {
+	public void setCost() {
 		for (int sender : brp.getSenderRTT().keySet()) {
 			if (!linkedSenders.contains(sender)) {
 				brp.setRTT(sender, brp.getSenderRTT().get(sender) + INCREASE_RTT);
@@ -183,6 +155,20 @@ public class ForwardingTable {								//TODO STILL NEEDS TO BE TESTED IF IT WORK
 				brp.setRTT(sender, -1);
 			}
 		}
+	}
+	
+	/**
+	 * Returns the list of the linked senders.
+	 */
+	public List<Integer> getLinkedSenders() {
+		return this.linkedSenders;
+	}
+	
+	/**
+	 * Clears the list of linked senders.
+	 */
+	public void clearLinkedSenders() {
+		this.linkedSenders.clear();
 	}
 	
 }
