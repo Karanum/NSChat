@@ -1,6 +1,7 @@
 package nschat.tcp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class AckList {
 	private List<Integer> remaining;
 	private Connection conn;
 	
-	public AckList(Connection conn, PacketType type, short seq, List<Integer> knownClients) {
+	private AckList(Connection conn, PacketType type, short seq, Collection<Integer> knownClients) {
 		this.conn = conn;
 		seq = this.seq;
 		type = this.type;
@@ -47,6 +48,11 @@ public class AckList {
 		if (remaining.isEmpty()) {
 			conn.getTimeout().removePacket(type, seq);
 		}
+	}
+	
+	public static void createInstance(Connection conn, PacketType type, short seq) {
+		//TODO Make this get the list of all clients from the forwarding table
+		//Collection<Integer> knownClients = conn.getRouting().getForwardingTable().getDestinations();
 	}
 	
 	public static AckList getInstance(PacketType type, short seq) {

@@ -30,8 +30,8 @@ public class BasicRoutingProtocol {
 	private int iterationCounter;
 
 	
-	public BasicRoutingProtocol() {
-		sendingBuffer = new SendingBuffer();
+	public BasicRoutingProtocol(SendingBuffer buffer) {
+		sendingBuffer = buffer;
 		forwardingTable = new ForwardingTable(this, (new Packet()).getSender());
 		senderRTT = new HashMap<Integer, Integer>();
 		iterationCounter = 0;

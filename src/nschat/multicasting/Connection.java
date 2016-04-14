@@ -28,7 +28,6 @@ public class Connection implements Runnable {
 	private FileHandler fileManager;
 	private Timeout timeout;
 	
-	private Map<PacketType, Map<Short, AckList>> ackLists;
 	private Map<PacketType, Map<Integer, List<Integer>>> seenPackets;
 	
 	public Connection(Program program) throws IOException {
@@ -41,7 +40,7 @@ public class Connection implements Runnable {
 		} 
 		
 		this.program = program;
-		routing = new BasicRoutingProtocol();
+		routing = new BasicRoutingProtocol(sendingBuffer);
 		fileManager = new FileHandler(this);
 		timeout = new Timeout(this);
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
@@ -162,6 +161,11 @@ public class Connection implements Runnable {
 	private void checkAck(Packet packet) {
 		PacketType type = packet.getPacketType();
 		AckHandler.getHandler(type).handleAck(this, packet);
+		
+		AckList ackList = AckList.getInstance(packet.getPacketType(), packet.getAckNumber());
+		if (ackList != null) {
+			ackList.setAcknowledged(packet.getSender());
+		}
 	}
 	
 	public ReceivingBuffer getReceivingBuffer() {
@@ -186,5 +190,9 @@ public class Connection implements Runnable {
 	
 	public Timeout getTimeout() {
 		return timeout;
+	}
+	
+	public BasicRoutingProtocol getRouting() {
+		return routing;
 	}
 }

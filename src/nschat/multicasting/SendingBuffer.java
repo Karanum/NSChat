@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nschat.tcp.AckList;
 import nschat.tcp.Packet.PacketType;
 
 /**
@@ -32,6 +33,10 @@ public class SendingBuffer {
 	 */
 	public void add(PacketType type, short seq, byte[] packet) {
 		synchronized(this) {
+			if (type != PacketType.UNDEFINED && type != PacketType.ROUTING) {
+				AckList.createInstance(conn, type, seq);
+			}
+			
 			buffer.add(packet);
 			if (seq != 0) {
 				if (!archive.containsKey(type)) {
