@@ -113,6 +113,7 @@ public class Program {
 			long time = System.currentTimeMillis();
 			conn.receive();		//Check for incoming messages
 			conn.send();		//Check for outgoing messages
+			conn.getTimeout().update();
 			long diff = System.currentTimeMillis() - time;
 			if (diff < 100) {
 				try {

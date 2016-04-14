@@ -13,8 +13,10 @@ import nschat.Program;
 import nschat.exception.PacketFormatException;
 import nschat.routing.BasicRoutingProtocol;
 import nschat.tcp.AckHandler;
+import nschat.tcp.AckList;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
+import nschat.tcp.Timeout;
 
 public class Connection implements Runnable {
 	
@@ -24,12 +26,14 @@ public class Connection implements Runnable {
 	private Multicast cast;
 	private Program program;
 	private FileHandler fileManager;
+	private Timeout timeout;
 	
+	private Map<PacketType, Map<Short, AckList>> ackLists;
 	private Map<PacketType, Map<Integer, List<Integer>>> seenPackets;
 	
 	public Connection(Program program) throws IOException {
 		receivingBuffer = new ReceivingBuffer();
-		sendingBuffer = new SendingBuffer();
+		sendingBuffer = new SendingBuffer(this);
 		try {
 			cast = new Multicast(receivingBuffer);
 		} catch (IOException e) {
@@ -39,6 +43,7 @@ public class Connection implements Runnable {
 		this.program = program;
 		routing = new BasicRoutingProtocol();
 		fileManager = new FileHandler(this);
+		timeout = new Timeout(this);
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
 	}
 
@@ -51,6 +56,8 @@ public class Connection implements Runnable {
 		for (byte[] packet : sendingBuffer.getAllFromBuffer()) {
 			DatagramPacket datagram = cast.makeDgramPacket(packet);
 			cast.sendDatagram(datagram);
+			
+			//packet.hashCode();
 		}
 	}
 	
@@ -175,5 +182,9 @@ public class Connection implements Runnable {
 	
 	public Program getProgram() {
 		return program;
+	}
+	
+	public Timeout getTimeout() {
+		return timeout;
 	}
 }
