@@ -65,12 +65,9 @@ public class BasicGUI extends JFrame {
 	private JEditorPane editorPane;
 //	private HTMLDocument doc;			//TODO might change
 	private JMenuItem menuSendFile;
-<<<<<<< HEAD
-	private StringBuffer text = new StringBuffer("<html><body>\n");
+//	private StringBuffer text = new StringBuffer("<html><body>\n");
 	private boolean tooltips = true;
-=======
 	private StringBuffer stringBuffer = new StringBuffer("<html><body>\n");
->>>>>>> 731c1a1f0dc825d7e12ebab9b71ab2b48e5ac228
 	
 	private Program program;
 	
