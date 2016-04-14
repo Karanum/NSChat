@@ -99,8 +99,12 @@ public class Connection implements Runnable {
 			
 			switch (type) {
 				case TEXT:
-					program.getUI().printText(p.getDataAsString(/*program.getSecurity()*/)); //TODO enable encryption...
 
+					String data = p.getDataAsString(/*program.getSecurity()*/);
+					int index = data.indexOf(';');
+					if (index != -1) {
+						program.getUI().printText(data.substring(index + 1), data.substring(0, index));
+					}
 					break;
 					
 				case FILE:

@@ -96,19 +96,14 @@ public class BasicGUI extends JFrame {
 				String text = textField.getText();
 				textField.setText("");
 				
-//				printText(text);
-				
-//				if (text.equalsIgnoreCase("Filefilefile")) {
-//					SendingBuffer buffer = program.getConnection().getSendingBuffer();
-//					program.getConnection().getFileHandler().sendFile(buffer, "D:\\reuniclus.png");
-//					System.out.println("SENDING A FILE WHOOAAAAA");
-//				}
-				
 				short seq = SequenceNumbers.get(PacketType.TEXT);
 				Packet p = new Packet(PacketType.TEXT, (byte) 0, seq, (short) 0, null);
+
+				String data = program.getName() + ";" + text;
+
+				p.setData(data);
+//				p.setData(data, getProgram().getSecurity());
 				
-				p.setData(text/*, getProgram().getSecurity()*/); //TODO enable encryption...
-				//program.getConnection().getSendingBuffer().add(seqSet, seq, p.pack());
 
 				System.out.println("Sending text, SEQ: " + p.getSeqNumber() +
 						  ", Data: " + p.getDataAsString());
