@@ -1,24 +1,21 @@
 package nschat.ui;
 
 
-import java.awt.Button;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 import nschat.Program;
-import javax.swing.JCheckBox;
 
 public class SettingsGUI extends JFrame {
 
@@ -32,25 +29,6 @@ public class SettingsGUI extends JFrame {
 	private JButton resetButton;
 	private JButton saveButton;
 	private JButton encButton;
-
-	//private Choice choice;
-
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SettingsGUI frame = new SettingsGUI(null, null);
-					frame.pack();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
 	
 	private class ButtonListener implements ActionListener{
 
@@ -60,12 +38,6 @@ public class SettingsGUI extends JFrame {
 			String b = null;
 			if (e.getActionCommand().equals("save")) {
 				getProgram().setName(nameField.getText());
-				//getProgram().getConnection().getMulticast().setPort(parseInt(portField.getText())); //TODO change
-				/*try {
-					getProgram().getConnection().getMulticast().setInterface(NetworkInterface.getByName(choice.getSelectedItem()));
-				} catch (SocketException e1) {
-					e1.printStackTrace();
-				}*/
 				
 				if (toolTipCheckbox.isSelected()) {
 					gui.setTooltips(true);
@@ -76,7 +48,7 @@ public class SettingsGUI extends JFrame {
 				a = nameField.getText();
 				b = portField.getText(); //TODO give it to the correct method
 			//	c = choice.getSelectedItem(); //TODO give to correct method
-				System.out.println("saved settings:\nname: " + a /*+ ", port: " + b*/); //TODO if port change works change!
+				System.out.println("saved settings:\nname: " + a /*+ ", port: " + b*/);
 			}
 			if (e.getActionCommand().equals("enc")) {
 				getProgram().getSecurity().setup(true);

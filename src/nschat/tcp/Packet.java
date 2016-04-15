@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import nschat.exception.PacketFormatException;
-import nschat.security.Symetric;
+import nschat.security.SymmetricEncryption;
 
 /**
  * Packet data structure used for creating and reading data from packets.
@@ -192,8 +192,8 @@ public class Packet {
 	 * Sets the encrypted payload data of the packet.
 	 * @param data The packet data as a String
 	 */
-	public void setData(String data, Symetric enc) {
-		this.data = enc.encrypt(data.getBytes());
+	public void setData(String data, SymmetricEncryption enc) {
+		this.data = enc.encrypt(data.getBytes(), seq);
 	}
 	
 	/**
@@ -209,8 +209,8 @@ public class Packet {
 	 * @param data The packet data as bytes
 	 * @param enc
 	 */
-	public void setData(byte[] data, Symetric enc) {
-		this.data = enc.encrypt(data);
+	public void setData(byte[] data, SymmetricEncryption enc) {
+		this.data = enc.encrypt(data, seq);
 	}
 	
 	/**
@@ -284,8 +284,8 @@ public class Packet {
 	/**
 	 * Returns the packet payload data as a String.
 	 */
-	public String getDataAsString(Symetric enc) {
-		return new String(enc.decrypt(data, getSender()));
+	public String getDataAsString(SymmetricEncryption enc) {
+		return new String(enc.decrypt(data, getSender(), seq));
 	}
 	
 	/**
@@ -300,8 +300,8 @@ public class Packet {
 	 * @param enc
 	 * @return
 	 */
-	public byte[] getData(Symetric enc) {
-		return enc.decrypt(data, getSender());
+	public byte[] getData(SymmetricEncryption enc) {
+		return enc.decrypt(data, getSender(), seq);
 	}
 	
 	/**

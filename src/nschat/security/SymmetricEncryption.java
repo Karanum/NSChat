@@ -17,21 +17,20 @@ import nschat.Program;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 
-public class Symetric {
-	// TODO change IV to private after testing
+public class SymmetricEncryption {
 	private byte[] keyByte = new byte[]{0b01101100 , 65 , 51 , 85 ,  127 , 99 ,(byte) 0x8c , 0b00111011 , 22 , 55 , 10 , 88 ,(byte) 0b11110000 ,(byte) 0b11001110 ,(byte) 0b11011000 ,(byte) 0xc2 };
 	private static final int KEYSIZE = 16; //In bytes
 	private Key key = new SecretKeySpec(keyByte, "AES");
-	public byte[] localIV;
+	private byte[] localIV;
 	private Map<Integer, byte[]> IVs = new HashMap<Integer , byte[]>();
 	private Program program;
 	
 	//for testing only.
-	public Symetric() {
+	public SymmetricEncryption() {
 		
 	}
 
-	public Symetric(Program program) {
+	public SymmetricEncryption(Program program) {
 		this.program = program;
 		localIV = createIV();
 		setup(true);
@@ -62,11 +61,6 @@ public class Symetric {
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			e.printStackTrace();
 		}
-//		System.out.print("send IV: ");
-//		for (int i = 0; i< KEYSIZE; i++) {
-//			System.out.print(localIV[i]);
-//		}
-//		System.out.print("\n");
 	}
 	
 	public void IVReceived(Packet packet) {
@@ -81,12 +75,6 @@ public class Symetric {
 				byte[] temp = c.doFinal(packet.getData());
 				IVs.put(packet.getSender(), temp);
 
-//				System.out.print("received IV: ");
-//				for (int i = 0; i< KEYSIZE; i++) {
-//					System.out.print(temp[i]);
-//				}
-//				System.out.print("\n");
-
 			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 				e.printStackTrace();
 			}
@@ -98,8 +86,7 @@ public class Symetric {
 	}
 	
 	
-	//TODO change to private after testing
-	public byte[] encdec(byte[] plaintext, byte[] IV) {	
+	private byte[] encdec(byte[] plaintext, byte[] IV, short seq) {	
 		byte[] tempKey = new byte[KEYSIZE];
 		byte[] result = new byte[plaintext.length];
 		
@@ -108,8 +95,7 @@ public class Symetric {
 				try {
 					Cipher c = Cipher.getInstance("AES/ECB/NoPadding");
 					c.init(Cipher.ENCRYPT_MODE, key);
-					tempKey = c.doFinal(IV);
-					increaseIV(IV);
+					tempKey = c.doFinal(getIV(IV, seq));
 				} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 					e.printStackTrace();
 				}
@@ -117,35 +103,20 @@ public class Symetric {
 			result[i] = (byte) (tempKey[i % KEYSIZE] ^ plaintext[i]);
 			//System.out.println("send IV: " + IV[15]); 
 		}
-		
-		/*for (int j = 0; j < plaintext.length + KEYSIZE ; j += KEYSIZE) {
-			try {
-				Cipher c = Cipher.getInstance("AES/ECB/NoPadding");
-				c.init(Cipher.ENCRYPT_MODE, key);
-				tempKey = c.doFinal(IV);		
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-				
-				e.printStackTrace();
-			}
-			for (int i = 0; i < KEYSIZE; i++) {
-				result[i+j] = (byte) (tempKey[i] ^ plaintext[i+j]); //XOR the plaintext with the AES encrypted IV
-			}
-			increaseIV();
-		}*/
 		return result;
 	}
 	
 	/**
-	 * Used to decrypt the messages. messages need to be in order for the decryption to work.
+	 * Decrypts a message
 	 * @param ciphertext
 	 * @return
 	 */
-	public byte[] decrypt(byte[] ciphertext, int sender) {
-		return encdec(ciphertext, IVs.get(sender));
+	public byte[] decrypt(byte[] ciphertext, int sender, short seq) {
+		return encdec(ciphertext, IVs.get(sender), seq);
 	}
 	
-	public byte[] encrypt(byte[] plaintext) {
-		return encdec(plaintext, localIV);
+	public byte[] encrypt(byte[] plaintext, short seq) {
+		return encdec(plaintext, localIV, seq);
 	}
 	
 	private byte[] createIV() {
@@ -155,27 +126,25 @@ public class Symetric {
 		return bytes;
 	}
 	
-	//TODO change to private after testing
-	public void increaseIV(byte[] IV) {
-		for (int i = KEYSIZE -1; i >= 0; i--) {
-			if ((IV[i] + 1) % Byte.MAX_VALUE == 0) {
-				IV[i] = 0;
-				increaseIV(i-1, IV);
-			} else {
-				IV[i]++;
-				return;
-			}
+	private byte[] getIV(byte[] baseIV, short seq) {
+		int len = baseIV.length;
+		byte[] finalIV = baseIV.clone();
+		
+		byte firstSeq = (byte) (seq >> 8);
+		byte secondSeq = (byte) seq;
+		
+		int result = finalIV[len - 1] + secondSeq;
+		finalIV[len - 1] += (byte) result;
+		if ((result >> 8) > 0) {
+			finalIV[len - 2] += (byte) (result >> 8);
 		}
-	}
-	private void increaseIV(int start , byte[] IV) {
-		for (int i = start; i >= 0; i--) {
-			if ((IV[i] + 1) % Byte.MAX_VALUE == 0) {
-				IV[i] = 0;
-				increaseIV(i-1, IV);
-			} else {
-				IV[i]++;
-				return;
-			}
+		
+		result = finalIV[len - 2] + firstSeq;
+		finalIV[len - 2] += (byte) result;
+		if ((result >> 8) > 0) {
+			finalIV[len - 3] += (byte) (result >> 8);
 		}
+		
+		return finalIV;
 	}
 }
