@@ -109,7 +109,8 @@ public class BasicGUI extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Creates the frame.
+	 * @param program The Program object
 	 */
 	public BasicGUI(Program program) {
 		this.program = program;
@@ -200,7 +201,7 @@ public class BasicGUI extends JFrame {
 	//TODO change such that messages are ordered by sending time.
 	/**
 	 * Print line of text on the JEditorPane. 
-	 * @param text
+	 * @param text The message to be printed
 	 */
 	public void printText(String message) {		
 		appendString("<font face=\"verdana\">" + parseEmote(message) + "</font><br>");
@@ -208,25 +209,28 @@ public class BasicGUI extends JFrame {
 	
 	/**
 	 * Print a line of text with the name of the sender.
-	 * @param text
-	 * @param name
+	 * @param text The message to be printed
+	 * @param name The username of the sender
 	 */
 	public void printText(String message, String name) {
 		appendString("<font face=\"verdana\">" +  "[" + name + "] " 
 	        + parseEmote(message) + "</font><br>");
 	}
 	
+	/**
+	 * Returns the Program
+	 * @return The Program object
+	 */
 	public Program getProgram() {
 		return program;
 	}
 	
-	public BasicGUI getGUI() {
-		return this;
-	}
-	
+	/**
+	 * Creates a new settings window and displays it.
+	 */
 	public void runSettings() {
 		setEnabled(false);
-		frame = new SettingsGUI(getProgram(), getGUI());
+		frame = new SettingsGUI(getProgram(), this);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -237,6 +241,9 @@ public class BasicGUI extends JFrame {
 		});
 	}
 	
+	/**
+	 * Stops the GUI and closes the application window.
+	 */
 	public void stop() {
 		if (frame != null) {
 			frame.dispose();
@@ -245,8 +252,8 @@ public class BasicGUI extends JFrame {
 	}
 	
 	/**
-	 * Prints a link to the file.
-	 * @param filePath
+	 * Prints a link to a downloaded file.
+	 * @param filePath The filepath of the file
 	 */
 	public void printFile(Path filePath, String fileName) {
 		appendString("<a href=\"file:///" + filePath  + "\"> " + fileName + "</a><br>");
@@ -307,10 +314,17 @@ public class BasicGUI extends JFrame {
 		return result;
 	}
 	
+	/**
+	 * Enables or disables tooltips.
+	 * @param tips Whether to show tooltips
+	 */
 	public void setTooltips(boolean tips) {
 		this.tooltips = tips;
 	}
 	
+	/**
+	 * Returns whether tooltips should be shown.
+	 */
 	public boolean getTooltips() {
 		return tooltips;
 	}

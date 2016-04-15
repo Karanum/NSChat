@@ -50,11 +50,23 @@ public class AckList {
 		}
 	}
 	
+	/**
+	 * Creates a new AckList instance.
+	 * @param conn The Connection object
+	 * @param type The PacketType of the packet
+	 * @param seq The SEQ number of the packet
+	 */
 	public static void createInstance(Connection conn, PacketType type, short seq) {
 		Collection<Integer> knownClients = conn.getRouting().getDestinations();
 		new AckList(conn, type, seq, knownClients);
 	}
 	
+	/**
+	 * Returns an AckList instance.
+	 * @param type The PacketType of the packet
+	 * @param seq The SEQ number of the packet
+	 * @return The requested AckList object
+	 */
 	public static AckList getInstance(PacketType type, short seq) {
 		if (!instances.containsKey(type)) {
 			return null;

@@ -178,10 +178,16 @@ public class Program {
 		userName = name;
 	}
 	
+	/**
+	 * Returns the Program object.
+	 */
 	public Program getProgram() {
 		return this;
 	}
 	
+	/**
+	 * Returns the encryption system.
+	 */
 	public SymmetricEncryption getSecurity() {
 		return encryption;
 	}

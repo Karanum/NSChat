@@ -27,6 +27,9 @@ public abstract class AckHandler {
 	private Map<Integer, Short> lastSeenAck;
 	private Map<Integer, Integer> retransmitCount;
 	
+	/**
+	 * Creates a new AckHandler.
+	 */
 	public AckHandler() {
 		seenSeqs = new HashMap<Integer, List<Short>>();
 		lastAcked = new HashMap<Integer, Short>();

@@ -74,7 +74,9 @@ public class SettingsGUI extends JFrame {
 	}*/
 
 	/**
-	 * Create the frame.
+	 * Creates the frame.
+	 * @param program The Program object
+	 * @param gui The parent GUI object
 	 */
 	public SettingsGUI(Program program, BasicGUI gui) {
 		setAlwaysOnTop(true);
@@ -161,10 +163,16 @@ public class SettingsGUI extends JFrame {
 		}
 	}
 	
+	/**
+	 * Returns the parent GUI object.
+	 */
 	public SettingsGUI getGUI() {
 		return this;
 	}
 	
+	/**
+	 * Returns the Program object.
+	 */
 	public Program getProgram() {
 		return program;
 	}

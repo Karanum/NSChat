@@ -22,6 +22,10 @@ public class TimeoutHandler {
 	private Map<PacketType, Map<Short, Long>> lastSent;
 	private Map<PacketType, Map<Short, Byte>> numRetransmissions;
 	
+	/**
+	 * Creates a new TimeoutHandler.
+	 * @param conn The Connection object
+	 */
 	public TimeoutHandler(Connection conn) {
 		lastTime = System.currentTimeMillis();
 		this.conn = conn;
@@ -30,6 +34,9 @@ public class TimeoutHandler {
 		numRetransmissions = new HashMap<PacketType, Map<Short, Byte>>();
 	}
 	
+	/**
+	 * Updates the timeout for all known packets.
+	 */
 	public void update() {
 		long deltaTime = System.currentTimeMillis() - lastTime;
 		lastTime = System.currentTimeMillis();
@@ -65,6 +72,11 @@ public class TimeoutHandler {
 		}
 	}
 	
+	/**
+	 * Adds a new packet to be tracked.
+	 * @param type The type of the packet
+	 * @param seq The SEQ number of the packet
+	 */
 	public void addPacket(PacketType type, short seq) {
 		if (lastSent.containsKey(seq)) {
 			return;
@@ -81,6 +93,11 @@ public class TimeoutHandler {
 		}
 	}
 	
+	/**
+	 * Removes a packet so that it is no longer tracked.
+	 * @param type The type of the packet
+	 * @param seq The SEQ number of the packet
+	 */
 	public void removePacket(PacketType type, short seq) {
 		synchronized (this) {
 			lastSent.get(type).remove(seq);

@@ -54,11 +54,10 @@ public class InterfacePopUp extends JFrame {
 		}
 	}
 	
-	
-	
 	/**
 	 * Create a pop-up frame that can not be closed.
 	 * The frame asks for a network interface to be selected.
+	 * @param program The Program object
 	 */
 	public InterfacePopUp(Program program) {
 		this.program = program;
@@ -126,10 +125,16 @@ public class InterfacePopUp extends JFrame {
         manager.addKeyEventDispatcher(dispatcher);
 	}
 
+	/**
+	 * Returns the Program object.
+	 */
 	public Program getProgram() {
 		return program;
 	}
 	
+	/**
+	 * Returns whether the popup window is finished and can be closed.
+	 */
 	public boolean finished() {
 		return finished;
 	}

@@ -18,6 +18,10 @@ import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 import nschat.tcp.TimeoutHandler;
 
+/**
+ * Controller class that sets up the connection with the network and interacts with it.
+ * @author Karanum
+ */
 public class Connection implements Runnable {
 	
 	private ReceivingBuffer receivingBuffer; 
@@ -30,6 +34,11 @@ public class Connection implements Runnable {
 	
 	private Map<PacketType, Map<Integer, List<Integer>>> seenPackets;
 	
+	/**
+	 * Creates a new Connection object.
+	 * @param program The Program object of the application
+	 * @throws IOException Thrown when the multicast connection could not be set up
+	 */
 	public Connection(Program program) throws IOException {
 		receivingBuffer = new ReceivingBuffer();
 		sendingBuffer = new SendingBuffer(this);
@@ -47,16 +56,22 @@ public class Connection implements Runnable {
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
 	}
 
+	/**
+	 * Starts receiving packets as a new thread.
+	 */
 	@Override
 	public void run() {
-		//routing.start();
+//		routing.start();
 		cast.receiveDatagram();
 		
-		try {
-			routing.join();
-		} catch (InterruptedException e) { }
+//		try {
+//			routing.join();
+//		} catch (InterruptedException e) { }
 	}
 	
+	/**
+	 * Sends all packets in the buffer of the SendingBuffer.
+	 */
 	public void send() {
 		for (byte[] packet : sendingBuffer.getAllFromBuffer()) {
 			DatagramPacket datagram = cast.makeDgramPacket(packet);
@@ -64,6 +79,9 @@ public class Connection implements Runnable {
 		}
 	}
 	
+	/**
+	 * Checks the ReceivingBuffer for received packets and sends them to where they need to be processed, depending on packet type.
+	 */
 	public void receive() {
 		byte[] packet;
 		Packet p;
@@ -178,30 +196,58 @@ public class Connection implements Runnable {
 		}
 	}
 	
+	/**
+	 * Returns the ReceivingBuffer.
+	 * @return The ReceivingBuffer object
+	 */
 	public ReceivingBuffer getReceivingBuffer() {
 		return receivingBuffer;
 	}
 	
+	/**
+	 * Returns the SendingBuffer.
+	 * @return The SendingBuffer object
+	 */
 	public SendingBuffer getSendingBuffer() {
 		return sendingBuffer;
 	}
 	
+	/**
+	 * Returns the Multicast connection.
+	 * @return The Multicast object
+	 */
 	public Multicast getMulticast() {
 		return cast;
 	}
 	
+	/**
+	 * Returns the FileHandler.
+	 * @return The FileHandler object
+	 */
 	public FileHandler getFileHandler() {
 		return fileManager;
 	}
 	
+	/**
+	 * Returns the Program the connection is running on.
+	 * @return The parent Program object
+	 */
 	public Program getProgram() {
 		return program;
 	}
 	
+	/**
+	 * Returns the TimeoutHandler.
+	 * @return The TimeoutHandler object
+	 */
 	public TimeoutHandler getTimeout() {
 		return timeout;
 	}
 	
+	/**
+	 * Returns the routing protocol handler.
+	 * @return The BasicRoutingProtocol object
+	 */
 	public BasicRoutingProtocol getRouting() {
 		return routing;
 	}

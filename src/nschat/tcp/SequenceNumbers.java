@@ -17,6 +17,7 @@ public abstract class SequenceNumbers {
 
 	/**
 	 * Get the next sequence number.
+	 * @param The PacketType of the packet
 	 * @return The sequence number
 	 */
 	public static short get(PacketType type) {

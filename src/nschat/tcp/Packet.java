@@ -207,7 +207,7 @@ public class Packet {
 	/**
 	 * Sets the encrypted payload data of the packet.
 	 * @param data The packet data as bytes
-	 * @param enc
+	 * @param enc The encryption system
 	 */
 	public void setData(byte[] data, SymmetricEncryption enc) {
 		this.data = enc.encrypt(data, seq);
@@ -227,6 +227,9 @@ public class Packet {
 		return (flags & ACK_FLAG) != 0;
 	}
 	
+	/**
+	 * Returns whether the packet is a NEW packet.
+	 */
 	public boolean isNew() {
 		return (flags & NEW_FLAG) != 0;
 	}
@@ -290,15 +293,13 @@ public class Packet {
 	
 	/**
 	 * Returns the packet payload data as bytes.
-	 * @return
 	 */
 	public byte[] getData() {
 		return data;
 	}
 	/**
 	 * Returns the packet payload data as decrypted bytes.
-	 * @param enc
-	 * @return
+	 * @param enc The encryption system
 	 */
 	public byte[] getData(SymmetricEncryption enc) {
 		return enc.decrypt(data, getSender(), seq);
@@ -355,6 +356,9 @@ public class Packet {
 		return dest;
 	}
 	
+	/**
+	 * Returns a string representation of the object.
+	 */
 	public String toString() {
 		return String.format("\n\tType: %s\n\tFlags: %d\n\tTime: %d\n\tSrc: %d\n\tDst: %d\n\tSEQ: %d\n\tACK: %d\n\tData: %s", 
 							type, flags, timestamp, getSender(), getRecipient(), seq, ack, getDataAsString());

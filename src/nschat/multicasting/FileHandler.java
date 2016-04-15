@@ -15,14 +15,28 @@ import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
 import nschat.tcp.SequenceNumbers;
 
+/**
+ * Helper class for sending and receiving files.
+ * @author Dylan
+ */
 public class FileHandler {
 	
 	private Connection con;
 	
+	/**
+	 * Creates a new FileHandler.
+	 * @param con The Connection object
+	 */
 	public FileHandler(Connection con) {
 		this.con = con;
 	}
 	
+	/**
+	 * Saves a received file on the system.
+	 * @param filename The name of the file
+	 * @param fileBytes The file contents
+	 * @return The Path to the saved file
+	 */
 	public Path writeToFile(String filename, byte[] fileBytes) {
 		try {			
 			File file = new File("downloads");
@@ -47,6 +61,10 @@ public class FileHandler {
 		return null;
 	}
 
+	/**
+	 * Converts a file to bytes and sends it.
+	 * @param filePath The filepath of the file
+	 */
 	public void sendFile(String filePath) {
 		PacketType type = PacketType.FILE;
 		Packet packet = new Packet(type, (byte) 0, SequenceNumbers.get(type), (short) 0, null);
@@ -77,7 +95,10 @@ public class FileHandler {
 		con.getProgram().getUI().printFile(Paths.get(filePath), new String(fileName));
 	}
 	
-
+	/**
+	 * Should be called when a packet containing a file is received.
+	 * @param packet The received packet
+	 */
 	public void receiveFile(Packet packet) {
 		byte[] receivedData = packet.getData();
 		int nameLength = receivedData[0];
