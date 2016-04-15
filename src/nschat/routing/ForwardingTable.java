@@ -146,10 +146,6 @@ public class ForwardingTable {
 	 */
 	public void updateTable(List<BasicRoute> routes, int routesSender) {
 		for (BasicRoute route : routes) {
-//			int linkCost = brp.getSenderRTT().get(routesSender);
-//			BasicRoute newRoute = new BasicRoute(route.getDestination(), 
-//					  route.getCost() + linkCost, routesSender);	//linkcost should not be here
-//			tick(newRoute, routesSender);
 			tick(route, routesSender);
 		}	
 		linkedSenders.add(routesSender);

@@ -69,7 +69,7 @@ public class BasicRoutingProtocol extends Thread {
 	/**
 	 * Allows to receive a packet, ensued by getting the RTT of the sender, and updating its
 	 * own forwardingTable.
-	 * @param packet The packet with the routing data.
+	 * @param packet The packet with the routing data
 	 */
 	public void receivePacket(Packet packet) {
 		if (packet.isAck()) {
@@ -89,12 +89,8 @@ public class BasicRoutingProtocol extends Thread {
 	 */
 	public int getRTT(Packet packet) {
 		byte[] old = sendingBuffer.get(PacketType.ROUTING, packet.getAckNumber());
-		
-		System.out.println("acknumber= " + packet.getAckNumber());
-		
-		System.out.println("byte array= " + sendingBuffer.get(PacketType.ROUTING, packet.getAckNumber()));
-		
 		Packet oldPacket;
+		
 		try {
 			oldPacket = new Packet(old);
 		} catch (PacketFormatException e) { 
@@ -105,6 +101,11 @@ public class BasicRoutingProtocol extends Thread {
 		return rtt;
 	}
 	
+	/**
+	 * Sets the RTT value of the route to given destination.
+	 * @param dest The destination of the route
+	 * @param rtt The new cost value that will be linked to the destination
+	 */
 	public void setRTT(int dest, int rtt) {
 		if (senderRTT.containsKey(dest)) {
 			senderRTT.put(dest, rtt);
@@ -180,6 +181,9 @@ public class BasicRoutingProtocol extends Thread {
 		return senderRTT;
 	}
 	
+	/**
+	 * Returns all the destinations in the forwardingTable.
+	 */
 	public Collection<Integer> getDestinations() {
 		return forwardingTable.getDestinations();
 	}
