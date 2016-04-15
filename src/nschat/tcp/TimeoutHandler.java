@@ -11,7 +11,7 @@ import nschat.tcp.Packet.PacketType;
  * Helper class for packet acknowledgement timeouts. Accessed fully by the AckList class.
  * @author Karanum
  */
-public class Timeout {
+public class TimeoutHandler {
 
 	private static final byte MAX_RETRANSMISSIONS = 3;
 	private static final long TIMEOUT_INTERVAL = 1000L;
@@ -22,7 +22,7 @@ public class Timeout {
 	private Map<PacketType, Map<Short, Long>> lastSent;
 	private Map<PacketType, Map<Short, Byte>> numRetransmissions;
 	
-	public Timeout(Connection conn) {
+	public TimeoutHandler(Connection conn) {
 		lastTime = System.currentTimeMillis();
 		this.conn = conn;
 		

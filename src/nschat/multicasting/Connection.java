@@ -16,7 +16,7 @@ import nschat.tcp.AckHandler;
 import nschat.tcp.AckList;
 import nschat.tcp.Packet;
 import nschat.tcp.Packet.PacketType;
-import nschat.tcp.Timeout;
+import nschat.tcp.TimeoutHandler;
 
 public class Connection implements Runnable {
 	
@@ -26,7 +26,7 @@ public class Connection implements Runnable {
 	private Multicast cast;
 	private Program program;
 	private FileHandler fileManager;
-	private Timeout timeout;
+	private TimeoutHandler timeout;
 	
 	private Map<PacketType, Map<Integer, List<Integer>>> seenPackets;
 	
@@ -43,7 +43,7 @@ public class Connection implements Runnable {
 		
 		this.program = program;
 		fileManager = new FileHandler(this);
-		timeout = new Timeout(this);
+		timeout = new TimeoutHandler(this);
 		seenPackets = new HashMap<PacketType, Map<Integer, List<Integer>>>();
 	}
 
@@ -198,7 +198,7 @@ public class Connection implements Runnable {
 		return program;
 	}
 	
-	public Timeout getTimeout() {
+	public TimeoutHandler getTimeout() {
 		return timeout;
 	}
 	
