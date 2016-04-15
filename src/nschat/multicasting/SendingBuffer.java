@@ -32,7 +32,7 @@ public class SendingBuffer {
 	 * @param packet The packet that needs to be added
 	 */
 	public void add(PacketType type, short seq, byte[] packet) {
-		synchronized (this) {
+		synchronized(this) {
 			if (type != PacketType.UNDEFINED && type != PacketType.ROUTING) {
 				AckList.createInstance(conn, type, seq);
 			}
@@ -52,7 +52,7 @@ public class SendingBuffer {
 	 * @param packet The packet that needs to be added
 	 */
 	public void add(byte[] packet) {
-		synchronized (this) {
+		synchronized(this) {
 			buffer.add(packet);
 		}
 	}
@@ -63,7 +63,7 @@ public class SendingBuffer {
 	 * @param seq The SEQ number of the packet
 	 */
 	public void remove(PacketType type, short seq) {
-		synchronized (this) {
+		synchronized(this) {
 			if (archive.containsKey(type)) {
 				archive.get(type).remove(seq);
 			}
@@ -76,7 +76,7 @@ public class SendingBuffer {
 	 * @return
 	 */
 	public byte[] get(PacketType type, short seq) {
-		synchronized (this) {
+		synchronized(this) {
 			if (!archive.containsKey(type)) {
 				return null;
 			}
@@ -85,7 +85,7 @@ public class SendingBuffer {
 	}
 	
 	public Map<Short, byte[]> getAll(PacketType type) {
-		synchronized (this) {
+		synchronized(this) {
 			if (!archive.containsKey(type)) {
 				return null;
 			}
@@ -95,7 +95,7 @@ public class SendingBuffer {
 	
 	public List<byte[]> getAllFromBuffer() {
 		List<byte[]> packets = new ArrayList<byte[]>();
-		synchronized (this) {
+		synchronized(this) {
 			for (byte[] packet : buffer) {
 				packets.add(packet);
 			}

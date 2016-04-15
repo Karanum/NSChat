@@ -201,7 +201,7 @@ public class BasicGUI extends JFrame {
 	//TODO change such that messages are ordered by sending time.
 	/**
 	 * Print line of text on the JEditorPane. 
-	 * @param text The message to be printed
+	 * @param message The message to be printed
 	 */
 	public void printText(String message) {		
 		appendString("<font face=\"verdana\">" + parseEmote(message) + "</font><br>");
@@ -209,7 +209,7 @@ public class BasicGUI extends JFrame {
 	
 	/**
 	 * Print a line of text with the name of the sender.
-	 * @param text The message to be printed
+	 * @param message The message to be printed
 	 * @param name The username of the sender
 	 */
 	public void printText(String message, String name) {
