@@ -4,9 +4,10 @@ import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.Random;
 
 import nschat.multicasting.Connection;
-import nschat.security.Symetric;
+import nschat.security.SymmetricEncryption;
 import nschat.ui.BasicGUI;
 import nschat.ui.InterfacePopUp;
 
@@ -27,13 +28,15 @@ public class Program {
 	private static boolean running = false;
 	private String userName;
 	private InterfacePopUp ipu;
-	private Symetric encryption;
+	private SymmetricEncryption encryption;
 	
 	/**
 	 * Starts a new instance of the program, can only be called once.
 	 */
 	public Program() {
 		if (running) { return; }	//Guard in case someone accidentally makes a new Program
+		
+		userName = "Guest" + (new Random().nextInt(89999) + 10000);
 		
 		System.out.println("Setting up connection");
 		try {
@@ -81,7 +84,7 @@ public class Program {
 			}
 		}		
 		
-		encryption = new Symetric(this);
+		encryption = new SymmetricEncryption(this);
 		
 		Thread t = new Thread(conn);
 		t.start();
@@ -179,7 +182,7 @@ public class Program {
 		return this;
 	}
 	
-	public Symetric getSecurity() {
+	public SymmetricEncryption getSecurity() {
 		return encryption;
 	}
 }

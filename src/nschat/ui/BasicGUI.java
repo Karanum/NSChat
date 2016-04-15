@@ -1,51 +1,35 @@
 package nschat.ui;
 
-import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
-
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.ScrollPaneConstants;
-
-import net.miginfocom.swing.MigLayout;
-import nschat.Program;
-//import nschat.multicasting.SendingBuffer;
-import nschat.tcp.Packet;
-import nschat.tcp.Packet.PacketType;
-import nschat.tcp.SequenceNumbers;
-
-import javax.swing.JScrollPane;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.io.File;
 import java.io.IOException;
-//import java.net.URISyntaxException;
-//import java.net.URL;
 import java.nio.file.Path;
-//import java.nio.file.Paths;
 
-//import javax.swing.DropMode;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-//import javax.swing.filechooser.FileNameExtensionFilter;
-//import javax.swing.text.AttributeSet;
-
-//import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
-//import javax.swing.text.Document;
-//import javax.swing.text.SimpleAttributeSet;
-//import javax.swing.text.html.HTMLDocument;
+
+import net.miginfocom.swing.MigLayout;
+import nschat.Program;
+import nschat.tcp.Packet;
+import nschat.tcp.Packet.PacketType;
+import nschat.tcp.SequenceNumbers;
 
 /**
  * Basic GUI that can print any text and accept printed text from the user.
@@ -63,32 +47,12 @@ public class BasicGUI extends JFrame {
 	private SettingsGUI frame;
 	private JScrollPane scrollPane;
 	private JEditorPane editorPane;
-//	private HTMLDocument doc;			//TODO might change
 	private JMenuItem menuSendFile;
-//	private StringBuffer text = new StringBuffer("<html><body>\n");
 	private boolean tooltips = true;
 	private StringBuffer stringBuffer = new StringBuffer("<html><body>\n");
 	
 	private Program program;
 	
-	/**
-	 * Launch the application for testing purposes.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					BasicGUI frame = new BasicGUI();
-					frame.pack();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
-
 	private class Listener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -101,8 +65,8 @@ public class BasicGUI extends JFrame {
 
 				String data = program.getName() + ";" + text;
 
-				p.setData(data);
-//				p.setData(data, getProgram().getSecurity());
+//				p.setData(data);
+				p.setData(data, getProgram().getSecurity());
 				
 
 				System.out.println("Sending text, SEQ: " + p.getSeqNumber() +
@@ -137,7 +101,6 @@ public class BasicGUI extends JFrame {
 				    try {
 						Desktop.getDesktop().open(new File(e.getURL().getPath()));
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					} 
 				}
@@ -262,7 +225,6 @@ public class BasicGUI extends JFrame {
 	}
 	
 	public void runSettings() {
-//		try {
 		setEnabled(false);
 		frame = new SettingsGUI(getProgram(), getGUI());
 		frame.pack();
@@ -273,9 +235,6 @@ public class BasicGUI extends JFrame {
 		        setEnabled(true);
 		    }
 		});
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 	public void stop() {

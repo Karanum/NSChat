@@ -3,7 +3,6 @@ package nschat.tcp;
 import java.util.HashMap;
 import java.util.Map;
 
-import nschat.Program;
 import nschat.multicasting.Connection;
 import nschat.multicasting.SendingBuffer;
 import nschat.tcp.Packet.PacketType;

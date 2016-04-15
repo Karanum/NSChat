@@ -2,7 +2,6 @@ package nschat.multicasting;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,8 +24,6 @@ public class FileHandler {
 	}
 	
 	public Path writeToFile(String filename, byte[] fileBytes) {
-		
-		FileOutputStream fileOutputStream;
 		try {			
 			File file = new File("downloads");
 			if (!file.exists()) {
@@ -93,7 +90,6 @@ public class FileHandler {
 				con.getProgram().getUI().printFile(writeToFile(filename, data), filename);
 			}
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
