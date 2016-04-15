@@ -62,7 +62,10 @@ public class SymmetricEncryption {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Checks the packet and if it receives a IV it will save it.
+	 * @param packet The packet that will be checked
+	 */
 	public void IVReceived(Packet packet) {
 		if (!packet.isAck()) {
 			if (!IVs.containsKey(packet.getSender()) || packet.isNew()) {
@@ -84,7 +87,6 @@ public class SymmetricEncryption {
 			program.getConnection().getSendingBuffer().add(ackPacket.pack());
 		}
 	}
-	
 	
 	private byte[] encdec(byte[] plaintext, byte[] IV, short seq) {	
 		byte[] tempKey = new byte[KEYSIZE];
@@ -108,13 +110,19 @@ public class SymmetricEncryption {
 	
 	/**
 	 * Decrypts a message
-	 * @param ciphertext
+	 * @param ciphertext The message to be decrypted
 	 * @return
 	 */
 	public byte[] decrypt(byte[] ciphertext, int sender, short seq) {
 		return encdec(ciphertext, IVs.get(sender), seq);
 	}
 	
+	/**
+	 * Encrypt a message with the IV based on the sequence number.
+	 * @param plaintext The message to be encrypted
+	 * @param seq The sequence number on which the IV will be based.
+	 * @return
+	 */
 	public byte[] encrypt(byte[] plaintext, short seq) {
 		return encdec(plaintext, localIV, seq);
 	}
