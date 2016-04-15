@@ -30,6 +30,7 @@ public class ForwardingTable {
 		this.brp = brp;
 		this.myAddress = myAddress;
 		this.linkedSenders = new ArrayList<Integer>();
+		unlinkedDests = new HashMap<Integer, Integer>();
 	}
 	
 

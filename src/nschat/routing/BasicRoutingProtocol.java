@@ -72,12 +72,14 @@ public class BasicRoutingProtocol extends Thread {
 	 * @param packet The packet with the routing data.
 	 */
 	public void receivePacket(Packet packet) {
-		int rtt = getRTT(packet);
-		setSenderRTT(rtt, packet.getSender());
-		
-		byte[] bytes = packet.getData();
-		List<BasicRoute> routes = getForwardingTable(bytes);
-		forwardingTable.updateTable(routes, packet.getSender());
+		if (packet.isAck()) {
+			int rtt = getRTT(packet);
+			setSenderRTT(rtt, packet.getSender());
+		} else {
+			byte[] bytes = packet.getData();
+			List<BasicRoute> routes = getForwardingTable(bytes);
+			forwardingTable.updateTable(routes, packet.getSender());
+		}
 	}
 	
 	/**
@@ -87,6 +89,11 @@ public class BasicRoutingProtocol extends Thread {
 	 */
 	public int getRTT(Packet packet) {
 		byte[] old = sendingBuffer.get(PacketType.ROUTING, packet.getAckNumber());
+		
+		System.out.println("acknumber= " + packet.getAckNumber());
+		
+		System.out.println("byte array= " + sendingBuffer.get(PacketType.ROUTING, packet.getAckNumber()));
+		
 		Packet oldPacket;
 		try {
 			oldPacket = new Packet(old);

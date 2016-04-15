@@ -87,8 +87,10 @@ public class Connection implements Runnable {
 					continue;
 				}
 			}
-			if (type != PacketType.ROUTING && type != PacketType.UNDEFINED) {
-				forwardPacket(p);
+			if (type != PacketType.UNDEFINED) {
+				if (type != PacketType.ROUTING) {
+					forwardPacket(p);
+				}
 				if (p.isAck()) {
 					checkAck(p);
 					continue;
