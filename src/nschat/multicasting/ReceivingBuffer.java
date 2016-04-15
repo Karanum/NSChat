@@ -21,7 +21,7 @@ public class ReceivingBuffer {
 	 * @return a packet
 	 */
 	public byte[] getNext() {
-		synchronized(this) {
+		synchronized (this) {
 			if (buffer.size() == 0) {
 				return null;
 			}
@@ -31,10 +31,10 @@ public class ReceivingBuffer {
 	
 	/**
 	 * Adds a packet to the end of the buffer.
-	 * @param packet
+	 * @param packet The packet that will be added
 	 */
 	public void add(byte[] packet) {
-		synchronized(this) {
+		synchronized (this) {
 			buffer.add(packet);
 		}
 	}	

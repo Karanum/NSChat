@@ -10,8 +10,8 @@ import java.util.Arrays;
 
 public class Multicast {
 
-	private final int BUFFER_LENGTH = 4096;
-	private final String GROUP_ADDRESS = "227.21.137.0";
+	private static final int BUFFER_LENGTH = 4096;
+	private static final String GROUP_ADDRESS = "227.21.137.0";
 	private int groupPort = 8637;
 	private ReceivingBuffer receivingBuffer; 
 	private NetworkInterface nInterface;
@@ -20,25 +20,22 @@ public class Multicast {
 	InetAddress group = null;
 	
 	public Multicast(ReceivingBuffer receivingBuffer) throws IOException {
-
-		//System.out.println(NetworkInterface.getNetworkInterfaces().nextElement());
 		mcsocket = new MulticastSocket(groupPort);
-
 		this.receivingBuffer = receivingBuffer; 
 	}
 	
+	/**
+	 * Joins the MultiSocket network using the group_address.
+	 */
 	public void joinGroup() {
 		try {
-			/*if (System.getProperty("os.name").contains("Linux")) {
-
-				mcsocket.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement());
-			}*/
 			if (nInterface == null) {
 				System.out.println("Interface not declared!");
 			} else {
 				mcsocket.setNetworkInterface(nInterface);
 				group = InetAddress.getByName(GROUP_ADDRESS);
-				System.out.println("Connected with Interface: " + mcsocket.getNetworkInterface().getDisplayName());
+				System.out.println("Connected with Interface: " + 
+				    mcsocket.getNetworkInterface().getDisplayName());
 				mcsocket.joinGroup(group);
 			}
 		} catch (IOException e) { 
@@ -46,8 +43,10 @@ public class Multicast {
 		}
 	}
 	
+	/**
+	 * Leaves the MultiCastSocket group.
+	 */
 	public void leaveGroup() {
-		
 		try {
 			mcsocket.leaveGroup(group);
 		} catch (IOException e) {
@@ -55,12 +54,21 @@ public class Multicast {
 		}
 	}
 	
+	/**
+	 * Converts the the given byte array into a DatagramPacket and returns it.
+	 * @param bytes The given byte array
+	 * @return The corresponding DatagramPacket of the byte array
+	 */
 	public DatagramPacket makeDgramPacket(byte[] bytes) {
-		DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
-				group, groupPort);	
+		DatagramPacket packet = new DatagramPacket(bytes, bytes.length, 
+				  group, groupPort);	
 		return packet;
 	}
 	
+	/**
+	 * Sends the given DatagramPacket to the MultiSocket group.
+	 * @param dgram
+	 */
 	public void sendDatagram(DatagramPacket dgram) {
 		try {
 			mcsocket.send(dgram);
@@ -68,10 +76,12 @@ public class Multicast {
 		} catch (InterruptedException | IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
-	public byte[] receiveDatagram() {
+	/**
+	 * Loop for receiving packets, calling other functions to process the received packet.
+	 */
+	public void receiveDatagram() {
 		while (true) {
 			byte[] bytes = new byte[BUFFER_LENGTH];
 			DatagramPacket received = new DatagramPacket(bytes, bytes.length);
@@ -86,21 +96,35 @@ public class Multicast {
 		}
 	}
 	
+	
+	/**
+	 * Returns the port number of the MultiSocket group.
+	 */
 	public int getPort() {
 		return groupPort;
 	}
 	
+	/**
+	 * Sets the port of the MultiSocket group with the given port number.
+	 * @param port The port number the MultiSocket group will have
+	 */
 	public void setPort(int port) {
 		groupPort = port;
 	}
 	
+	/**
+	 * Returns the MultiCast Socket.
+	 */
 	public MulticastSocket getSocket() {
 		return mcsocket;
 	}
 	
+	/**
+	 * Sets the network interface with the given network interface.
+	 * @param ni The network interface that will be used
+	 */
 	public void setInterface(NetworkInterface ni) {
 		nInterface = ni;
 		joinGroup();
-		System.out.println("Succesfullty set interface to: " + nInterface.getDisplayName());
 	}
 }
