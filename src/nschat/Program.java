@@ -17,7 +17,7 @@ import nschat.ui.InterfacePopUp;
  */
 public class Program {
 	
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 	
 	public static void main(String[] args) {
 		new Program();
