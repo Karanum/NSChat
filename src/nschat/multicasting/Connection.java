@@ -49,7 +49,7 @@ public class Connection implements Runnable {
 
 	@Override
 	public void run() {
-		routing.start();
+		//routing.start();
 		cast.receiveDatagram();
 		
 		try {
