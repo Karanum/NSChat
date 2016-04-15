@@ -49,8 +49,8 @@ public class Connection implements Runnable {
 
 	@Override
 	public void run() {
-		cast.receiveDatagram();
 		routing.start();
+		cast.receiveDatagram();
 		
 		try {
 			routing.join();

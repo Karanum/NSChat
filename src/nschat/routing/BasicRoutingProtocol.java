@@ -41,26 +41,28 @@ public class BasicRoutingProtocol extends Thread {
 	 * Main loop.
 	 */
 	public void run() {
-		sendPacket();
-		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		forwardingTable.clearUnseenRoutes();
-		forwardingTable.updateUnlinkedDests();
-		
-		if (iterationCounter >= MAX_ITERATIONS) {
-			forwardingTable.setCost();
-			forwardingTable.clearLinkedSenders();
-			iterationCounter = 0;
-		}
-		iterationCounter++;
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e2) {
-			e2.printStackTrace();
+		while (true) {
+			sendPacket();
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			forwardingTable.clearUnseenRoutes();
+			forwardingTable.updateUnlinkedDests();
+			
+			if (iterationCounter >= MAX_ITERATIONS) {
+				forwardingTable.setCost();
+				forwardingTable.clearLinkedSenders();
+				iterationCounter = 0;
+			}
+			iterationCounter++;
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e2) {
+				e2.printStackTrace();
+			}
 		}
 	}
 	
